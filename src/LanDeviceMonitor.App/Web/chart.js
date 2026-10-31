@@ -473,12 +473,15 @@ export class TrafficChart {
     this.width=this.el.clientWidth||600;this.height=this.el.clientHeight||176;
     this.left=60;this.right=Math.max(61,this.width-24);this.top=23;this.bottom=Math.max(24,this.height-32);
     range=normalizeRange(range);
-    if(range!==this.range)this.clear();
+    const rangeChanged=range!==this.range;
+    if(rangeChanged)this.clear();
     this.range=range;
     const tick=performance.now(), indicator=this.rangeControl?.querySelector(".segment-indicator");
     const transition=indicator?getComputedStyle(indicator).transitionDuration.split(",")[0]:"0.22s";
     const duration=matchMedia("(prefers-reduced-motion: reduce)").matches?0:parseFloat(transition)*(transition.trim().endsWith("ms")?1:1000);
     const dataDuration=duration>0?TRAFFIC_DATA_UPDATE_MS:0;
+    if(rangeChanged&&this.maxMotion&&this.minMotion)
+      this.rangeScaleFrom={max:this.maxMotion.read(tick,dataDuration),min:this.minMotion.read(tick,dataDuration)};
     this.rangeMotion=this.rangeMotion.retarget(range,tick,duration);
     const presentationRange=this.rangeMotion.read(tick,duration);
     const samplesChanged=this.sourceReference!==samples;
@@ -514,10 +517,20 @@ export class TrafficChart {
     }
     this.targetScale=trafficCurveScale(Object.values(this.seriesNodes).map(nodes=>nodes.curve),
       (this.start-this.sampleOrigin)/1000,(frameNow-this.sampleOrigin)/1000,-1024);
-    this.maxMotion=!this.maxMotion||this.targetScale.max>this.maxMotion.read(tick,dataDuration)
-      ?new ChartValueMotion(this.targetScale.max):this.maxMotion.retarget(this.targetScale.max,tick,dataDuration);
-    this.minMotion=!this.minMotion||this.targetScale.min<this.minMotion.read(tick,dataDuration)
-      ?new ChartValueMotion(this.targetScale.min):this.minMotion.retarget(this.targetScale.min,tick,dataDuration);
+    if(this.rangeScaleFrom){
+      // Finish viewport-driven scaling on the indicator's clock, including bounds
+      // that change as an old peak leaves the animated viewport.
+      const progress=new ChartValueMotion(0,1,this.rangeMotion.started).read(tick,duration),from=this.rangeScaleFrom;
+      const max=progress>=1?this.targetScale.max:Math.max(this.targetScale.max,from.max+(this.targetScale.max-from.max)*progress);
+      const min=progress>=1?this.targetScale.min:Math.min(this.targetScale.min,from.min+(this.targetScale.min-from.min)*progress);
+      this.maxMotion=new ChartValueMotion(max);this.minMotion=new ChartValueMotion(min);
+      if(progress>=1)this.rangeScaleFrom=null;
+    }else{
+      this.maxMotion=!this.maxMotion||this.targetScale.max>this.maxMotion.read(tick,dataDuration)
+        ?new ChartValueMotion(this.targetScale.max):this.maxMotion.retarget(this.targetScale.max,tick,dataDuration);
+      this.minMotion=!this.minMotion||this.targetScale.min<this.minMotion.read(tick,dataDuration)
+        ?new ChartValueMotion(this.targetScale.min):this.minMotion.retarget(this.targetScale.min,tick,dataDuration);
+    }
     this.max=this.maxMotion.read(tick,dataDuration);this.min=this.minMotion.read(tick,dataDuration);
     const sx=(this.right-this.left)/(presentationRange*60),sy=(this.bottom-this.top)*1024/Math.max(1,this.max-this.min);
     const tx=this.right-(frameNow-this.sampleOrigin)/1000*sx,ty=this.bottom+this.min/1024*sy;
@@ -567,6 +580,7 @@ export class TrafficChart {
     this.projection=null;
     this.liveCurves={download:new EChartsLiveCurve(),upload:new EChartsLiveCurve()};
     this.max=this.min=this.maxMotion=this.minMotion=null;
+    this.rangeScaleFrom=null;
     this.rangeMotion=new ChartValueMotion(this.range);
     this.sourceReference=null;this.seriesDirty=true;
   }

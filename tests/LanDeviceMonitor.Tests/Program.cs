@@ -17,6 +17,7 @@ if (args.Contains("--realtime-monitoring-diagnostic")) return await RealtimeMoni
 if (args.Contains("--traffic-snapshot-regression")) return await TrafficSnapshotRegression.RunAsync();
 if (args.Contains("--router-cadence-regression")) return await RouterCadenceRegression.RunAsync();
 if (args.Contains("--traffic-motion-regression")) return TrafficMotionRegression.Run();
+if (args.Contains("--traffic-range-scale-regression")) return TrafficRangeScaleRegression.Run(args.Contains("--presented"));
 if (args.Contains("--traffic-render-profile")) return TrafficMotionRegression.Run(profileOnly: true);
 if (args.Contains("--chart-timeline-regression")) return ChartTimelineRegression.Run();
 if (args.Contains("--traffic-hover-regression")) return TrafficHoverRegression.Run();

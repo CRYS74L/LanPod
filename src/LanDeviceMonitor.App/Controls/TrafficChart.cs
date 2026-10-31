@@ -117,6 +117,7 @@ public sealed class TrafficChart : FrameworkElement
     private ChartValueMotion _rangeMotion = new(1, 1, 0);
     private ChartValueMotion? _scaleTopMotion;
     private ChartValueMotion? _scaleBottomMotion;
+    private TrafficScale? _rangeScaleFrom;
     private double _presentationRangeMinutes = 1;
     private readonly DrawingGroup _frameDrawing = new();
     private readonly DrawingGroup _gridDrawing = new();
@@ -205,7 +206,10 @@ public sealed class TrafficChart : FrameworkElement
     {
         var chart = (TrafficChart)dependencyObject;
         var range = NormalizeRange((int)args.NewValue);
-        chart._rangeMotion = chart._rangeMotion.Retarget(range, MotionTime, chart.MotionDurationSeconds);
+        var now = MotionTime;
+        chart._rangeScaleFrom = chart._scaleTopMotion is { } top && chart._scaleBottomMotion is { } bottom
+            ? new(top.Read(now, chart.DataMotionDurationSeconds), bottom.Read(now, chart.DataMotionDurationSeconds)) : null;
+        chart._rangeMotion = chart._rangeMotion.Retarget(range, now, chart.MotionDurationSeconds);
         chart._hoveredIndex = -1;
         chart._hoveredTimestamp = null;
         chart._hoverMotion.Reset();
@@ -229,6 +233,7 @@ public sealed class TrafficChart : FrameworkElement
         chart._uploadSeries.Reset();
         chart._scaleTopMotion = null;
         chart._scaleBottomMotion = null;
+        chart._rangeScaleFrom = null;
         var range = NormalizeRange(chart.RangeMinutes);
         chart._rangeMotion = new(range, range, 0);
         chart.InvalidateVisual();
@@ -352,15 +357,31 @@ public sealed class TrafficChart : FrameworkElement
         _targetScale = CalculateVisibleScale((visibleStart - _sampleOrigin).TotalSeconds,
             (now - _sampleOrigin).TotalSeconds, frameTime, dataDuration);
         var targetScale = _targetScale;
-        // Expand with the currently visible rise, never with an off-screen peak.
-        _scaleTopMotion = _scaleTopMotion is not { } oldTop ||
-            targetScale.TopValue > oldTop.Read(frameTime, dataDuration)
-                ? new(targetScale.TopValue, targetScale.TopValue, frameTime)
-                : oldTop.Retarget(targetScale.TopValue, frameTime, dataDuration);
-        _scaleBottomMotion = _scaleBottomMotion is not { } oldBottom ||
-            targetScale.BottomValue < oldBottom.Read(frameTime, dataDuration)
-                ? new(targetScale.BottomValue, targetScale.BottomValue, frameTime)
-                : oldBottom.Retarget(targetScale.BottomValue, frameTime, dataDuration);
+        if (_rangeScaleFrom is { } fromScale)
+        {
+            // Range-driven scaling shares the selector's clock. Repeated viewport
+            // bounds must not start a fresh data-refresh contraction on each frame.
+            var progress = new ChartValueMotion(0, 1, _rangeMotion.Started).Read(frameTime, duration);
+            var rangeTop = progress >= 1 ? targetScale.TopValue : Math.Max(targetScale.TopValue,
+                fromScale.TopValue + (targetScale.TopValue - fromScale.TopValue) * progress);
+            var rangeBottom = progress >= 1 ? targetScale.BottomValue : Math.Min(targetScale.BottomValue,
+                fromScale.BottomValue + (targetScale.BottomValue - fromScale.BottomValue) * progress);
+            _scaleTopMotion = new(rangeTop, rangeTop, frameTime);
+            _scaleBottomMotion = new(rangeBottom, rangeBottom, frameTime);
+            if (progress >= 1) _rangeScaleFrom = null;
+        }
+        else
+        {
+            // Expand with the currently visible rise, never with an off-screen peak.
+            _scaleTopMotion = _scaleTopMotion is not { } oldTop ||
+                targetScale.TopValue > oldTop.Read(frameTime, dataDuration)
+                    ? new(targetScale.TopValue, targetScale.TopValue, frameTime)
+                    : oldTop.Retarget(targetScale.TopValue, frameTime, dataDuration);
+            _scaleBottomMotion = _scaleBottomMotion is not { } oldBottom ||
+                targetScale.BottomValue < oldBottom.Read(frameTime, dataDuration)
+                    ? new(targetScale.BottomValue, targetScale.BottomValue, frameTime)
+                    : oldBottom.Retarget(targetScale.BottomValue, frameTime, dataDuration);
+        }
         var scale = new TrafficScale(_scaleTopMotion.Value.Read(frameTime, dataDuration),
             _scaleBottomMotion.Value.Read(frameTime, dataDuration));
         var scaleY = (bottom - top) * 1024 / Math.Max(1, scale.TopValue - scale.BottomValue);
