@@ -24,6 +24,7 @@ internal sealed class LanWebServer : IAsyncDisposable
     private readonly Dictionary<string, WebDeviceSnapshot> _devices = new(StringComparer.OrdinalIgnoreCase);
     private readonly Dictionary<string, (IReadOnlyList<DeviceSession> Source, DeviceSession[] Sorted)> _sessions = new(StringComparer.OrdinalIgnoreCase);
     private object _preferences = new { refreshIntervalSeconds = 1 };
+    private string _interfaceLanguage = LocalizationService.DefaultLanguage;
     private bool _hasRouterPassword;
     private readonly Func<string, Task<IReadOnlyList<DeviceSession>>>? _sessionReader;
     public LanWebServer(Func<string, Task<IReadOnlyList<DeviceSession>>>? sessionReader = null, MeshMemberFilter? meshMemberFilter = null)
@@ -60,7 +61,11 @@ internal sealed class LanWebServer : IAsyncDisposable
             // Presence is supplied by the desktop's existing credential-status
             // cache. The web server never reads or accepts a password value.
             if (hasRouterPassword.HasValue) _hasRouterPassword = hasRouterPassword.Value;
+            var language = LocalizationService.NormalizeLanguage(settings.InterfaceLanguage);
+            var languageChanged = _interfaceLanguage != language;
+            _interfaceLanguage = language;
             _preferences = new {
+                interfaceLanguage = language,
                 refreshIntervalSeconds = settings.RefreshIntervalSeconds,
                 routerAddress = settings.RouterAddress,
                 desktopTheme = settings.ThemeMode, startWithWindows = settings.StartWithWindows,
@@ -74,6 +79,13 @@ internal sealed class LanWebServer : IAsyncDisposable
                 hasRouterPassword = _hasRouterPassword,
                 version = MainWindow.GetDisplayVersion()
             };
+            // Language changes also reach open pages while monitoring is disconnected.
+            if (languageChanged)
+            {
+                var data = JsonNode.Parse(_snapshot)!;
+                data["preferences"] = JsonSerializer.SerializeToNode(_preferences, JsonOptions);
+                _snapshot = JsonSerializer.SerializeToUtf8Bytes(data, JsonOptions);
+            }
         }
     }
     public void SetConnection(string state)
@@ -187,6 +199,10 @@ internal sealed class LanWebServer : IAsyncDisposable
                 }
             });
             app.MapGet("/api/device/{id}", GetDeviceAsync);
+            app.MapGet("/api/localization/{language}", (string language) =>
+                language == LocalizationService.NormalizeLanguage(language)
+                    ? Results.Json(new { language, strings = LocalizationService.GetStrings(language) }, JsonOptions)
+                    : Results.NotFound());
             var files = new Dictionary<string, string> { ["/"] = "index.html", ["/app.js"] = "app.js", ["/ui.js"] = "ui.js", ["/device-icons.js"] = "device-icons.js", ["/chart.js"] = "chart.js", ["/echarts-curve.js"] = "echarts-curve.js", ["/app.css"] = "app.css", ["/icon.png"] = "icons/network-v197-512.png", ["/apple-touch-icon.png"] = "icons/network-v197-180.png", ["/manifest.webmanifest"] = "manifest.webmanifest" };
             foreach (var size in new[] { 32, 152, 167, 180, 192, 512, 1024 }) files[$"/icons/network-v197-{size}.png"] = $"icons/network-v197-{size}.png";
             files["/icons/app-mark.png"] = "icons/app-mark.png";
@@ -196,6 +212,7 @@ internal sealed class LanWebServer : IAsyncDisposable
             files["/motion.js"] = "motion.js";
             files["/edge-return.js"] = "edge-return.js";
             files["/font-ready.js"] = "font-ready.js";
+            files["/localization.js"] = "localization.js";
             foreach (var size in new[] { 16, 32, 48, 64, 192, 512 }) files[$"/icons/browser-v197-{size}.png"] = $"icons/browser-v197-{size}.png";
             foreach (var weight in new[] { "light", "regular", "bold" })
             {

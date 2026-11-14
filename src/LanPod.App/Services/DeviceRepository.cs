@@ -140,6 +140,7 @@ public sealed class DeviceRepository
                 StringComparer.OrdinalIgnoreCase);
             _sessionsVersion++;
             _state.Settings.ThemeMode = ThemeService.NormalizeMode(_state.Settings.ThemeMode);
+            _state.Settings.InterfaceLanguage = LocalizationService.NormalizeLanguage(_state.Settings.InterfaceLanguage);
 
             var stateChanged = false;
             foreach (var profile in _state.Devices.Values)
@@ -589,6 +590,17 @@ public sealed class DeviceRepository
         {
             _gate.Release();
         }
+    }
+
+    public async Task UpdateInterfaceLanguageAsync(string language)
+    {
+        await _gate.WaitAsync();
+        try
+        {
+            _state.Settings.InterfaceLanguage = LocalizationService.NormalizeLanguage(language);
+            await SaveCoreAsync(CancellationToken.None);
+        }
+        finally { _gate.Release(); }
     }
 
     public async Task UpdateNewDeviceNotificationSettingAsync(

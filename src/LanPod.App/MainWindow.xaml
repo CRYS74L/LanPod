@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
         xmlns:controls="clr-namespace:LanPod.Controls"
+        xmlns:services="clr-namespace:LanPod.Services"
         mc:Ignorable="d"
         Title="LanPod"
         FontFamily="{StaticResource AppTextFont}"
@@ -24,6 +25,7 @@
     </WindowChrome.WindowChrome>
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
+        <services:LocalizedValueConverter x:Key="LocalizedValue"/>
         <Style x:Key="IdentityTitleStyle" TargetType="TextBlock" BasedOn="{StaticResource CrispTextStyle}"><Setter Property="FontSize" Value="26"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="TextWrapping" Value="NoWrap"/><Setter Property="TextTrimming" Value="CharacterEllipsis"/></Style>
         <Style x:Key="DetailSectionTitleStyle" TargetType="TextBlock" BasedOn="{StaticResource CrispTextStyle}"><Setter Property="FontSize" Value="16"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="{DynamicResource SectionTitleBrush}"/></Style>
         <Geometry x:Key="TrafficRateArrowGeometry">M12 19.5V4.5M4.7 11.8L12 4.5L19.3 11.8</Geometry>
@@ -143,7 +145,7 @@
                             <StackPanel x:Name="CaptionBackContent" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="{TemplateBinding Padding}">
                                 <Path x:Name="CaptionBackArrow" Data="M710.153924 8.980397L266.007127 460.692524a81.118646 81.118646 0 0 0 0.861532 114.476097l446.192936 441.050666a26.922883 26.922883 0 0 0 37.853573-38.284339L304.722232 536.884282a27.27288 27.27288 0 0 1-0.323074-38.445877L748.545955 46.726278A26.922883 26.922883 0 1 0 710.180847 9.00732z" Width="7" Height="10.8" Stretch="Uniform"
                                       VerticalAlignment="Center" Fill="{TemplateBinding Foreground}" Stroke="{TemplateBinding Foreground}" StrokeThickness="0.25" StrokeLineJoin="Round"/>
-                                <TextBlock x:Name="CaptionBackLabel" Text="返回" Margin="6,0,0,0" VerticalAlignment="Center" Foreground="{TemplateBinding Foreground}" FontFamily="{TemplateBinding FontFamily}" FontSize="{TemplateBinding FontSize}"/>
+                                <TextBlock x:Name="CaptionBackLabel" Text="{DynamicResource 'Text.返回'}" Margin="6,0,0,0" VerticalAlignment="Center" Foreground="{TemplateBinding Foreground}" FontFamily="{TemplateBinding FontFamily}" FontSize="{TemplateBinding FontSize}"/>
                             </StackPanel>
                         </Grid>
                     </ControlTemplate>
@@ -439,14 +441,14 @@
                                         shell:WindowChrome.IsHitTestVisibleInChrome="True"
                                         Click="CompactBackButton_Click"
                                         ToolTipService.IsEnabled="False"
-                                        AutomationProperties.Name="返回设备列表"/>
+                                        AutomationProperties.Name="{DynamicResource 'Text.返回设备列表'}"/>
 
             <StackPanel Orientation="Horizontal"
                         HorizontalAlignment="Right">
                 <Button Style="{StaticResource CaptionButtonStyle}"
                         shell:WindowChrome.IsHitTestVisibleInChrome="True"
                         Click="MinimizeWindowButton_Click"
-                        ToolTip="最小化">
+                        ToolTip="{DynamicResource 'Text.最小化'}">
                     <TextBlock Text="&#xE921;"
                                FontFamily="{StaticResource AppIconFont}"
                                FontSize="10"/>
@@ -455,7 +457,7 @@
                         Style="{StaticResource CaptionButtonStyle}"
                         shell:WindowChrome.IsHitTestVisibleInChrome="True"
                         Click="MaximizeWindowButton_Click"
-                        ToolTip="最大化">
+                        ToolTip="{DynamicResource 'Text.最大化'}">
                     <TextBlock x:Name="MaximizeWindowGlyph"
                                Text="&#xE922;"
                                FontFamily="{StaticResource AppIconFont}"
@@ -464,7 +466,7 @@
                 <Button Style="{StaticResource CloseCaptionButtonStyle}"
                         shell:WindowChrome.IsHitTestVisibleInChrome="True"
                         Click="CloseWindowButton_Click"
-                        ToolTip="关闭"/>
+                        ToolTip="{DynamicResource 'Text.关闭'}"/>
             </StackPanel>
         </Grid>
 
@@ -484,11 +486,11 @@
                         <Grid x:Name="ShellIdentityRow" Height="44" Margin="12,0,14,0"><Grid.ColumnDefinitions><ColumnDefinition Width="40"/><ColumnDefinition/><ColumnDefinition Width="36"/></Grid.ColumnDefinitions>
                             <Image x:Name="ShellAppIcon" Source="Assets/AppIcon.png" Width="30" Height="30" HorizontalAlignment="Left" VerticalAlignment="Center"/>
                             <AdornerDecorator Grid.Column="1" VerticalAlignment="Center" Margin="10,0,8,0"><controls:OpticalWeightTextBlock x:Name="ShellAppName" Style="{StaticResource CrispTextStyle}" Text="LanPod" FontSize="18" FontWeight="Medium" TextTrimming="CharacterEllipsis"/></AdornerDecorator>
-                            <Button x:Name="SidebarToggleButton" Grid.Column="2" Style="{StaticResource SidebarIconButtonStyle}" Click="SidebarToggleButton_Click" ToolTip="收起侧栏" AutomationProperties.Name="收起侧栏"><Path Data="{StaticResource SidebarPanelGeometry}" Width="20" Height="17.426471" Stretch="Uniform" Fill="{DynamicResource MutedTextBrush}"/></Button>
+                            <Button x:Name="SidebarToggleButton" Grid.Column="2" Style="{StaticResource SidebarIconButtonStyle}" Click="SidebarToggleButton_Click" ToolTip="{DynamicResource 'Text.收起侧栏'}" AutomationProperties.Name="{DynamicResource 'Text.收起侧栏'}"><Path Data="{StaticResource SidebarPanelGeometry}" Width="20" Height="17.426471" Stretch="Uniform" Fill="{DynamicResource MutedTextBrush}"/></Button>
                         </Grid>
-                        <controls:SegmentedControl x:Name="DeviceFilterSegments" AnimationMilliseconds="480" SizeChanged="DeviceFilterSegments_SizeChanged" Grid.Row="3" Margin="0,14,14,14" Height="40" FontSize="14" SelectedIndex="0" SelectionChanged="DeviceFilterSegments_SelectionChanged" AutomationProperties.Name="设备状态筛选">
-                            <controls:SegmentItem AutomationProperties.Name="在线设备"><StackPanel Orientation="Horizontal"><TextBlock Text="在线"/><TextBlock x:Name="OnlineCountText" Text="0" Margin="7,0,0,0" FontWeight="Normal"/></StackPanel></controls:SegmentItem>
-                            <controls:SegmentItem AutomationProperties.Name="离线设备"><StackPanel Orientation="Horizontal"><TextBlock Text="离线"/><TextBlock x:Name="OfflineCountText" Text="0" Margin="7,0,0,0" FontWeight="Normal"/></StackPanel></controls:SegmentItem>
+                        <controls:SegmentedControl x:Name="DeviceFilterSegments" AnimationMilliseconds="480" SizeChanged="DeviceFilterSegments_SizeChanged" Grid.Row="3" Margin="0,14,14,14" Height="40" FontSize="14" SelectedIndex="0" SelectionChanged="DeviceFilterSegments_SelectionChanged" AutomationProperties.Name="{DynamicResource 'Text.设备状态筛选'}">
+                            <controls:SegmentItem AutomationProperties.Name="{DynamicResource 'Text.在线设备'}"><StackPanel Orientation="Horizontal"><TextBlock Text="{DynamicResource 'Text.在线'}"/><TextBlock x:Name="OnlineCountText" Text="0" Margin="7,0,0,0" FontWeight="Normal"/></StackPanel></controls:SegmentItem>
+                            <controls:SegmentItem AutomationProperties.Name="{DynamicResource 'Text.离线设备'}"><StackPanel Orientation="Horizontal"><TextBlock Text="{DynamicResource 'Text.离线'}"/><TextBlock x:Name="OfflineCountText" Text="0" Margin="7,0,0,0" FontWeight="Normal"/></StackPanel></controls:SegmentItem>
                         </controls:SegmentedControl>
                         <Grid Grid.Row="4" ClipToBounds="True">
                             <ListBox KeyDown="DeviceList_KeyDown" x:Name="DeviceListFirst" Style="{StaticResource DeviceListBoxStyle}" PreviewMouseLeftButtonDown="DeviceList_PreviewMouseLeftButtonDown" SelectionChanged="DeviceList_SelectionChanged"/>
@@ -497,33 +499,33 @@
                         <Grid Grid.Row="5" Margin="4,14,18,0">
                             <Grid.ColumnDefinitions><ColumnDefinition Width="22"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                             <Grid x:Name="ConnectionIndicator" Width="16" Height="16" Margin="-2,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" SnapsToDevicePixels="False" UseLayoutRounding="False"><Ellipse x:Name="ConnectionHalo" Width="16" Height="16" Opacity="0.3" Fill="{Binding Fill, ElementName=ConnectionDot}" RenderTransform="{Binding RenderTransform, ElementName=ConnectionDot}" RenderTransformOrigin="0.5,0.5"/><Ellipse x:Name="ConnectionDot" Width="9.6" Height="9.6" Fill="#999999" HorizontalAlignment="Center" VerticalAlignment="Center" SnapsToDevicePixels="False" UseLayoutRounding="False"/></Grid>
-                            <TextBlock x:Name="ConnectionStatusText" Grid.Column="1" Text="尚未连接" FontSize="14" VerticalAlignment="Center" Foreground="{DynamicResource MutedTextBrush}" TextTrimming="CharacterEllipsis" ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}">
-                                <TextBlock.Style><Style TargetType="TextBlock"><Style.Triggers><Trigger Property="Text" Value="已连接"><Setter Property="Visibility" Value="Collapsed"/></Trigger></Style.Triggers></Style></TextBlock.Style>
+                            <TextBlock x:Name="ConnectionStatusText" Grid.Column="1" Text="{DynamicResource 'Text.尚未连接'}" FontSize="14" VerticalAlignment="Center" Foreground="{DynamicResource MutedTextBrush}" TextTrimming="CharacterEllipsis" ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}">
+                                <TextBlock.Style><Style TargetType="TextBlock"><Style.Triggers><DataTrigger Binding="{Binding IsRouterConnected}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
                             </TextBlock>
-                            <controls:RollingText x:Name="LastRefreshText" Grid.Column="1" Text="等待刷新" FontSize="14" VerticalAlignment="Center" Foreground="{DynamicResource MutedTextBrush}">
-                                <controls:RollingText.Style><Style TargetType="{x:Type controls:RollingText}"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding Text, ElementName=ConnectionStatusText}" Value="已连接"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></controls:RollingText.Style>
+                            <controls:RollingText x:Name="LastRefreshText" Grid.Column="1" Text="{DynamicResource 'Text.等待刷新'}" FontSize="14" VerticalAlignment="Center" Foreground="{DynamicResource MutedTextBrush}">
+                                <controls:RollingText.Style><Style TargetType="{x:Type controls:RollingText}"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding IsRouterConnected}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></controls:RollingText.Style>
                             </controls:RollingText>
                             <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Margin="8,0,0,0">
-                                <Button x:Name="SidebarRailRouterButton" Style="{StaticResource FooterCircleButtonStyle}" Click="RouterButton_Click" ToolTip="路由器" AutomationProperties.Name="路由器"><controls:DeviceTypeIcon DeviceType="路由器" CenterInk="True" Width="18" Height="18" IconBrush="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/></Button>
-                                <Button x:Name="SidebarRailSettingsButton" Style="{StaticResource FooterCircleButtonStyle}" Margin="8,0,0,0" Click="SettingsButton_Click" ToolTip="设置" AutomationProperties.Name="设置"><TextBlock Text="&#xE713;" FontFamily="{StaticResource AppIconFont}" FontSize="18" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" controls:GlyphInkAlignment.Enabled="True"/></Button>
+                                <Button x:Name="SidebarRailRouterButton" Style="{StaticResource FooterCircleButtonStyle}" Click="RouterButton_Click" ToolTip="{DynamicResource 'Text.路由器'}" AutomationProperties.Name="{DynamicResource 'Text.路由器'}"><controls:DeviceTypeIcon DeviceType="路由器" CenterInk="True" Width="18" Height="18" IconBrush="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/></Button>
+                                <Button x:Name="SidebarRailSettingsButton" Style="{StaticResource FooterCircleButtonStyle}" Margin="8,0,0,0" Click="SettingsButton_Click" ToolTip="{DynamicResource 'Text.设置'}" AutomationProperties.Name="{DynamicResource 'Text.设置'}"><TextBlock Text="&#xE713;" FontFamily="{StaticResource AppIconFont}" FontSize="18" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" controls:GlyphInkAlignment.Enabled="True"/></Button>
                             </StackPanel>
                         </Grid>
                     </Grid>
                     <Grid x:Name="CollapsedSidebarContent" Visibility="Collapsed" Margin="0,18,0,18">
                         <Grid.RowDefinitions><RowDefinition Height="44"/><RowDefinition/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-                        <Button x:Name="CollapsedSidebarButton" Visibility="Collapsed" Opacity="0" Style="{StaticResource SidebarIconButtonStyle}" Click="CollapsedSidebarButton_Click" GotKeyboardFocus="CollapsedSidebar_GotKeyboardFocus" LostKeyboardFocus="CollapsedSidebar_LostKeyboardFocus" AutomationProperties.Name="展开侧栏" ToolTip="展开侧栏">
+                        <Button x:Name="CollapsedSidebarButton" Visibility="Collapsed" Opacity="0" Style="{StaticResource SidebarIconButtonStyle}" Click="CollapsedSidebarButton_Click" GotKeyboardFocus="CollapsedSidebar_GotKeyboardFocus" LostKeyboardFocus="CollapsedSidebar_LostKeyboardFocus" AutomationProperties.Name="{DynamicResource 'Text.展开侧栏'}" ToolTip="{DynamicResource 'Text.展开侧栏'}">
                             <Grid><Border x:Name="CollapsedSidebarKeyboardRing" Width="36" Height="36" CornerRadius="18" BorderBrush="{DynamicResource MutedTextBrush}" BorderThickness="1" Visibility="Collapsed"/><Path x:Name="CollapsedSidebarGlyph" Data="{StaticResource SidebarPanelGeometry}" Width="20" Height="17.426471" Stretch="Uniform" Fill="{DynamicResource MutedTextBrush}"/></Grid>
                         </Button>
                         <StackPanel Grid.Row="2" HorizontalAlignment="Center">
-                            <Button x:Name="CollapsedRouterButton" Style="{StaticResource SidebarIconButtonStyle}" Click="RouterButton_Click" AutomationProperties.Name="路由器" ToolTip="路由器" Margin="0,0,0,8"><controls:DeviceTypeIcon DeviceType="路由器" CenterInk="True" Width="18" Height="18" IconBrush="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/></Button>
-                            <Button x:Name="CollapsedSettingsButton" Style="{StaticResource SidebarIconButtonStyle}" Click="SettingsButton_Click" AutomationProperties.Name="设置" ToolTip="设置"><TextBlock Text="&#xE713;" FontFamily="{StaticResource AppIconFont}" FontSize="18" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" controls:GlyphInkAlignment.Enabled="True"/></Button>
+                            <Button x:Name="CollapsedRouterButton" Style="{StaticResource SidebarIconButtonStyle}" Click="RouterButton_Click" AutomationProperties.Name="{DynamicResource 'Text.路由器'}" ToolTip="{DynamicResource 'Text.路由器'}" Margin="0,0,0,8"><controls:DeviceTypeIcon DeviceType="路由器" CenterInk="True" Width="18" Height="18" IconBrush="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/></Button>
+                            <Button x:Name="CollapsedSettingsButton" Style="{StaticResource SidebarIconButtonStyle}" Click="SettingsButton_Click" AutomationProperties.Name="{DynamicResource 'Text.设置'}" ToolTip="{DynamicResource 'Text.设置'}"><TextBlock Text="&#xE713;" FontFamily="{StaticResource AppIconFont}" FontSize="18" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" controls:GlyphInkAlignment.Enabled="True"/></Button>
                         </StackPanel>
                     </Grid>
                 </Grid>
             </Border>
 
             <Border x:Name="SidebarDividerLine" Grid.Column="1" Width="1" Background="Transparent" IsHitTestVisible="False"/>
-            <GridSplitter x:Name="SidebarSplitter" Grid.Column="1" Margin="0,0,0,8" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent" ResizeDirection="Columns" ResizeBehavior="PreviousAndNext" DragIncrement="1" KeyboardIncrement="10" DragCompleted="SidebarSplitter_DragCompleted" AutomationProperties.Name="调整设备栏宽度">
+            <GridSplitter x:Name="SidebarSplitter" Grid.Column="1" Margin="0,0,0,8" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent" ResizeDirection="Columns" ResizeBehavior="PreviousAndNext" DragIncrement="1" KeyboardIncrement="10" DragCompleted="SidebarSplitter_DragCompleted" AutomationProperties.Name="{DynamicResource 'Text.调整设备栏宽度'}">
                 <GridSplitter.Template><ControlTemplate TargetType="GridSplitter"><Grid Background="Transparent"><Border Width="2" Height="36" Background="{DynamicResource BorderBrush}" CornerRadius="1" VerticalAlignment="Center" HorizontalAlignment="Center"/></Grid></ControlTemplate></GridSplitter.Template>
             </GridSplitter>
             <Border x:Name="DetailSurface" Grid.Column="2"
@@ -534,7 +536,7 @@
                     CornerRadius="{StaticResource CardCornerRadius}"
                     ClipToBounds="True">
             <Grid><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition/></Grid.RowDefinitions>
-            <Button x:Name="CompactBackButton" Visibility="Collapsed"  HorizontalAlignment="Left" Margin="16,12,0,0" Style="{StaticResource FooterCircleButtonStyle}" Click="CompactBackButton_Click" AutomationProperties.Name="返回设备列表"><Path Data="M15 5 L8 12 L15 19" Width="10" Height="16" Stretch="Uniform" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1.7" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/></Button>
+            <Button x:Name="CompactBackButton" Visibility="Collapsed"  HorizontalAlignment="Left" Margin="16,12,0,0" Style="{StaticResource FooterCircleButtonStyle}" Click="CompactBackButton_Click" AutomationProperties.Name="{DynamicResource 'Text.返回设备列表'}"><Path Data="M15 5 L8 12 L15 19" Width="10" Height="16" Stretch="Uniform" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1.7" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/></Button>
             <Grid Grid.Row="1">
                 <Grid x:Name="EmptyPanel" HorizontalAlignment="Center" VerticalAlignment="Center">
                     <Image x:Name="EmptyStateAppIcon" Source="{Binding Source, ElementName=ShellAppIcon}"
@@ -573,29 +575,29 @@
 
                         </Grid>
 
-                        <TextBlock Text="连接信息" Style="{StaticResource DetailSectionTitleStyle}" Margin="19,24,0,10"/>
+                        <TextBlock Text="{DynamicResource 'Text.连接信息'}" Style="{StaticResource DetailSectionTitleStyle}" Margin="19,24,0,10"/>
                         <controls:RoundedCardBorder x:Name="DeviceNetworkInfoCard" Style="{StaticResource CardStyle}" Padding="18,16">
-<controls:SingleRowMetadataPanel Gap="24" MinimumGap="8" x:Name="DetailNetworkMetadataRow"><StackPanel x:Name="ConnectionStateInfoBlock" Grid.Column="0"><TextBlock Text="连接状态" TextAlignment="Center" FontSize="12" Foreground="{DynamicResource MutedTextBrush}" Margin="0,0,0,8"/>                            <Border x:Name="DetailStatusBadge" CornerRadius="{Binding ActualHeight, RelativeSource={RelativeSource Self}, Converter={StaticResource CapsuleRadius}}" Height="28" Padding="0"
+<controls:SingleRowMetadataPanel Gap="24" MinimumGap="8" x:Name="DetailNetworkMetadataRow"><StackPanel x:Name="ConnectionStateInfoBlock" Grid.Column="0"><TextBlock Text="{DynamicResource 'Text.连接状态'}" TextAlignment="Center" FontSize="12" Foreground="{DynamicResource MutedTextBrush}" Margin="0,0,0,8"/>                            <Border x:Name="DetailStatusBadge" CornerRadius="{Binding ActualHeight, RelativeSource={RelativeSource Self}, Converter={StaticResource CapsuleRadius}}" Height="28" Padding="0"
                                     VerticalAlignment="Center" Background="Transparent">
-                                <TextBlock x:Name="DetailStatusText" TextAlignment="Center" HorizontalAlignment="Center" Text="离线" FontSize="14" Height="28" Padding="0,4,0,0" VerticalAlignment="Center" FontWeight="Normal" Foreground="#6B7280"/>
-                            </Border></StackPanel><StackPanel x:Name="ConnectionInfoBlock" Grid.Column="2"><TextBlock Text="连接类型" TextAlignment="Center" FontSize="12" Foreground="{DynamicResource MutedTextBrush}" Margin="0,0,0,8"/><TextBlock x:Name="DetailConnectionText" Text="{Binding SelectedDevice.ConnectionText}" TextAlignment="Center" Height="28" Padding="0,4,0,0"/></StackPanel><StackPanel x:Name="IpInfoBlock" Grid.Column="4"><TextBlock x:Name="DetailIpLabelText" Text="IP 地址" TextAlignment="Center" FontSize="12" Foreground="{DynamicResource MutedTextBrush}" Margin="0,0,0,8"/><TextBlock x:Name="DetailIpAddressText" Text="{Binding SelectedDevice.IpAddress}" TextAlignment="Center" Height="28" Padding="0,4,0,0"/></StackPanel><StackPanel x:Name="MacInfoBlock" Grid.Column="6"><TextBlock x:Name="DetailMacLabelText" Text="MAC 地址" TextAlignment="Center" FontSize="12" Foreground="{DynamicResource MutedTextBrush}" Margin="0,0,0,8"/><TextBlock x:Name="DetailMacAddressText" Text="{Binding SelectedDevice.MacAddress}" TextAlignment="Center" Height="28" Padding="0,4,0,0"/></StackPanel></controls:SingleRowMetadataPanel>
+                                <TextBlock x:Name="DetailStatusText" TextAlignment="Center" HorizontalAlignment="Center" Text="{DynamicResource 'Text.离线'}" FontSize="14" Height="28" Padding="0,4,0,0" VerticalAlignment="Center" FontWeight="Normal" Foreground="#6B7280"/>
+                            </Border></StackPanel><StackPanel x:Name="ConnectionInfoBlock" Grid.Column="2"><TextBlock Text="{DynamicResource 'Text.连接类型'}" TextAlignment="Center" FontSize="12" Foreground="{DynamicResource MutedTextBrush}" Margin="0,0,0,8"/><TextBlock x:Name="DetailConnectionText" Text="{Binding SelectedDevice.ConnectionText}" TextAlignment="Center" Height="28" Padding="0,4,0,0"/></StackPanel><StackPanel x:Name="IpInfoBlock" Grid.Column="4"><TextBlock x:Name="DetailIpLabelText" Text="{DynamicResource 'Text.IP 地址'}" TextAlignment="Center" FontSize="12" Foreground="{DynamicResource MutedTextBrush}" Margin="0,0,0,8"/><TextBlock x:Name="DetailIpAddressText" Text="{Binding SelectedDevice.IpAddress}" TextAlignment="Center" Height="28" Padding="0,4,0,0"/></StackPanel><StackPanel x:Name="MacInfoBlock" Grid.Column="6"><TextBlock x:Name="DetailMacLabelText" Text="{DynamicResource 'Text.MAC 地址'}" TextAlignment="Center" FontSize="12" Foreground="{DynamicResource MutedTextBrush}" Margin="0,0,0,8"/><TextBlock x:Name="DetailMacAddressText" Text="{Binding SelectedDevice.MacAddress}" TextAlignment="Center" Height="28" Padding="0,4,0,0"/></StackPanel></controls:SingleRowMetadataPanel>
                         </controls:RoundedCardBorder>
 
                         <controls:AdaptiveColumns Columns="2" MinimumColumnWidth="220" Justify="True" Gap="10" x:Name="TrafficSummaryHeader"
                               Margin="0,25,0,3">
 
                             <TextBlock x:Name="TrafficSummaryTitleText"
-                                       Text="流量统计"
+                                       Text="{DynamicResource 'Text.流量统计'}"
                                        Style="{StaticResource DetailSectionTitleStyle}"
                                        VerticalAlignment="Center"
                                        TextWrapping="NoWrap" Margin="19,0,0,0"/>
                             <controls:SegmentedControl x:Name="TrafficRangeSegments" HorizontalAlignment="Right" Grid.Column="1"
                                 Width="228" Height="36" FontSize="13" SelectedIndex="0"
-                                AutomationProperties.Name="流量统计时间区间"
+                                AutomationProperties.Name="{DynamicResource 'Text.流量统计时间区间'}"
                                 SelectionChanged="TrafficRangeSegments_SelectionChanged">
-                                <controls:SegmentItem><TextBlock Text="1 分钟" FontSize="13"/></controls:SegmentItem>
-                                <controls:SegmentItem><TextBlock Text="5 分钟" FontSize="13"/></controls:SegmentItem>
-                                <controls:SegmentItem><TextBlock Text="10 分钟" FontSize="13"/></controls:SegmentItem>
+                                <controls:SegmentItem><TextBlock Text="{DynamicResource 'Text.1 分钟'}" FontSize="13"/></controls:SegmentItem>
+                                <controls:SegmentItem><TextBlock Text="{DynamicResource 'Text.5 分钟'}" FontSize="13"/></controls:SegmentItem>
+                                <controls:SegmentItem><TextBlock Text="{DynamicResource 'Text.10 分钟'}" FontSize="13"/></controls:SegmentItem>
                             </controls:SegmentedControl>
                         </controls:AdaptiveColumns>
 
@@ -612,7 +614,7 @@
                                         ClipToBounds="True">
                                     <controls:TrafficChart
                                         AutomationProperties.AutomationId="TrafficChart"
-                                        AutomationProperties.Name="流量统计曲线"
+                                        AutomationProperties.Name="{DynamicResource 'Text.流量统计曲线'}"
                                         Samples="{Binding SelectedDevice.TrafficSamples}"
                                         DeviceKey="{Binding SelectedDevice.MacAddress}"
                                         SampleIntervalSeconds="{Binding SelectedDevice.TrafficIntervalSeconds}"
@@ -666,7 +668,7 @@
                                                     <RowDefinition Height="Auto"/>
                                                     <RowDefinition Height="Auto"/>
                                                 </Grid.RowDefinitions>
-                                                <TextBlock Text="下载速度"
+                                                <TextBlock Text="{DynamicResource 'Text.下载速度'}"
                                                            Foreground="{DynamicResource MutedTextBrush}"
                                                            FontSize="12"
                                                            HorizontalAlignment="Center"
@@ -728,7 +730,7 @@
                                                     <RowDefinition Height="Auto"/>
                                                     <RowDefinition Height="Auto"/>
                                                 </Grid.RowDefinitions>
-                                                <TextBlock Text="上传速度"
+                                                <TextBlock Text="{DynamicResource 'Text.上传速度'}"
                                                            Foreground="{DynamicResource MutedTextBrush}"
                                                            FontSize="12"
                                                            HorizontalAlignment="Center"
@@ -760,7 +762,7 @@
                                     <Border x:Name="DownloadTotalCard"
                                             Grid.Column="2"
                                             AutomationProperties.AutomationId="DownloadTotalCard"
-                                            AutomationProperties.Name="下载总量统计"
+                                            AutomationProperties.Name="{DynamicResource 'Text.下载总量统计'}"
                                             Background="{DynamicResource TimelineDurationBrush}"
                                             BorderBrush="{DynamicResource TimelineItemBorderBrush}"
                                             BorderThickness="1"
@@ -803,7 +805,7 @@
                                                     <RowDefinition Height="Auto"/>
                                                 </Grid.RowDefinitions>
                                                 <TextBlock x:Name="DownloadTotalTitleText"
-                                                           Text="下载总量"
+                                                           Text="{DynamicResource 'Text.下载总量'}"
                                                            Foreground="{DynamicResource MutedTextBrush}"
                                                            FontSize="12"
                                                            HorizontalAlignment="Center"
@@ -835,7 +837,7 @@
                                     <Border x:Name="UploadTotalCard"
                                             Grid.Column="3"
                                             AutomationProperties.AutomationId="UploadTotalCard"
-                                            AutomationProperties.Name="上传总量统计"
+                                            AutomationProperties.Name="{DynamicResource 'Text.上传总量统计'}"
                                             Background="{DynamicResource TimelineDurationBrush}"
                                             BorderBrush="{DynamicResource TimelineItemBorderBrush}"
                                             BorderThickness="1"
@@ -878,7 +880,7 @@
                                                     <RowDefinition Height="Auto"/>
                                                 </Grid.RowDefinitions>
                                                 <TextBlock x:Name="UploadTotalTitleText"
-                                                           Text="上传总量"
+                                                           Text="{DynamicResource 'Text.上传总量'}"
                                                            Foreground="{DynamicResource MutedTextBrush}"
                                                            FontSize="12"
                                                            HorizontalAlignment="Center"
@@ -911,7 +913,7 @@
                         </controls:RoundedCardBorder>
 
                         <TextBlock x:Name="SessionHistoryTitleText"
-                                   Text="上下线历史"
+                                   Text="{DynamicResource 'Text.上下线历史'}"
                                    Style="{StaticResource DetailSectionTitleStyle}"
                                    Margin="19,25,0,11"/>
                         <controls:RoundedCardBorder x:Name="SessionHistoryCard">
@@ -949,10 +951,10 @@
                                                          VerticalAlignment="Bottom"/>
                                             </Grid>
                                             <controls:SessionHistoryDetails>
-                                                <TextBlock Text="离线时间" Foreground="{DynamicResource MutedTextBrush}" FontSize="14"/>
+                                                <TextBlock Text="{DynamicResource 'Text.离线时间'}" Foreground="{DynamicResource MutedTextBrush}" FontSize="14"/>
                                                 <controls:HistoryDateTextBlock DateText="{Binding OfflineDateText}" Style="{StaticResource {x:Type TextBlock}}" FontWeight="Normal"/>
                                                 <TextBlock Text="{Binding OfflineTimeText}" FontWeight="Normal"/>
-                                                <TextBlock Text="上线时间" Foreground="{DynamicResource MutedTextBrush}" FontSize="14"/>
+                                                <TextBlock Text="{DynamicResource 'Text.上线时间'}" Foreground="{DynamicResource MutedTextBrush}" FontSize="14"/>
                                                 <controls:HistoryDateTextBlock DateText="{Binding OnlineDateText}" Style="{StaticResource {x:Type TextBlock}}" FontWeight="Normal"/>
                                                 <TextBlock Text="{Binding OnlineTimeText}" FontWeight="Normal"/>
                                             </controls:SessionHistoryDetails>
@@ -970,10 +972,10 @@
                             </StackPanel>
                         </controls:RoundedCardBorder>
 
-                        <TextBlock Text="设备设置" Style="{StaticResource DetailSectionTitleStyle}" Margin="19,25,0,11"/>
+                        <TextBlock Text="{DynamicResource 'Text.设备设置'}" Style="{StaticResource DetailSectionTitleStyle}" Margin="19,25,0,11"/>
                         <controls:RoundedCardBorder x:Name="DeviceSettingsCard" Style="{StaticResource CardStyle}" Padding="18,8">
                             <Grid><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-<controls:AdaptiveColumns Columns="2" MinimumColumnWidth="220" Gap="16" Margin="0,10"><StackPanel><TextBlock x:Name="CustomNameLabel" controls:FieldLabelAlignment.Target="{Binding ElementName=CustomNameBox}" Text="自定义名称" Margin="14,0,0,8"/><TextBox controls:InputPlaceholder.Text="留空时使用自动识别名称" x:Name="CustomNameBox"
+<controls:AdaptiveColumns Columns="2" MinimumColumnWidth="220" Gap="16" Margin="0,10"><StackPanel><TextBlock x:Name="CustomNameLabel" controls:FieldLabelAlignment.Target="{Binding ElementName=CustomNameBox}" Text="{DynamicResource 'Text.自定义名称'}" Margin="14,0,0,8"/><TextBox controls:InputPlaceholder.Text="{DynamicResource 'Text.留空时使用自动识别名称'}" x:Name="CustomNameBox"
 
                                          Height="44"
 
@@ -981,7 +983,7 @@
                                          TextWrapping="NoWrap"
                                          AcceptsReturn="False"
                                          VerticalContentAlignment="Center"
-                                         TextChanged="DeviceNameBox_TextChanged"/></StackPanel><StackPanel><TextBlock x:Name="DeviceTypeLabel" Text="设备类型与图标" Margin="9.2,0,0,8"/><ComboBox x:Name="DeviceTypeCombo" Padding="9.2,0"
+                                         TextChanged="DeviceNameBox_TextChanged"/></StackPanel><StackPanel><TextBlock x:Name="DeviceTypeLabel" Text="{DynamicResource 'Text.设备类型与图标'}" Margin="9.2,0,0,8"/><ComboBox x:Name="DeviceTypeCombo" Padding="9.2,0"
 
                                           Height="44"
 
@@ -999,7 +1001,7 @@
                                                                              HorizontalAlignment="Center"
                                                                              VerticalAlignment="Center"/>
                                                 </Border>
-                                                <TextBlock Text="{Binding TypeName}"
+                                                <TextBlock Text="{Binding LocalizedTypeName}"
                                                            Style="{StaticResource BodyTextStyle}"
                                                            VerticalAlignment="Center"/>
                                             </StackPanel>
@@ -1013,7 +1015,7 @@
 
                                 <StackPanel Grid.Row="4" Grid.ColumnSpan="2">
                                     <Grid>
-<Grid Margin="0,10"><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBlock Margin="0,0,6,0" VerticalAlignment="Center" Text="当设备上下线时，推送 Windows 通知" TextWrapping="NoWrap" FontSize="14"/><controls:SwitchControl x:Name="NotifyStatusChangeCheck" Grid.Column="1" VerticalAlignment="Center" AutomationProperties.Name="当设备上下线时，推送 Windows 通知" Checked="DeviceProfileControl_Changed" Unchecked="DeviceProfileControl_Changed"/></Grid>
+<Grid Margin="0,10"><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBlock Margin="0,0,6,0" VerticalAlignment="Center" Text="{DynamicResource 'Text.当设备上下线时，推送 Windows 通知'}" TextWrapping="Wrap" FontSize="14"/><controls:SwitchControl x:Name="NotifyStatusChangeCheck" Grid.Column="1" VerticalAlignment="Center" AutomationProperties.Name="{DynamicResource 'Text.当设备上下线时，推送 Windows 通知'}" Checked="DeviceProfileControl_Changed" Unchecked="DeviceProfileControl_Changed"/></Grid>
                                         <TextBlock x:Name="AutoSaveStatusText"
                                                    Text=""
                                                    Visibility="Collapsed"
@@ -1028,7 +1030,7 @@
 
                         <StackPanel x:Name="DeviceManagementSection"
                                     Visibility="Collapsed">
-                            <TextBlock Text="设备管理"
+                            <TextBlock Text="{DynamicResource 'Text.设备管理'}"
                                        FontSize="18"
                                        FontWeight="Normal"
                                        Margin="0,25,0,11"/>
@@ -1054,7 +1056,7 @@
                                         </Border>
                                         <StackPanel Grid.Column="1"
                                                     VerticalAlignment="Center">
-                                            <TextBlock Text="移除该设备"
+                                            <TextBlock Text="{DynamicResource 'Text.移除该设备'}"
                                                        FontWeight="Normal"
                                                        Foreground="{DynamicResource DangerTextBrush}"/>
                                         </StackPanel>
@@ -1066,7 +1068,7 @@
                                                 Height="34"
                                                 Padding="13,5"
                                                 Click="RemoveDeviceButton_Click">
-                                            <TextBlock Text="移除该设备"
+                                            <TextBlock Text="{DynamicResource 'Text.移除该设备'}"
                                                        Foreground="{DynamicResource DangerTextBrush}"
                                                        FontWeight="Normal"/>
                                         </Button>
@@ -1084,13 +1086,13 @@
                                                 <ColumnDefinition/>
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
-                                            <TextBlock Text="确认移除？历史记录会保留，再次上线后会重新显示。"
+                                            <TextBlock Text="{DynamicResource 'Text.确认移除？历史记录会保留，再次上线后会重新显示。'}"
                                                        VerticalAlignment="Center"
                                                        TextWrapping="Wrap"
                                                        Margin="0,0,12,0"/>
                                             <StackPanel Grid.Column="1"
                                                         Orientation="Horizontal">
-                                                <Button Content="取消"
+                                                <Button Content="{DynamicResource 'Text.取消'}"
                                                         Style="{StaticResource QuietButtonStyle}"
                                                         MinHeight="30"
                                                         Height="30"
@@ -1102,7 +1104,7 @@
                                                         Height="30"
                                                         Padding="11,3"
                                                         Click="ConfirmRemoveDeviceButton_Click">
-                                                    <TextBlock Text="确认移除"
+                                                    <TextBlock Text="{DynamicResource 'Text.确认移除'}"
                                                                Foreground="White"
                                                                FontWeight="Normal"/>
                                                 </Button>
@@ -1117,24 +1119,24 @@
 
                 <ScrollViewer controls:DeviceListViewport.Enabled="True" x:Name="RouterPanel" Visibility="Collapsed" Style="{StaticResource FadingDetailScrollViewerStyle}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
 <StackPanel Margin="28,24,28,36" MaxWidth="720" HorizontalAlignment="Stretch">
-<controls:AdaptiveHeader x:Name="RouterPageHeader"><WrapPanel VerticalAlignment="Center"><TextBlock Text="路由器与上网信息" FontSize="28" FontWeight="SemiBold" TextWrapping="Wrap"/><Border x:Name="RouterConnectionBadge" Height="30" VerticalAlignment="Center" Background="{DynamicResource StatusOnlineBrush}" CornerRadius="14" Padding="12,6" Margin="16,0,0,0"><TextBlock x:Name="RouterConnectionBadgeText" VerticalAlignment="Center" Text="正在读取" FontSize="12" Foreground="{DynamicResource StatusOnlineTextBrush}"/></Border></WrapPanel><StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center"><Button x:Name="RefreshRouterInfoButton" Content="刷新" Height="36" Style="{StaticResource QuietButtonStyle}" Click="RefreshRouterInfoButton_Click"/></StackPanel></controls:AdaptiveHeader>
-<Border x:Name="RouterInfoLoadingBorder" Background="{DynamicResource AccentLightBrush}" CornerRadius="16" Padding="14" Margin="0,20,0,0"><TextBlock x:Name="RouterInfoLoadingText" Text="正在读取上网信息…" TextWrapping="Wrap"/></Border>
-<TextBlock Text="网络连接" Style="{StaticResource DetailSectionTitleStyle}" Margin="19,24,0,12"/>
+<controls:AdaptiveHeader x:Name="RouterPageHeader"><WrapPanel VerticalAlignment="Center"><TextBlock Text="{DynamicResource 'Text.路由器与上网信息'}" FontSize="28" FontWeight="SemiBold" TextWrapping="Wrap"/><Border x:Name="RouterConnectionBadge" Height="30" VerticalAlignment="Center" Background="{DynamicResource StatusOnlineBrush}" CornerRadius="14" Padding="12,6" Margin="16,0,0,0"><TextBlock x:Name="RouterConnectionBadgeText" VerticalAlignment="Center" Text="{DynamicResource 'Text.正在读取'}" FontSize="12" Foreground="{DynamicResource StatusOnlineTextBrush}"/></Border></WrapPanel><StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center"><Button x:Name="RefreshRouterInfoButton" Content="{DynamicResource 'Text.刷新'}" Height="36" Style="{StaticResource QuietButtonStyle}" Click="RefreshRouterInfoButton_Click"/></StackPanel></controls:AdaptiveHeader>
+<Border x:Name="RouterInfoLoadingBorder" Background="{DynamicResource AccentLightBrush}" CornerRadius="16" Padding="14" Margin="0,20,0,0"><TextBlock x:Name="RouterInfoLoadingText" Text="{DynamicResource 'Text.正在读取上网信息…'}" TextWrapping="Wrap"/></Border>
+<TextBlock Text="{DynamicResource 'Text.网络连接'}" Style="{StaticResource DetailSectionTitleStyle}" Margin="19,24,0,12"/>
 <controls:AdaptiveColumns Columns="2" MinimumColumnWidth="265" Gap="16">
-<controls:RoundedCardBorder Style="{StaticResource CardStyle}" Padding="20"><StackPanel><TextBlock Text="IPv4" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,18"/><StackPanel Margin="0,0,0,16"><TextBlock Text="连接类型" FontSize="12" Foreground="{DynamicResource MutedTextBrush}" Margin="0,0,0,5"/><TextBlock x:Name="Ipv4TypeText" Text="—" TextWrapping="Wrap"/></StackPanel><StackPanel Margin="0,0,0,16"><TextBlock Text="IP 地址" FontSize="12" Foreground="{DynamicResource MutedTextBrush}" Margin="0,0,0,5"/><TextBlock x:Name="Ipv4AddressText" Text="—" TextWrapping="Wrap"/></StackPanel><StackPanel Margin="0,0,0,16"><TextBlock Text="子网掩码" FontSize="12" Foreground="{DynamicResource MutedTextBrush}" Margin="0,0,0,5"/><TextBlock x:Name="Ipv4MaskText" Text="—" TextWrapping="Wrap"/></StackPanel><StackPanel Margin="0,0,0,16"><TextBlock Text="默认网关" FontSize="12" Foreground="{DynamicResource MutedTextBrush}" Margin="0,0,0,5"/><TextBlock x:Name="Ipv4GatewayText" Text="—" TextWrapping="Wrap"/></StackPanel><StackPanel Margin="0,0,0,16"><TextBlock Text="DNS" FontSize="12" Foreground="{DynamicResource MutedTextBrush}" Margin="0,0,0,5"/><TextBlock x:Name="Ipv4DnsText" Text="—" TextWrapping="Wrap"/></StackPanel></StackPanel></controls:RoundedCardBorder>
-<controls:RoundedCardBorder Style="{StaticResource CardStyle}" Padding="20"><StackPanel><TextBlock Text="IPv6" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,18"/><StackPanel Margin="0,0,0,16"><TextBlock Text="连接类型" FontSize="12" Foreground="{DynamicResource MutedTextBrush}" Margin="0,0,0,5"/><TextBlock x:Name="Ipv6TypeText" Text="—" TextWrapping="Wrap"/></StackPanel><StackPanel Margin="0,0,0,16"><TextBlock Text="WAN 地址" FontSize="12" Foreground="{DynamicResource MutedTextBrush}" Margin="0,0,0,5"/><TextBlock x:Name="WanIpv6AddressText" Text="—" TextWrapping="Wrap"/></StackPanel><StackPanel Margin="0,0,0,16"><TextBlock Text="WAN 网关" FontSize="12" Foreground="{DynamicResource MutedTextBrush}" Margin="0,0,0,5"/><TextBlock x:Name="WanIpv6GatewayText" Text="—" TextWrapping="Wrap"/></StackPanel><StackPanel Margin="0,0,0,16"><TextBlock Text="LAN 地址" FontSize="12" Foreground="{DynamicResource MutedTextBrush}" Margin="0,0,0,5"/><TextBlock x:Name="LanIpv6AddressText" Text="—" TextWrapping="Wrap"/></StackPanel><StackPanel Margin="0,0,0,16"><TextBlock Text="LAN 前缀" FontSize="12" Foreground="{DynamicResource MutedTextBrush}" Margin="0,0,0,5"/><TextBlock x:Name="LanIpv6PrefixText" Text="—" TextWrapping="Wrap"/></StackPanel><StackPanel Margin="0,0,0,16"><TextBlock Text="DNS" FontSize="12" Foreground="{DynamicResource MutedTextBrush}" Margin="0,0,0,5"/><TextBlock x:Name="Ipv6DnsText" Text="—" TextWrapping="Wrap"/></StackPanel></StackPanel></controls:RoundedCardBorder></controls:AdaptiveColumns>
-<TextBlock Text="Mesh 网络" Style="{StaticResource DetailSectionTitleStyle}" Margin="19,24,0,12"/>
-<controls:RoundedCardBorder Style="{StaticResource CardStyle}" Padding="16"><StackPanel><TextBlock x:Name="MeshNodesEmptyText" Text="暂无 Mesh 节点" Foreground="{DynamicResource MutedTextBrush}" Margin="4"/>
+<controls:RoundedCardBorder Style="{StaticResource CardStyle}" Padding="20"><StackPanel><TextBlock Text="IPv4" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,18"/><StackPanel Margin="0,0,0,16"><TextBlock Text="{DynamicResource 'Text.连接类型'}" FontSize="12" Foreground="{DynamicResource MutedTextBrush}" Margin="0,0,0,5"/><TextBlock x:Name="Ipv4TypeText" Text="—" TextWrapping="Wrap"/></StackPanel><StackPanel Margin="0,0,0,16"><TextBlock Text="{DynamicResource 'Text.IP 地址'}" FontSize="12" Foreground="{DynamicResource MutedTextBrush}" Margin="0,0,0,5"/><TextBlock x:Name="Ipv4AddressText" Text="—" TextWrapping="Wrap"/></StackPanel><StackPanel Margin="0,0,0,16"><TextBlock Text="{DynamicResource 'Text.子网掩码'}" FontSize="12" Foreground="{DynamicResource MutedTextBrush}" Margin="0,0,0,5"/><TextBlock x:Name="Ipv4MaskText" Text="—" TextWrapping="Wrap"/></StackPanel><StackPanel Margin="0,0,0,16"><TextBlock Text="{DynamicResource 'Text.默认网关'}" FontSize="12" Foreground="{DynamicResource MutedTextBrush}" Margin="0,0,0,5"/><TextBlock x:Name="Ipv4GatewayText" Text="—" TextWrapping="Wrap"/></StackPanel><StackPanel Margin="0,0,0,16"><TextBlock Text="DNS" FontSize="12" Foreground="{DynamicResource MutedTextBrush}" Margin="0,0,0,5"/><TextBlock x:Name="Ipv4DnsText" Text="—" TextWrapping="Wrap"/></StackPanel></StackPanel></controls:RoundedCardBorder>
+<controls:RoundedCardBorder Style="{StaticResource CardStyle}" Padding="20"><StackPanel><TextBlock Text="IPv6" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,18"/><StackPanel Margin="0,0,0,16"><TextBlock Text="{DynamicResource 'Text.连接类型'}" FontSize="12" Foreground="{DynamicResource MutedTextBrush}" Margin="0,0,0,5"/><TextBlock x:Name="Ipv6TypeText" Text="—" TextWrapping="Wrap"/></StackPanel><StackPanel Margin="0,0,0,16"><TextBlock Text="{DynamicResource 'Text.WAN 地址'}" FontSize="12" Foreground="{DynamicResource MutedTextBrush}" Margin="0,0,0,5"/><TextBlock x:Name="WanIpv6AddressText" Text="—" TextWrapping="Wrap"/></StackPanel><StackPanel Margin="0,0,0,16"><TextBlock Text="{DynamicResource 'Text.WAN 网关'}" FontSize="12" Foreground="{DynamicResource MutedTextBrush}" Margin="0,0,0,5"/><TextBlock x:Name="WanIpv6GatewayText" Text="—" TextWrapping="Wrap"/></StackPanel><StackPanel Margin="0,0,0,16"><TextBlock Text="{DynamicResource 'Text.LAN 地址'}" FontSize="12" Foreground="{DynamicResource MutedTextBrush}" Margin="0,0,0,5"/><TextBlock x:Name="LanIpv6AddressText" Text="—" TextWrapping="Wrap"/></StackPanel><StackPanel Margin="0,0,0,16"><TextBlock Text="{DynamicResource 'Text.LAN 前缀'}" FontSize="12" Foreground="{DynamicResource MutedTextBrush}" Margin="0,0,0,5"/><TextBlock x:Name="LanIpv6PrefixText" Text="—" TextWrapping="Wrap"/></StackPanel><StackPanel Margin="0,0,0,16"><TextBlock Text="DNS" FontSize="12" Foreground="{DynamicResource MutedTextBrush}" Margin="0,0,0,5"/><TextBlock x:Name="Ipv6DnsText" Text="—" TextWrapping="Wrap"/></StackPanel></StackPanel></controls:RoundedCardBorder></controls:AdaptiveColumns>
+<TextBlock Text="{DynamicResource 'Text.Mesh 网络'}" Style="{StaticResource DetailSectionTitleStyle}" Margin="19,24,0,12"/>
+<controls:RoundedCardBorder Style="{StaticResource CardStyle}" Padding="16"><StackPanel><TextBlock x:Name="MeshNodesEmptyText" Text="{DynamicResource 'Text.暂无 Mesh 节点'}" Foreground="{DynamicResource MutedTextBrush}" Margin="4"/>
 <ItemsControl x:Name="MeshNodesItemsControl"><ItemsControl.ItemsPanel><ItemsPanelTemplate><controls:MeshTopologyPanel LinkBrush="{DynamicResource MutedTextBrush}" LinkRadius="{StaticResource CardCornerRadius}"/></ItemsPanelTemplate></ItemsControl.ItemsPanel><ItemsControl.ItemTemplate><DataTemplate>
 <Border x:Name="MeshNodeCard" Background="{DynamicResource MicaCardBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="20" Padding="16">
 <controls:MeshNodeLayout><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions><Grid.ColumnDefinitions><ColumnDefinition Width="48"/><ColumnDefinition/><ColumnDefinition Width="76"/></Grid.ColumnDefinitions>
 <Border Width="36" Height="36" CornerRadius="18" Background="{DynamicResource DeviceIconBrush}" VerticalAlignment="Top"><controls:DeviceTypeIcon DeviceType="路由器" Width="18" Height="18" IconBrush="{DynamicResource AccentBrush}"/></Border>
-<StackPanel Tag="MeshContent" Grid.Column="1" Grid.RowSpan="2"><WrapPanel Tag="MeshTitle" VerticalAlignment="Top" Margin="0,4,0,0"><controls:DeviceNameTextBlock Style="{StaticResource {x:Type TextBlock}}" NameText="{Binding DisplayName}" FontSize="16" FontWeight="SemiBold" TextWrapping="Wrap" Margin="0,3,10,3"/><Border Background="{DynamicResource DeviceIconBrush}" CornerRadius="9" Padding="7,3" Margin="0,3,7,3"><TextBlock x:Name="MeshRole" Text="Mesh 节点" FontSize="11" Foreground="{DynamicResource AccentBrush}"/></Border><TextBlock x:Name="MeshBackhaulText" Text="{Binding ConnectionText}" FontSize="12" VerticalAlignment="Center" Foreground="{DynamicResource MutedTextBrush}" Margin="0,3,0,3"/></WrapPanel><StackPanel Tag="MeshMetadata" Margin="0,8,0,0"><TextBlock Text="{Binding IpAddress}" FontSize="13" TextWrapping="Wrap"/>
+<StackPanel Tag="MeshContent" Grid.Column="1" Grid.RowSpan="2"><WrapPanel Tag="MeshTitle" VerticalAlignment="Top" Margin="0,4,0,0"><controls:DeviceNameTextBlock Style="{StaticResource {x:Type TextBlock}}" NameText="{Binding DisplayName}" FontSize="16" FontWeight="SemiBold" TextWrapping="Wrap" Margin="0,3,10,3"/><Border Background="{DynamicResource DeviceIconBrush}" CornerRadius="9" Padding="7,3" Margin="0,3,7,3"><TextBlock x:Name="MeshRole" Text="{DynamicResource 'Text.Mesh 节点'}" FontSize="11" Foreground="{DynamicResource AccentBrush}"/></Border><TextBlock x:Name="MeshBackhaulText" Text="{Binding ConnectionText, Converter={StaticResource LocalizedValue}}" FontSize="12" VerticalAlignment="Center" Foreground="{DynamicResource MutedTextBrush}" Margin="0,3,0,3"/></WrapPanel><StackPanel Tag="MeshMetadata" Margin="0,8,0,0"><TextBlock Text="{Binding IpAddress}" FontSize="13" TextWrapping="Wrap"/>
 <WrapPanel Margin="0,6,0,0"><TextBlock Text="{Binding Hardware}" FontSize="12" Foreground="{DynamicResource MutedTextBrush}" Margin="0,0,14,4"/></WrapPanel>
-</StackPanel></StackPanel><Border Tag="MeshCount" Grid.Column="2" Background="{DynamicResource DeviceIconBrush}" CornerRadius="16" Width="64" Padding="4,10" VerticalAlignment="Center" HorizontalAlignment="Right"><StackPanel><TextBlock Text="{Binding ConnectedDeviceCount}" FontSize="22" FontWeight="SemiBold" Foreground="{DynamicResource AccentBrush}" HorizontalAlignment="Center"/><TextBlock Text="连接设备" FontSize="10" Foreground="{DynamicResource MutedTextBrush}" HorizontalAlignment="Center" Margin="0,3,0,0"/></StackPanel></Border></controls:MeshNodeLayout></Border>
-<DataTemplate.Triggers><DataTrigger Binding="{Binding ConnectionText}" Value="Mesh 节点"><Setter TargetName="MeshBackhaulText" Property="Visibility" Value="Collapsed"/></DataTrigger><DataTrigger Binding="{Binding IsGateway}" Value="True"><Setter TargetName="MeshRole" Property="Text" Value="主路由"/><Setter TargetName="MeshBackhaulText" Property="Visibility" Value="Collapsed"/><Setter TargetName="MeshNodeCard" Property="Background" Value="{DynamicResource MeshGatewayBrush}"/></DataTrigger></DataTemplate.Triggers>
+</StackPanel></StackPanel><Border Tag="MeshCount" Grid.Column="2" Background="{DynamicResource DeviceIconBrush}" CornerRadius="16" Width="64" Padding="4,10" VerticalAlignment="Center" HorizontalAlignment="Right"><StackPanel><TextBlock Text="{Binding ConnectedDeviceCount}" FontSize="22" FontWeight="SemiBold" Foreground="{DynamicResource AccentBrush}" HorizontalAlignment="Center"/><TextBlock Text="{DynamicResource 'Text.连接设备'}" FontSize="10" Foreground="{DynamicResource MutedTextBrush}" HorizontalAlignment="Center" Margin="0,3,0,0"/></StackPanel></Border></controls:MeshNodeLayout></Border>
+<DataTemplate.Triggers><DataTrigger Binding="{Binding ConnectionText}" Value="Mesh 节点"><Setter TargetName="MeshBackhaulText" Property="Visibility" Value="Collapsed"/></DataTrigger><DataTrigger Binding="{Binding IsGateway}" Value="True"><Setter TargetName="MeshRole" Property="Text" Value="{DynamicResource Text.主路由}"/><Setter TargetName="MeshBackhaulText" Property="Visibility" Value="Collapsed"/><Setter TargetName="MeshNodeCard" Property="Background" Value="{DynamicResource MeshGatewayBrush}"/></DataTrigger></DataTemplate.Triggers>
 </DataTemplate></ItemsControl.ItemTemplate></ItemsControl></StackPanel></controls:RoundedCardBorder>
-<TextBlock Text="路由器操作" Style="{StaticResource DetailSectionTitleStyle}" Margin="19,25,0,11"/>
+<TextBlock Text="{DynamicResource 'Text.路由器操作'}" Style="{StaticResource DetailSectionTitleStyle}" Margin="19,25,0,11"/>
                         <controls:RoundedCardBorder Style="{StaticResource CardStyle}">
                             <StackPanel>
                                 <Grid x:Name="RestartActionLayout">
@@ -1151,7 +1153,7 @@
                                                    VerticalAlignment="Center"/>
                                     </Border>
                                     <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                        <TextBlock Text="重启路由器" FontWeight="Normal"
+                                        <TextBlock Text="{DynamicResource 'Text.重启路由器'}" FontWeight="Normal"
                                                    Foreground="{DynamicResource DangerTextBrush}"/>
                                     </StackPanel>
                                     <Button x:Name="RestartRouterButton"
@@ -1161,7 +1163,7 @@
                                             MinHeight="34" Height="34"
                                             Padding="13,5"
                                             Click="RestartRouterButton_Click">
-                                        <TextBlock Text="重启路由器"
+                                        <TextBlock Text="{DynamicResource 'Text.重启路由器'}"
                                                    Foreground="{DynamicResource DangerTextBrush}"
                                                    FontWeight="Normal"/>
                                     </Button>
@@ -1180,10 +1182,10 @@
                                             <ColumnDefinition/>
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
-                                        <TextBlock x:Name="RestartConfirmText" TextWrapping="Wrap" Text="重启期间设备会暂时断网，应用会持续显示恢复进度"
+                                        <TextBlock x:Name="RestartConfirmText" TextWrapping="Wrap" Text="{DynamicResource 'Text.重启期间设备会暂时断网，应用会持续显示恢复进度'}"
                                                    VerticalAlignment="Center"/>
                                         <StackPanel Grid.Column="1" Orientation="Horizontal">
-                                            <Button Content="取消"
+                                            <Button Content="{DynamicResource 'Text.取消'}"
                                                     Style="{StaticResource QuietButtonStyle}"
                                                     MinHeight="30" Height="30" Padding="11,3"
                                                     Click="CancelRestartButton_Click"
@@ -1191,7 +1193,7 @@
                                             <Button Style="{StaticResource DangerConfirmButtonStyle}"
                                                     MinHeight="30" Height="30" Padding="11,3"
                                                     Click="ConfirmRestartButton_Click">
-                                                <TextBlock Text="确认重启"
+                                                <TextBlock Text="{DynamicResource 'Text.确认重启'}"
                                                            Foreground="White"
                                                            FontWeight="Normal"/>
                                             </Button>
@@ -1207,7 +1209,7 @@
                                         Margin="0,14,0,0">
                                     <StackPanel>
                                         <TextBlock x:Name="RouterRestartStatusText"
-                                                   Text="正在准备重启…"
+                                                   Text="{DynamicResource 'Text.正在准备重启…'}"
                                                    FontWeight="Normal"/>
                                         <ProgressBar x:Name="RouterRestartProgressBar"
                                                      IsIndeterminate="True"
@@ -1225,9 +1227,9 @@
                               VerticalScrollBarVisibility="Auto"
                               HorizontalScrollBarVisibility="Disabled">
                     <StackPanel Margin="32,28,32,32" MaxWidth="720" HorizontalAlignment="Stretch">
-                        <TextBlock Text="设置" FontSize="28" FontWeight="SemiBold"/>
+                        <TextBlock Text="{DynamicResource 'Text.设置'}" FontSize="28" FontWeight="SemiBold"/>
 
-                        <TextBlock Text="通用" Style="{StaticResource DetailSectionTitleStyle}" Margin="20,24,0,9"/>
+                        <TextBlock Text="{DynamicResource 'Text.通用'}" Style="{StaticResource DetailSectionTitleStyle}" Margin="20,24,0,9"/>
                         <controls:RoundedCardBorder Style="{StaticResource CardStyle}" Padding="20,8">
                             <StackPanel>
                                 <Grid Margin="0,10">
@@ -1236,12 +1238,26 @@
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
                                     <StackPanel Margin="0,0,20,0" VerticalAlignment="Center">
-                                        <TextBlock Text="界面主题"/>
+                                        <TextBlock Text="{DynamicResource 'Text.颜色主题'}"/>
                                     </StackPanel>
                                     <ComboBox x:Name="ThemeModeCombo" Grid.Column="1" Width="150" VerticalAlignment="Center" SelectionChanged="AppBehaviorSetting_Changed">
-                                        <ComboBoxItem Content="跟随系统" Tag="System"/>
-                                        <ComboBoxItem Content="浅色模式" Tag="Light"/>
-                                        <ComboBoxItem Content="深色模式" Tag="Dark"/>
+                                        <ComboBoxItem Content="{DynamicResource 'Text.跟随系统'}" Tag="System"/>
+                                        <ComboBoxItem Content="{DynamicResource 'Text.浅色模式'}" Tag="Light"/>
+                                        <ComboBoxItem Content="{DynamicResource 'Text.深色模式'}" Tag="Dark"/>
+                                    </ComboBox>
+                                </Grid>
+                                <Border Height="1" Background="{DynamicResource BorderBrush}" Margin="0,5"/>
+                                <Grid Margin="0,10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{DynamicResource 'Text.界面语言'}" TextWrapping="Wrap" Margin="0,0,20,0" VerticalAlignment="Center"/>
+                                    <ComboBox x:Name="InterfaceLanguageCombo" Grid.Column="1" Width="150" VerticalAlignment="Center" SelectedIndex="0" AutomationProperties.Name="{DynamicResource 'Text.界面语言'}" SelectionChanged="InterfaceLanguage_Changed">
+                                        <ComboBoxItem Content="简体中文" Tag="zh-Hans"/>
+                                        <ComboBoxItem Content="繁體中文" Tag="zh-Hant"/>
+                                        <ComboBoxItem Content="日本語" Tag="ja"/>
+                                        <ComboBoxItem Content="English" Tag="en"/>
                                     </ComboBox>
                                 </Grid>
                                 <Border Height="1" Background="{DynamicResource BorderBrush}" Margin="0,5"/>
@@ -1251,33 +1267,33 @@
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
                                     <StackPanel Margin="0,0,20,0" VerticalAlignment="Center">
-                                        <TextBlock Text="开机启动"/>
+                                        <TextBlock Text="{DynamicResource 'Text.开机启动'}"/>
 
                                     </StackPanel>
-                                    <controls:SwitchControl x:Name="StartWithWindowsCheck" Grid.Column="1" VerticalAlignment="Center" AutomationProperties.Name="开机启动" Checked="AppBehaviorSetting_Changed" Unchecked="AppBehaviorSetting_Changed"/>
+                                    <controls:SwitchControl x:Name="StartWithWindowsCheck" Grid.Column="1" VerticalAlignment="Center" AutomationProperties.Name="{DynamicResource 'Text.开机启动'}" Checked="AppBehaviorSetting_Changed" Unchecked="AppBehaviorSetting_Changed"/>
                                 </Grid>
                             </StackPanel>
                         </controls:RoundedCardBorder>
-                        <TextBlock Text="路由器连接" Style="{StaticResource DetailSectionTitleStyle}" Margin="20,24,0,9"/>
+                        <TextBlock Text="{DynamicResource 'Text.路由器连接'}" Style="{StaticResource DetailSectionTitleStyle}" Margin="20,24,0,9"/>
                         <controls:RoundedCardBorder Style="{StaticResource CardStyle}" Padding="20,8">
                             <StackPanel>
                                 <controls:AdaptiveColumns Columns="2" MinimumColumnWidth="220" Gap="16" Margin="0,12">
 
                                     <StackPanel Margin="0">
-                                        <TextBlock x:Name="RouterAddressLabel" controls:FieldLabelAlignment.Target="{Binding ElementName=RouterAddressBox}" Text="路由器地址" Margin="15,0,0,0"/>
-                                        <TextBox controls:InputPlaceholder.Text="例如 192.168.31.1" x:Name="RouterAddressBox" AutomationProperties.Name="路由器地址" Margin="0,8,0,0" TextChanged="RouterConnectionSetting_Changed"/>
+                                        <TextBlock x:Name="RouterAddressLabel" controls:FieldLabelAlignment.Target="{Binding ElementName=RouterAddressBox}" Text="{DynamicResource 'Text.路由器地址'}" Margin="15,0,0,0"/>
+                                        <TextBox controls:InputPlaceholder.Text="{DynamicResource 'Text.例如 192.168.31.1'}" x:Name="RouterAddressBox" AutomationProperties.Name="{DynamicResource 'Text.路由器地址'}" Margin="0,8,0,0" TextChanged="RouterConnectionSetting_Changed"/>
                                     </StackPanel>
                                     <StackPanel Grid.Column="1" Margin="0">
-                                        <TextBlock x:Name="RouterPasswordLabel" controls:FieldLabelAlignment.Target="{Binding ElementName=RouterPasswordField}" controls:FieldLabelAlignment.HorizontalOffset="-2" Text="管理员密码" Margin="15,0,0,0"/>
-                                        <Grid x:Name="RouterPasswordField" Margin="0,8,0,0"><PasswordBox PasswordChar="•" controls:InputPlaceholder.Text="输入管理员密码" ToolTip="输入新密码可替换已保存的密码" x:Name="RouterPasswordBox" AutomationProperties.Name="管理员密码" PasswordChanged="RouterConnectionSetting_Changed"/>
-                                            <TextBlock controls:PasswordInkAlignment.Enabled="True" x:Name="SavedRouterPasswordMask" Text="••••••••" Margin="15,0,0,0" VerticalAlignment="Center" Foreground="{DynamicResource StudioTextBrush}" Visibility="Collapsed" IsHitTestVisible="False"/>
+                                        <TextBlock x:Name="RouterPasswordLabel" controls:FieldLabelAlignment.Target="{Binding ElementName=RouterPasswordField}" controls:FieldLabelAlignment.HorizontalOffset="-2" Text="{DynamicResource 'Text.管理员密码'}" Margin="15,0,0,0"/>
+                                        <Grid x:Name="RouterPasswordField" ClipToBounds="True" Margin="0,8,0,0"><PasswordBox PasswordChar="•" controls:InputPlaceholder.Text="{DynamicResource 'Text.输入管理员密码'}" ToolTip="{DynamicResource 'Text.输入新密码可替换已保存的密码'}" x:Name="RouterPasswordBox" AutomationProperties.Name="{DynamicResource 'Text.管理员密码'}" PasswordChanged="RouterConnectionSetting_Changed"/>
+                                            <TextBlock controls:PasswordInkAlignment.Enabled="True" x:Name="SavedRouterPasswordMask" Margin="15,0,15,0" VerticalAlignment="Center" Foreground="{DynamicResource StudioTextBrush}" Visibility="Collapsed" IsHitTestVisible="False"/>
                                         </Grid>
                                     </StackPanel>
                                 </controls:AdaptiveColumns>
 
                             </StackPanel>
                         </controls:RoundedCardBorder>
-                        <TextBlock Text="通知" Style="{StaticResource DetailSectionTitleStyle}" Margin="20,24,0,9"/>
+                        <TextBlock Text="{DynamicResource 'Text.通知'}" Style="{StaticResource DetailSectionTitleStyle}" Margin="20,24,0,9"/>
                         <controls:RoundedCardBorder Style="{StaticResource CardStyle}" Padding="20,8">
                             <StackPanel>
                                 <Grid Margin="0,10">
@@ -1286,10 +1302,10 @@
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
                                     <StackPanel Margin="0,0,20,0" VerticalAlignment="Center">
-                                        <TextBlock Text="定时免打扰"/>
+                                        <TextBlock Text="{DynamicResource 'Text.定时免打扰'}"/>
 
                                     </StackPanel>
-                                    <controls:SwitchControl x:Name="DoNotDisturbCheck" Grid.Column="1" VerticalAlignment="Center" AutomationProperties.Name="定时免打扰" Checked="AppBehaviorSetting_Changed" Unchecked="AppBehaviorSetting_Changed"/>
+                                    <controls:SwitchControl x:Name="DoNotDisturbCheck" Grid.Column="1" VerticalAlignment="Center" AutomationProperties.Name="{DynamicResource 'Text.定时免打扰'}" Checked="AppBehaviorSetting_Changed" Unchecked="AppBehaviorSetting_Changed"/>
                                 </Grid>
                                 <Grid SizeChanged="DoNotDisturbTimeRow_SizeChanged" x:Name="DoNotDisturbTimeRow" Visibility="{Binding IsChecked, ElementName=DoNotDisturbCheck, Converter={StaticResource BoolToVisibility}}" Margin="0,4,0,14" IsEnabled="{Binding IsChecked, ElementName=DoNotDisturbCheck}">
                                     <Grid.Resources><Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}"><Setter Property="Foreground" Value="{DynamicResource TextBrush}"/><Style.Triggers><Trigger Property="IsEnabled" Value="False"><Setter Property="Opacity" Value="0.45"/></Trigger></Style.Triggers></Style></Grid.Resources>
@@ -1299,10 +1315,10 @@
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock x:Name="DoNotDisturbTimeLabel" Text="免打扰时段" VerticalAlignment="Center"/>
-                                    <TextBox controls:InputPlaceholder.Text="HH:mm" x:Name="DoNotDisturbStartBox" Grid.Column="1" Width="96" Height="44" Padding="12,0" VerticalContentAlignment="Center" MaxLength="5" TextAlignment="Center" AutomationProperties.Name="免打扰开始时间" TextChanged="AppBehaviorSetting_Changed"/>
-                                    <TextBlock x:Name="DoNotDisturbTimeSeparator" Grid.Column="2" Text="至" Margin="12,0" VerticalAlignment="Center"/>
-                                    <TextBox controls:InputPlaceholder.Text="HH:mm" x:Name="DoNotDisturbEndBox" Grid.Column="3" Width="96" Height="44" Padding="12,0" VerticalContentAlignment="Center" MaxLength="5" TextAlignment="Center" AutomationProperties.Name="免打扰结束时间" TextChanged="AppBehaviorSetting_Changed"/>
+                                    <TextBlock x:Name="DoNotDisturbTimeLabel" Text="{DynamicResource 'Text.免打扰时段'}" VerticalAlignment="Center"/>
+                                    <TextBox controls:InputPlaceholder.Text="HH:mm" x:Name="DoNotDisturbStartBox" Grid.Column="1" Width="96" Height="44" Padding="12,0" VerticalContentAlignment="Center" MaxLength="5" TextAlignment="Center" AutomationProperties.Name="{DynamicResource 'Text.免打扰开始时间'}" TextChanged="AppBehaviorSetting_Changed"/>
+                                    <TextBlock x:Name="DoNotDisturbTimeSeparator" Grid.Column="2" Text="{DynamicResource 'Text.至'}" Margin="12,0" VerticalAlignment="Center"/>
+                                    <TextBox controls:InputPlaceholder.Text="HH:mm" x:Name="DoNotDisturbEndBox" Grid.Column="3" Width="96" Height="44" Padding="12,0" VerticalContentAlignment="Center" MaxLength="5" TextAlignment="Center" AutomationProperties.Name="{DynamicResource 'Text.免打扰结束时间'}" TextChanged="AppBehaviorSetting_Changed"/>
                                 </Grid>
                                 <Border Height="1" Background="{DynamicResource BorderBrush}" Margin="0,5"/>
                                 <Grid Margin="0,10">
@@ -1310,8 +1326,8 @@
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Text="当新设备上线时，推送 Windows 通知" TextWrapping="Wrap" Margin="0,0,20,0" VerticalAlignment="Center"/>
-                                    <controls:SwitchControl x:Name="NotifyNewDeviceOnlineCheck" Grid.Column="1" VerticalAlignment="Center" AutomationProperties.Name="当新设备上线时，推送 Windows 通知" Checked="NewDeviceNotificationSetting_Changed" Unchecked="NewDeviceNotificationSetting_Changed"/>
+                                    <TextBlock Text="{DynamicResource 'Text.当新设备上线时，推送 Windows 通知'}" TextWrapping="Wrap" Margin="0,0,20,0" VerticalAlignment="Center"/>
+                                    <controls:SwitchControl x:Name="NotifyNewDeviceOnlineCheck" Grid.Column="1" VerticalAlignment="Center" AutomationProperties.Name="{DynamicResource 'Text.当新设备上线时，推送 Windows 通知'}" Checked="NewDeviceNotificationSetting_Changed" Unchecked="NewDeviceNotificationSetting_Changed"/>
                                 </Grid>
                                 <Border Height="1" Background="{DynamicResource BorderBrush}" Margin="0,5"/>
                                 <Grid Margin="0,10">
@@ -1320,13 +1336,13 @@
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
                                     <StackPanel Margin="0,0,20,0" VerticalAlignment="Center">
-                                        <TextBlock Text="当 IPv6 连接类型不是 Native 时，推送 Windows 通知" TextWrapping="Wrap"/>
+                                        <TextBlock Text="{DynamicResource 'Text.当 IPv6 连接类型不是 Native 时，推送 Windows 通知'}" TextWrapping="Wrap"/>
                                     </StackPanel>
-                                    <controls:SwitchControl x:Name="NotifyIpv6NonNativeCheck" Grid.Column="1" VerticalAlignment="Center" AutomationProperties.Name="当 IPv6 连接类型不是 Native 时，推送 Windows 通知" Checked="AppBehaviorSetting_Changed" Unchecked="AppBehaviorSetting_Changed"/>
+                                    <controls:SwitchControl x:Name="NotifyIpv6NonNativeCheck" Grid.Column="1" VerticalAlignment="Center" AutomationProperties.Name="{DynamicResource 'Text.当 IPv6 连接类型不是 Native 时，推送 Windows 通知'}" Checked="AppBehaviorSetting_Changed" Unchecked="AppBehaviorSetting_Changed"/>
                                 </Grid>
                             </StackPanel>
                         </controls:RoundedCardBorder>
-                        <TextBlock Text="局域网访问" Style="{StaticResource DetailSectionTitleStyle}" Margin="20,24,0,9"/>
+                        <TextBlock Text="{DynamicResource 'Text.局域网访问'}" Style="{StaticResource DetailSectionTitleStyle}" Margin="20,24,0,9"/>
                         <controls:RoundedCardBorder Style="{StaticResource CardStyle}" Padding="20,8">
                             <StackPanel>
                                 <Grid Margin="0,10">
@@ -1335,10 +1351,10 @@
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
                                     <StackPanel Margin="0,0,20,0" VerticalAlignment="Center">
-                                        <TextBlock x:Name="LanAccessLabel" controls:FieldLabelAlignment.Target="{Binding ElementName=LanAddressBox}" Text="允许局域网访问" Margin="15,0,0,0"/>
+                                        <TextBlock x:Name="LanAccessLabel" controls:FieldLabelAlignment.Target="{Binding ElementName=LanAddressBox}" Text="{DynamicResource 'Text.允许局域网访问'}" Margin="15,0,0,0"/>
 
                                     </StackPanel>
-                                    <controls:SwitchControl x:Name="LanAccessCheck" Grid.Column="1" VerticalAlignment="Center" AutomationProperties.Name="允许局域网访问" Checked="WebAccessToggle_Changed" Unchecked="WebAccessToggle_Changed"/>
+                                    <controls:SwitchControl x:Name="LanAccessCheck" Grid.Column="1" VerticalAlignment="Center" AutomationProperties.Name="{DynamicResource 'Text.允许局域网访问'}" Checked="WebAccessToggle_Changed" Unchecked="WebAccessToggle_Changed"/>
                                 </Grid>
                                 <TextBlock x:Name="WebAccessStatus" Text="" TextWrapping="Wrap" FontSize="12" Foreground="{DynamicResource MutedTextBrush}" Margin="0,0,0,10"><TextBlock.Style><Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}"><Style.Triggers><Trigger Property="Text" Value=""><Setter Property="Visibility" Value="Collapsed"/></Trigger></Style.Triggers></Style></TextBlock.Style></TextBlock>
                                 <Grid x:Name="LanAccessDetails" Visibility="Collapsed" Margin="0,0,0,12">
@@ -1346,8 +1362,8 @@
                                         <ColumnDefinition/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBox controls:InputPlaceholder.Text="开启后显示访问地址" x:Name="LanAddressBox" IsReadOnly="True" AutomationProperties.Name="局域网访问地址" VerticalContentAlignment="Center" Margin="0,0,10,0"/>
-                                    <Button Style="{StaticResource StudioActionButtonStyle}" x:Name="CopyLanAddressButton" Grid.Column="1" Height="44" Padding="18,0" Content="复制链接" Click="CopyLanAddress_Click"/>
+                                    <TextBox controls:InputPlaceholder.Text="{DynamicResource 'Text.开启后显示访问地址'}" x:Name="LanAddressBox" IsReadOnly="True" AutomationProperties.Name="{DynamicResource 'Text.局域网访问地址'}" VerticalContentAlignment="Center" Margin="0,0,10,0"/>
+                                    <Button Style="{StaticResource StudioActionButtonStyle}" x:Name="CopyLanAddressButton" Grid.Column="1" Height="44" Padding="18,0" Content="{DynamicResource 'Text.复制链接'}" Click="CopyLanAddress_Click"/>
                                 </Grid>
                             </StackPanel>
                         </controls:RoundedCardBorder>
@@ -1362,8 +1378,8 @@
                                 <Hyperlink x:Name="RepositoryLink"
                                            NavigateUri="https://github.com/CRYS74L/LanPod"
                                            RequestNavigate="RepositoryLink_RequestNavigate"
-                                           ToolTip="在 GitHub 查看项目"
-                                           AutomationProperties.Name="在 GitHub 查看 LanPod">
+                                           ToolTip="{DynamicResource 'Text.在 GitHub 查看项目'}"
+                                           AutomationProperties.Name="{DynamicResource 'Text.在 GitHub 查看 LanPod'}">
                                     <Hyperlink.Style>
                                         <Style TargetType="Hyperlink">
                                             <Setter Property="Foreground" Value="{DynamicResource MutedTextBrush}"/>

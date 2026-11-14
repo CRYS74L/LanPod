@@ -1,3 +1,5 @@
+import { t } from "./localization.js";
+
 // WPF UseLayoutRounding uses midpoint-to-even rounding, including fractional DPI.
 export function desktopRound(value, scale = globalThis.devicePixelRatio || 1) {
   const pixels = value * scale,
@@ -48,12 +50,9 @@ export class DesktopPrecision {
       rail.tabIndex = 0;
       rail.setAttribute("role", "scrollbar");
       rail.setAttribute("aria-orientation", "vertical");
-      rail.setAttribute(
-        "aria-label",
-        list
-          ? "设备列表滚动条"
-          : `${viewport.getAttribute("aria-label") || "详情"}滚动条`,
-      );
+      rail.dataset.i18nAriaLabel = list ? "设备列表滚动条"
+        : viewport.id === "device-page" ? "设备详情滚动条" : "路由器信息滚动条";
+      rail.setAttribute("aria-label", t(rail.dataset.i18nAriaLabel));
       rail.setAttribute("aria-controls", viewport.id);
       rail.innerHTML =
         '<div class="desktop-scroll-track"><div class="desktop-scroll-thumb"></div></div>';

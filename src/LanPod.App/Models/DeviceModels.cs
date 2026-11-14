@@ -141,6 +141,7 @@ public sealed class AppSettings
     public bool CloseToTray { get; set; } = true;
     public bool StartWithWindows { get; set; }
     public string ThemeMode { get; set; } = "System";
+    public string InterfaceLanguage { get; set; } = "zh-Hans";
     public bool DoNotDisturbEnabled { get; set; }
     public int DoNotDisturbStartMinutes { get; set; } = 22 * 60;
     public int DoNotDisturbEndMinutes { get; set; } = 8 * 60;

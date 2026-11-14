@@ -58,6 +58,7 @@ public sealed class SessionHistoryDetails : Panel
     private bool _compact;
     private readonly double[] _groupHeights = new double[2];
     private readonly bool[] _splitTime = new bool[2];
+    private double _labelWidth;
     private const double GroupGap = 8;
 
     protected override Size MeasureOverride(Size available)
@@ -68,7 +69,8 @@ public sealed class SessionHistoryDetails : Panel
             if (child is HistoryDateTextBlock date) date.SetCurrentValue(TextBlock.TextWrappingProperty, TextWrapping.Wrap);
             child.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
         }
-        var naturalWidth = 72 + Math.Max(DateTimeWidth(0), DateTimeWidth(1));
+        _labelWidth = Math.Max(62, Math.Max(InternalChildren[0].DesiredSize.Width, InternalChildren[3].DesiredSize.Width));
+        var naturalWidth = _labelWidth + 10 + Math.Max(DateTimeWidth(0), DateTimeWidth(1));
         var width = double.IsInfinity(available.Width) ? naturalWidth : available.Width;
         _compact = naturalWidth > width;
         for (var group = 0; group < 2; group++)
@@ -105,9 +107,9 @@ public sealed class SessionHistoryDetails : Panel
             var date = InternalChildren[group * 3 + 1];
             var time = InternalChildren[group * 3 + 2];
             var dateTop = top + (_compact ? label.DesiredSize.Height + 2 : 0);
-            var dateLeft = _compact ? 0 : 72;
+            var dateLeft = _compact ? 0 : _labelWidth + 10;
             var dateWidth = Math.Max(0, size.Width - dateLeft - (_splitTime[group] ? 0 : TimeWidth(group)));
-            label.Arrange(new Rect(0, top, _compact ? size.Width : 62, label.DesiredSize.Height));
+            label.Arrange(new Rect(0, top, _compact ? size.Width : _labelWidth, label.DesiredSize.Height));
             date.Arrange(new Rect(dateLeft, dateTop, Math.Min(dateWidth, date.DesiredSize.Width), date.DesiredSize.Height));
             time.Arrange(new Rect(_splitTime[group] ? dateLeft : dateLeft + date.DesiredSize.Width + (time.DesiredSize.Width > 0 ? 10 : 0),
                 dateTop + (_splitTime[group] && time.DesiredSize.Width > 0 ? date.DesiredSize.Height + 2 : 0),

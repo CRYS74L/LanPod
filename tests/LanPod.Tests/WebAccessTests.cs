@@ -268,7 +268,7 @@ internal static class WebAccessTests
         {
             "refreshIntervalSeconds","routerAddress","desktopTheme","desktopThemeResolved","startWithWindows","closeToTray",
             "doNotDisturb","quietStart","quietEnd","ipv6Notification","newDeviceNotification",
-            "lanAccessEnabled","hasRouterPassword","version"
+            "lanAccessEnabled","hasRouterPassword","version","interfaceLanguage"
         };
         check(preferences.EnumerateObject().Select(p=>p.Name).ToHashSet(StringComparer.Ordinal).SetEquals(allowed),
             "HTTP preferences exposes only the explicit display allowlist, without credential fields");

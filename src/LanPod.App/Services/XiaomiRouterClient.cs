@@ -42,7 +42,7 @@ public sealed partial class XiaomiRouterClient : IDisposable
     {
         if (string.IsNullOrWhiteSpace(routerAddress))
         {
-            throw new ArgumentException("路由器地址不能为空。", nameof(routerAddress));
+            throw new ArgumentException(LocalizationService.Text("路由器地址不能为空。"), nameof(routerAddress));
         }
 
         var normalized = routerAddress.Trim();
@@ -54,7 +54,7 @@ public sealed partial class XiaomiRouterClient : IDisposable
         if (!Uri.TryCreate(normalized, UriKind.Absolute, out var uri) ||
             (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps))
         {
-            throw new ArgumentException("路由器地址格式不正确。", nameof(routerAddress));
+            throw new ArgumentException(LocalizationService.Text("路由器地址格式不正确。"), nameof(routerAddress));
         }
 
         _routerBaseUri = new Uri($"{uri.Scheme}://{uri.Authority}/");
@@ -67,7 +67,7 @@ public sealed partial class XiaomiRouterClient : IDisposable
     {
         if (string.IsNullOrEmpty(_password))
         {
-            throw new RouterApiException("请先输入路由器管理员密码。");
+            throw new RouterApiException(LocalizationService.Text("请先输入路由器管理员密码。"));
         }
 
         string loginPage;
@@ -80,14 +80,14 @@ public sealed partial class XiaomiRouterClient : IDisposable
         catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) { throw; }
         catch (Exception exception) when (exception is HttpRequestException or TaskCanceledException)
         {
-            throw new RouterApiException("无法连接路由器，请检查地址和网络连接。", innerException: exception);
+            throw new RouterApiException(LocalizationService.Text("无法连接路由器，请检查地址和网络连接。"), innerException: exception);
         }
 
         var key = LoginKeyRegex().Match(loginPage).Groups[1].Value;
         var deviceId = DeviceIdRegex().Match(loginPage).Groups[1].Value;
         if (string.IsNullOrWhiteSpace(key) || string.IsNullOrWhiteSpace(deviceId))
         {
-            throw new RouterApiException("路由器登录页格式不受支持，未找到认证参数。");
+            throw new RouterApiException(LocalizationService.Text("路由器登录页格式不受支持，未找到认证参数。"));
         }
 
         var encryptMode = await GetEncryptModeAsync(cancellationToken);
@@ -116,14 +116,14 @@ public sealed partial class XiaomiRouterClient : IDisposable
         if (code != 0)
         {
             throw new RouterApiException(
-                code is 401 or 403 ? "路由器管理员密码不正确。" : $"路由器登录失败（代码 {code}）。",
+                code is 401 or 403 ? LocalizationService.Text("路由器管理员密码不正确。") : LocalizationService.Format("路由器登录失败（代码 {0}）。", code),
                 code);
         }
 
         _token = GetString(document.RootElement, "token");
         if (string.IsNullOrWhiteSpace(_token))
         {
-            throw new RouterApiException("路由器登录成功，但未返回访问令牌。");
+            throw new RouterApiException(LocalizationService.Text("路由器登录成功，但未返回访问令牌。"));
         }
     }
 
@@ -220,7 +220,7 @@ public sealed partial class XiaomiRouterClient : IDisposable
         if (!root.TryGetProperty("info", out var info) ||
             info.ValueKind != JsonValueKind.Object)
         {
-            throw new RouterApiException("路由器没有返回上网信息。");
+            throw new RouterApiException(LocalizationService.Text("路由器没有返回上网信息。"));
         }
 
         var ipv4Address = string.Empty;
@@ -260,10 +260,10 @@ public sealed partial class XiaomiRouterClient : IDisposable
             cancellationToken);
         var root = document.RootElement;
         if (!root.TryGetProperty("graph", out var graph) || graph.ValueKind != JsonValueKind.Object)
-            throw new RouterApiException("未获取到有效的 Mesh 拓扑。");
+            throw new RouterApiException(LocalizationService.Text("未获取到有效的 Mesh 拓扑。"));
         var nodes = ParseMeshTopology(root);
         if (!nodes.Any(node => MeshMemberFilter.NormalizeMac(node.MacAddress) is not null || MeshMemberFilter.NormalizeIp(node.IpAddress) is not null))
-            throw new RouterApiException("Mesh 拓扑缺少有效的节点身份。");
+            throw new RouterApiException(LocalizationService.Text("Mesh 拓扑缺少有效的节点身份。"));
         return nodes;
     }
 
@@ -366,7 +366,7 @@ public sealed partial class XiaomiRouterClient : IDisposable
         if (!deviceDocument.RootElement.TryGetProperty("list", out var deviceList) ||
             deviceList.ValueKind != JsonValueKind.Array)
         {
-            throw new RouterApiException("路由器设备接口返回了不完整的数据。");
+            throw new RouterApiException(LocalizationService.Text("路由器设备接口返回了不完整的数据。"));
         }
 
         foreach (var item in deviceList.EnumerateArray())
@@ -510,7 +510,7 @@ public sealed partial class XiaomiRouterClient : IDisposable
         catch (Exception exception) when (
             exception is HttpRequestException or JsonException or TaskCanceledException)
         {
-            throw new RouterApiException("无法读取路由器认证模式。", innerException: exception);
+            throw new RouterApiException(LocalizationService.Text("无法读取路由器认证模式。"), innerException: exception);
         }
     }
 
@@ -520,7 +520,7 @@ public sealed partial class XiaomiRouterClient : IDisposable
     {
         if (string.IsNullOrWhiteSpace(_token))
         {
-            throw new RouterApiException("路由器会话尚未建立。", 401);
+            throw new RouterApiException(LocalizationService.Text("路由器会话尚未建立。"), 401);
         }
 
         var uri = new Uri(
@@ -535,7 +535,7 @@ public sealed partial class XiaomiRouterClient : IDisposable
         catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) { throw; }
         catch (Exception exception) when (exception is HttpRequestException or TaskCanceledException)
         {
-            throw new RouterApiException("读取路由器设备数据失败。", innerException: exception);
+            throw new RouterApiException(LocalizationService.Text("读取路由器设备数据失败。"), innerException: exception);
         }
 
         JsonDocument document;
@@ -545,14 +545,14 @@ public sealed partial class XiaomiRouterClient : IDisposable
         }
         catch (JsonException exception)
         {
-            throw new RouterApiException("路由器返回了无法识别的数据。", innerException: exception);
+            throw new RouterApiException(LocalizationService.Text("路由器返回了无法识别的数据。"), innerException: exception);
         }
 
         var code = GetInt(document.RootElement, "code");
         if (code != 0)
         {
             document.Dispose();
-            throw new RouterApiException($"路由器接口返回错误（代码 {code}）。", code);
+            throw new RouterApiException(LocalizationService.Format("路由器接口返回错误（代码 {0}）。", code), code);
         }
 
         return document;
@@ -565,7 +565,7 @@ public sealed partial class XiaomiRouterClient : IDisposable
     {
         if (string.IsNullOrWhiteSpace(_token))
         {
-            throw new RouterApiException("路由器会话尚未建立。", 401);
+            throw new RouterApiException(LocalizationService.Text("路由器会话尚未建立。"), 401);
         }
 
         var uri = new Uri(
@@ -581,7 +581,7 @@ public sealed partial class XiaomiRouterClient : IDisposable
         catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) { throw; }
         catch (Exception exception) when (exception is HttpRequestException or TaskCanceledException)
         {
-            throw new RouterApiException("无法向路由器发送操作请求。", innerException: exception);
+            throw new RouterApiException(LocalizationService.Text("无法向路由器发送操作请求。"), innerException: exception);
         }
 
         JsonDocument document;
@@ -591,14 +591,14 @@ public sealed partial class XiaomiRouterClient : IDisposable
         }
         catch (JsonException exception)
         {
-            throw new RouterApiException("路由器返回了无法识别的操作结果。", innerException: exception);
+            throw new RouterApiException(LocalizationService.Text("路由器返回了无法识别的操作结果。"), innerException: exception);
         }
 
         var code = GetInt(document.RootElement, "code");
         if (code != 0)
         {
             document.Dispose();
-            throw new RouterApiException($"路由器操作失败（代码 {code}）。", code);
+            throw new RouterApiException(LocalizationService.Format("路由器操作失败（代码 {0}）。", code), code);
         }
 
         return document;

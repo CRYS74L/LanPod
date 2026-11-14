@@ -13,8 +13,9 @@
     <Product>LanPod</Product>
     <AssemblyTitle>LanPod</AssemblyTitle>
     <Description>小米路由器局域网设备状态、流量、历史与上下线提醒工具</Description>
-    <Version>0.1.24</Version>
-    <InformationalVersion>0.1.24</InformationalVersion>
+    <Version>0.1.25</Version>
+    <InformationalVersion>0.1.25</InformationalVersion>
+    <NeutralLanguage>zh-Hans</NeutralLanguage>
     <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
     <ApplicationIcon>Assets\AppIcon.ico</ApplicationIcon>
   </PropertyGroup>

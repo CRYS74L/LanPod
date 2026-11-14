@@ -2,6 +2,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Windows;
 using LanPod.Models;
+using LanPod.Services;
 using LanPod.Services.WebAccess;
 
 namespace LanPod;
@@ -21,7 +22,7 @@ public partial class MainWindow
     {
         _lanWebServer ??= new LanWebServer(_repository.GetAllDeviceSessionsAsync, _meshMemberFilter);
         await _lanWebServer.StartAsync();
-        WebAccessStatus.Text = "正在准备局域网访问；若 Windows 弹出授权，请允许此程序。";
+        LocalizationService.SetText(WebAccessStatus, "正在准备局域网访问；若 Windows 弹出授权，请允许此程序。");
         var port = new Uri(_lanWebServer.Urls[0]).Port;
         if (_lanWebServer.Urls.Any(url => new Uri(url).Host != "127.0.0.1"))
             await _lanFirewallAccess.EnsureAsync(port);
@@ -30,7 +31,7 @@ public partial class MainWindow
         _lanWebServer.SetMesh(topology.Nodes, topology.HasValidTopology);
         _lanWebServer.Publish(new MonitorUpdate(await _repository.GetDevicesAsync(), [], DateTimeOffset.MinValue));
         _lanWebServer.SeedHistory(_trafficHistories.ToDictionary(pair => pair.Key, pair => pair.Value.Snapshot(DateTimeOffset.Now)));
-        _lanWebServer.SetConnection(ConnectionStatusText.Text);
+        _lanWebServer.SetConnection(_connectionState);
         UpdateWebAccessDisplay();
     }
     private void UpdateWebAccessDisplay()
@@ -56,7 +57,8 @@ public partial class MainWindow
         }
         var first = urls.FirstOrDefault(u => new Uri(u).Host == preferredIp) ?? urls.FirstOrDefault() ?? _lanWebServer.Urls.First();
         LanAddressBox.Text = first + "/";
-        WebAccessStatus.Text = urls.Length > 0 ? "" : "暂未发现局域网连接，目前仅本机可访问。连接网络后重新开启。";
+        if (urls.Length > 0) WebAccessStatus.Text = "";
+        else LocalizationService.SetText(WebAccessStatus, "暂未发现局域网连接，目前仅本机可访问。连接网络后重新开启。");
 
     }
     private async void WebAccessToggle_Changed(object sender, RoutedEventArgs e)
@@ -87,14 +89,14 @@ public partial class MainWindow
             if (_lanWebServer is not null) await _lanWebServer.StopAsync();
             LanAccessCheck.IsChecked = false;
             try { await _repository.UpdateWebSettingsAsync(false); } catch { }
-            UpdateWebAccessDisplay(); WebAccessStatus.Text = "未能开启网页访问，请重试。" + e.Message;
+            UpdateWebAccessDisplay(); LocalizationService.SetText(WebAccessStatus, "未能开启网页访问，请重试。{0}", e.Message);
         }
         finally { _applyingWebAccess = false; LanAccessCheck.IsEnabled = true; }
     }
     private void CopyLanAddress_Click(object sender, RoutedEventArgs e)
     {
         if (_lanWebServer?.IsRunning != true) return;
-        try { System.Windows.Clipboard.SetText(LanAddressBox.Text); WebAccessStatus.Text = "链接已复制，手机打开即可查看。"; }
-        catch (System.Runtime.InteropServices.COMException) { WebAccessStatus.Text = "暂时无法复制，请直接选择链接复制。"; }
+        try { System.Windows.Clipboard.SetText(LanAddressBox.Text); LocalizationService.SetText(WebAccessStatus, "链接已复制，手机打开即可查看。"); }
+        catch (System.Runtime.InteropServices.COMException) { LocalizationService.SetText(WebAccessStatus, "暂时无法复制，请直接选择链接复制。"); }
     }
 }

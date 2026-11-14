@@ -62,7 +62,7 @@ public sealed class TrayCommandMenu : IDisposable
             };
             // A popup can open while the main window is natively hidden in the tray.
             // It owns keyboard focus and outside-click dismissal independently.
-            var labels = Labels("zh-Hans");
+            var labels = Labels(Services.LocalizationService.Language);
             Add(labels[0], "TrayMenuOpen", () => { _open(); return Task.CompletedTask; });
             Add(labels[1], "TrayMenuExit", () => { _exit(); return Task.CompletedTask; });
             System.Windows.Automation.AutomationProperties.SetAutomationId(openedMenu, "LanPodTrayMenu");

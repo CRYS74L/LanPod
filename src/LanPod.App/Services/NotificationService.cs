@@ -136,18 +136,18 @@ public sealed class NotificationService : IDisposable
         bool isOnline,
         DateTimeOffset occurredAt)
     {
-        var state = isOnline ? "已上线" : "已离线";
+        var state = LocalizationService.Text(isOnline ? "已上线" : "已离线");
         return Show(
             title: $"{displayName} {state}",
-            message: $"发生时间：{occurredAt:yyyy年MM月dd日 HH:mm:ss}",
+            message: LocalizationService.Format("发生时间：{0}", ViewModels.DeviceItemViewModel.FormatTimestamp(occurredAt)),
             argumentName: "device",
             argumentValue: displayName);
     }
 
     public NotificationDeliveryResult ShowNewDeviceOnline(
         string displayName, DateTimeOffset occurredAt) => Show(
-        title: $"新设备上线：{displayName}",
-        message: $"发生时间：{occurredAt:yyyy年MM月dd日 HH:mm:ss}",
+        title: LocalizationService.Format("新设备上线：{0}", displayName),
+        message: LocalizationService.Format("发生时间：{0}", ViewModels.DeviceItemViewModel.FormatTimestamp(occurredAt)),
         argumentName: "device",
         argumentValue: displayName,
         singleLineText: true);
@@ -155,18 +155,18 @@ public sealed class NotificationService : IDisposable
     public NotificationDeliveryResult ShowIpv6NonNative(string connectionType)
     {
         var displayType = string.IsNullOrWhiteSpace(connectionType)
-            ? "未知"
+            ? LocalizationService.Text("未知")
             : connectionType.Trim();
         return Show(
-            title: "当前 IPv6 连接类型不是 Native",
-            message: $"当前连接类型：{displayType}",
+            title: LocalizationService.Text("当前 IPv6 连接类型不是 Native"),
+            message: LocalizationService.Format("当前连接类型：{0}", displayType),
             argumentName: "category",
             argumentValue: "ipv6");
     }
 
     public NotificationDeliveryResult ShowTestNotification() => Show(
-        title: "Windows 系统通知测试",
-        message: "LanPod已将这条通知提交到 Windows。",
+        title: LocalizationService.Text("Windows 系统通知测试"),
+        message: LocalizationService.Text("LanPod已将这条通知提交到 Windows。"),
         argumentName: "category",
         argumentValue: "test");
 

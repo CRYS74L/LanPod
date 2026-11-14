@@ -262,7 +262,7 @@ public sealed class MonitoringService : IDisposable
                 var elapsed = (int)(DateTimeOffset.Now - startedAt).TotalSeconds;
                 RouterRestartProgressChanged?.Invoke(
                     this,
-                    $"路由器正在重启，已等待 {elapsed} 秒…");
+                    LocalizationService.Format("路由器正在重启，已等待 {0} 秒…", elapsed));
                 await Task.Delay(TimeSpan.FromSeconds(3), cancellationToken);
             }
 

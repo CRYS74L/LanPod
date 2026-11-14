@@ -2,6 +2,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using LanPod.Models;
+using LanPod.Services;
 
 namespace LanPod.ViewModels;
 
@@ -34,33 +35,42 @@ public sealed class DeviceItemViewModel : INotifyPropertyChanged
     public string IconGlyph => Data.IconGlyph;
     public bool IsOnline => Profile.LastKnownOnline;
     public double TrafficIntervalSeconds => _trafficIntervalSeconds;
-    public string StatusText => IsOnline ? "在线" : "离线";
+    public string StatusText => LocalizationService.Text(IsOnline ? "在线" : "离线");
     public DateTimeOffset? OnlineSince => IsOnline ?
         Data.Sessions.Where(session => session.OfflineAt is null && session.OnlineAt != default)
             .Select(session => (DateTimeOffset?)session.OnlineAt).Max() : null;
     public string OnlineElapsedText => FormatRelativeTime(OnlineSince, _displayTime);
     public string OnlineSinceText => OnlineSince is { } since
-        ? $"上线于 {since:yyyy 年 MM 月 dd 日 HH:mm:ss}" : "尚无可确认的上线时间";
+        ? LocalizationService.Format("上线于 {0}", FormatTimestamp(since)) : LocalizationService.Text("尚无可确认的上线时间");
     public DateTimeOffset? OfflineSince => IsOnline ? null :
         Data.Sessions.Where(session => session.OfflineAt.HasValue)
             .Select(session => session.OfflineAt).Max() ??
         (Profile.LastOnlineSeenAt == default ? null : Profile.LastOnlineSeenAt);
     public string OfflineElapsedText => FormatRelativeTime(OfflineSince, _displayTime);
     public string OfflineSinceText => OfflineSince is { } since
-        ? $"离线于 {since:yyyy 年 MM 月 dd 日 HH:mm:ss}" : "尚无可确认的离线时间";
+        ? LocalizationService.Format("离线于 {0}", FormatTimestamp(since)) : LocalizationService.Text("尚无可确认的离线时间");
+
+    internal static string FormatTimestamp(DateTimeOffset value) =>
+        value.ToString(LocalizationService.Text("yyyy 年 MM 月 dd 日 HH:mm:ss"), LocalizationService.Culture);
+
+    internal void RefreshLanguage()
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(string.Empty));
+        foreach (var session in _sessions) session.RefreshLanguage();
+    }
 
     internal static string FormatRelativeTime(DateTimeOffset? since, DateTimeOffset now)
     {
-        if (since is null) return "时间未知";
+        if (since is null) return LocalizationService.Text("时间未知");
         var elapsed = now - since.Value;
-        if (elapsed.TotalMinutes < 1) return "刚刚";
-        if (elapsed.TotalHours < 1) return $"{(int)elapsed.TotalMinutes}\u2009分钟前";
-        if (elapsed.TotalDays < 1) return $"{(int)elapsed.TotalHours}\u2009小时前";
-        return $"{(int)elapsed.TotalDays}\u2009天前";
+        if (elapsed.TotalMinutes < 1) return LocalizationService.Text("刚刚");
+        if (elapsed.TotalHours < 1) return LocalizationService.Format("{0}\u2009分钟前", (int)elapsed.TotalMinutes);
+        if (elapsed.TotalDays < 1) return LocalizationService.Format("{0}\u2009小时前", (int)elapsed.TotalHours);
+        return LocalizationService.Format("{0}\u2009天前", (int)elapsed.TotalDays);
     }
     public string IpAddress => string.IsNullOrWhiteSpace(Profile.LastIpAddress) ? "—" : Profile.LastIpAddress;
     public string MacAddressText => MacAddress;
-    public string ConnectionText => ConnectionTypeToText(Profile.LastConnectionType);
+    public string ConnectionText => LocalizationService.TranslateValue(ConnectionTypeToText(Profile.LastConnectionType));
     public string UploadSpeedText => FormatSpeed(Profile.LastUploadSpeedBytes);
     public string DownloadSpeedText => FormatSpeed(Profile.LastDownloadSpeedBytes);
     public string UploadSpeedValueText => FormatSpeedValue(Profile.LastUploadSpeedBytes);
@@ -82,10 +92,11 @@ public sealed class DeviceItemViewModel : INotifyPropertyChanged
     public string TotalUsageText => FormatBytes(
         Profile.LastTotalUploadBytes + Profile.LastTotalDownloadBytes);
     public string LastSeenText => Profile.LastSeenAt == default
-        ? "尚无记录"
+        ? LocalizationService.Text("尚无记录")
         : Profile.LastKnownOnline
-            ? "当前在线"
-            : $"{Profile.LastSeenAt:MM 月 dd 日 HH:mm} 最后在线";
+            ? LocalizationService.Text("当前在线")
+            : LocalizationService.Format("{0} 最后在线", Profile.LastSeenAt.ToString(
+                LocalizationService.Text("MM 月 dd 日 HH:mm"), LocalizationService.Culture));
     public IReadOnlyList<SessionItemViewModel> Sessions => _sessions;
     public IReadOnlyList<TrafficSample> TrafficSamples => _trafficSamples;
 
@@ -254,7 +265,7 @@ public sealed class DeviceItemViewModel : INotifyPropertyChanged
     {
         if (start == default && end == default)
         {
-            return "暂无记录";
+            return LocalizationService.Text("暂无记录");
         }
 
         if (start == default)
@@ -272,9 +283,11 @@ public sealed class DeviceItemViewModel : INotifyPropertyChanged
             (start, end) = (end, start);
         }
 
+        var format = LocalizationService.Text("MM 月 dd 日");
+        var first = start.ToString(format, LocalizationService.Culture);
         return start.Date == end.Date
-            ? $"{start:MM 月 dd 日}"
-            : $"{start:MM 月 dd 日} ~ {end:MM 月 dd 日}";
+            ? first
+            : $"{first} ~ {end.ToString(format, LocalizationService.Culture)}";
     }
 
     private static IReadOnlyList<SessionItemViewModel> CreateSessionItems(
@@ -411,13 +424,19 @@ public sealed class SessionItemViewModel : INotifyPropertyChanged
     public string OfflineDateText =>
         OfflineAt is DateTimeOffset offlineAt
             ? FormatDate(offlineAt, DateTime.Today)
-            : "当前在线";
+            : LocalizationService.Text("当前在线");
     public string OfflineTimeText =>
         OfflineAt?.ToString("HH:mm") ?? string.Empty;
     internal static string FormatDate(DateTimeOffset value, DateTime today)
     {
         var days = (today.Date - value.ToLocalTime().Date).Days;
-        return days switch { 0 => "今天", 1 => "昨天", 2 => "前天", _ => value.ToLocalTime().ToString("MM 月 dd 日") };
+        return days switch
+        {
+            0 => LocalizationService.Text("今天"),
+            1 => LocalizationService.Text("昨天"),
+            2 => LocalizationService.Text("前天"),
+            _ => value.ToLocalTime().ToString(LocalizationService.Text("MM 月 dd 日"), LocalizationService.Culture)
+        };
     }
     internal static bool ContainsRecentDate(DeviceSession session, DateTime today)
     {
@@ -431,15 +450,15 @@ public sealed class SessionItemViewModel : INotifyPropertyChanged
             var duration = (OfflineAt ?? DateTimeOffset.Now) - OnlineAt;
             if (duration.TotalDays >= 1)
             {
-                return $"{(int)duration.TotalDays}\u2009天\u2009{duration.Hours}\u2009小时";
+                return LocalizationService.Format("{0}\u2009天\u2009{1}\u2009小时", (int)duration.TotalDays, duration.Hours);
             }
 
             if (duration.TotalHours >= 1)
             {
-                return $"{(int)duration.TotalHours}\u2009小时\u2009{duration.Minutes}\u2009分钟";
+                return LocalizationService.Format("{0}\u2009小时\u2009{1}\u2009分钟", (int)duration.TotalHours, duration.Minutes);
             }
 
-            return $"{Math.Max(0, (int)duration.TotalMinutes)}\u2009分钟";
+            return LocalizationService.Format("{0}\u2009分钟", Math.Max(0, (int)duration.TotalMinutes));
         }
     }
 
@@ -485,11 +504,14 @@ public sealed class SessionItemViewModel : INotifyPropertyChanged
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
+    internal void RefreshLanguage() => OnPropertyChanged(string.Empty);
+
     private void OnPropertyChanged([CallerMemberName] string? propertyName = null) =>
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 }
 
 public sealed record DeviceTypeOption(string TypeName, string IconGlyph)
 {
-    public string DisplayText => $"{IconGlyph}  {TypeName}";
+    public string LocalizedTypeName => LocalizationService.TranslateValue(TypeName);
+    public string DisplayText => $"{IconGlyph}  {LocalizedTypeName}";
 }

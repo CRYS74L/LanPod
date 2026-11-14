@@ -56,7 +56,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     private bool _isPopulatingDeviceSettings;
     private bool _isPopulatingAppSettings;
     private bool _startupPreferenceChanged;
-    private bool _hasSavedRouterPassword;
+    private int _savedRouterPasswordLength;
+    private bool _hasSavedRouterPassword => _savedRouterPasswordLength > 0;
     private bool _showingSettings;
     private bool _showingRouter;
     private bool _isRestartingRouter;
@@ -97,6 +98,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     public MainWindow(NotificationService notificationService)
     {
+        LocalizationService.Apply(LocalizationService.Language);
         InitializeComponent();
         DataContext = this;
         _notificationService = notificationService;
@@ -133,7 +135,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         var cleanVersion = informationalVersion?
             .Split('+', 2, StringSplitOptions.TrimEntries)[0];
         return string.IsNullOrWhiteSpace(cleanVersion)
-            ? "未知"
+            ? LocalizationService.Text("未知")
             : $"v{cleanVersion}";
     }
 
@@ -149,7 +151,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         }
         catch (Exception exception) when (exception is System.ComponentModel.Win32Exception or InvalidOperationException)
         {
-            ShowSettings($"无法打开 GitHub 仓库：{exception.Message}");
+            ShowSettings(LocalizationService.Format("无法打开 GitHub 仓库：{0}", exception.Message));
         }
     }
 
@@ -217,6 +219,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     private async Task PrepareInitialContentCoreAsync()
     {
         await _repository.LoadAsync();
+        ApplyInterfaceLanguage(_repository.Settings.InterfaceLanguage);
         ApplyTheme(_repository.Settings.ThemeMode, animate: false);
         ReplaceDevices(await _repository.GetDevicesAsync(), preserveSelection: false);
         PopulateSettings(_repository.Settings);
@@ -235,7 +238,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             if (string.IsNullOrWhiteSpace(password))
             {
                 await webInitialization;
-                ShowSettings("首次使用，请输入小米路由器管理员密码。");
+                ShowSettings(LocalizationService.Text("首次使用，请输入小米路由器管理员密码。"));
                 return;
             }
 
@@ -539,7 +542,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         _lanWebServer?.SetConnection(state);
         DispatchMonitoringUpdate(() =>
         {
-            ConnectionStatusText.Text = state;
+            SetConnectionStatus(state);
             ConnectionDot.Fill = state == "已连接"
                 ? new SolidColorBrush(MediaColor.FromRgb(77, 178, 128))
                 : new SolidColorBrush(MediaColor.FromRgb(234, 139, 20));
@@ -563,7 +566,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private void PulseConnectionDot()
     {
-        ConnectionStatusText.Text = "已连接";
+        SetConnectionStatus("已连接");
         ConnectionDot.Fill = new SolidColorBrush(MediaColor.FromRgb(77, 178, 128));
         if (ConnectionDot.RenderTransform is not ScaleTransform scale)
         {
@@ -597,7 +600,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             // 轮询失败不是路由器报告的真实 0。不要把失败写成零速率，
             // 否则图表会出现用户看到的周期性垂直断崖；下一次成功采样
             // 会继续追加真实采样，缺失时间槽保持未知。
-            ConnectionStatusText.Text = $"连接异常：{exception.Message}";
+            SetConnectionStatus("路由器连接异常");
+            LocalizationService.SetText(ConnectionStatusText, "连接异常：{0}", exception.Message);
             ConnectionDot.Fill = new SolidColorBrush(MediaColor.FromRgb(220, 68, 55));
             ResetConnectionPulse();
         });
@@ -608,8 +612,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         _lanWebServer?.SetConnection(state);
         DispatchMonitoringUpdate(() =>
         {
-            RouterRestartStatusText.Text = state;
-            ConnectionStatusText.Text = state;
+            LocalizationService.SetText(RouterRestartStatusText, state);
+            SetConnectionStatus(state);
         });
     }
 
@@ -661,7 +665,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                     GetTrafficHistory(sample.Mac).Append(sample.Sample);
                 ReplaceDevices(update.Devices, preserveSelection: true);
                 PulseConnectionDot();
-                LastRefreshText.Text = $"更新于\u2009{update.RefreshedAt:HH:mm:ss}";
+                LocalizationService.SetText(LastRefreshText, "更新于\u2009{0:HH:mm:ss}", update.RefreshedAt);
             }
         }
         finally
@@ -834,7 +838,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     public int VisibleHistoryCount => Math.Min(HistorySessionCount,3+_historyExtraCount);
     public bool HasOlderSessions => HistorySessionCount>VisibleHistoryCount;
     public bool HasExpandedHistory => HistorySessionCount>3 && !HasOlderSessions;
-    public string HistoryActionName => HasOlderSessions ? "最多再展示十五条上下线记录" : "收起到最近三条上下线记录";
+    public string HistoryActionName => LocalizationService.Text(HasOlderSessions ? "最多再展示十五条上下线记录" : "收起到最近三条上下线记录");
     public bool HasHistoryControls => HistorySessionCount>3;
     private void NotifyHistoryVisibility()
     {
@@ -1514,7 +1518,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 DeviceTypeCombo.SelectedItem = DeviceTypeCombo.Items
                     .Cast<DeviceTypeOption>()
                     .FirstOrDefault(option => option.TypeName == device.TypeName);
-                AutoSaveStatusText.Text = "修改会自动保存";
+                LocalizationService.SetText(AutoSaveStatusText, "修改会自动保存");
             }
             finally
             {
@@ -1523,7 +1527,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         }
 
         DetailStatusText.Text = device.StatusText;
-        DetailConnectionText.Text = device.ConnectionText == "网线接入" ? "网线" : device.ConnectionText;
+        DetailConnectionText.Text = device.Profile.LastConnectionType == 0 ? LocalizationService.Text("网线") : device.ConnectionText;
         DetailStatusText.SetResourceReference(System.Windows.Controls.TextBlock.ForegroundProperty, "TextBrush");
     }
 
@@ -1554,7 +1558,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         }
         catch (Exception exception)
         {
-            SettingsMessageText.Text = $"移除设备失败：{exception.Message}";
+            LocalizationService.SetText(SettingsMessageText, "移除设备失败：{0}", exception.Message);
             SettingsMessageBorder.Visibility = Visibility.Visible;
         }
     }
@@ -1585,7 +1589,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         _deviceProfileSaveCancellation?.Cancel();
         _deviceProfileSaveCancellation?.Dispose();
         _deviceProfileSaveCancellation = new CancellationTokenSource();
-        AutoSaveStatusText.Text = "正在自动保存…";
+        LocalizationService.SetText(AutoSaveStatusText, "正在自动保存…");
         _ = SavePendingDeviceProfileAsync(delay, _deviceProfileSaveCancellation.Token);
     }
 
@@ -1620,7 +1624,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                     updateEditor: false);
                 if (ReferenceEquals(_pendingDeviceProfile, pending))
                 {
-                    AutoSaveStatusText.Text = "已自动保存";
+                    LocalizationService.SetText(AutoSaveStatusText, "已自动保存");
                 }
             }
 
@@ -1634,7 +1638,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         }
         catch (Exception exception)
         {
-            AutoSaveStatusText.Text = $"保存失败：{exception.Message}";
+            LocalizationService.SetText(AutoSaveStatusText, "保存失败：{0}", exception.Message);
         }
     }
 
@@ -1656,7 +1660,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private async Task LoadRouterInfoAsync(bool showLoadingMessage)
     {
-        RouterInfoLoadingText.Text = "正在读取上网信息与 Mesh 节点…";
+        LocalizationService.SetText(RouterInfoLoadingText, "正在读取上网信息与 Mesh 节点…");
         RouterInfoLoadingBorder.Visibility =
             GetRouterLoadingVisibility(showLoadingMessage);
         RefreshRouterInfoButton.IsEnabled = false;
@@ -1667,17 +1671,17 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             await Task.WhenAll(internetInfoTask, meshNodesTask);
             var info = await internetInfoTask;
             var meshNodes = await meshNodesTask;
-            RouterConnectionBadgeText.Text = info.IsConnected ? "互联网已连接" : "互联网未连接";
+            LocalizationService.SetText(RouterConnectionBadgeText, info.IsConnected ? "互联网已连接" : "互联网未连接");
             RouterConnectionBadge.Background = (System.Windows.Media.Brush)FindResource(
                 info.IsConnected ? "StatusOnlineBrush" : "StatusOfflineBrush");
             RouterConnectionBadgeText.Foreground = (System.Windows.Media.Brush)FindResource(
                 info.IsConnected ? "StatusOnlineTextBrush" : "StatusOfflineTextBrush");
-            Ipv4TypeText.Text = info.Ipv4ConnectionType;
+            LocalizationService.SetText(Ipv4TypeText, info.Ipv4ConnectionType);
             Ipv4AddressText.Text = info.Ipv4Address;
             Ipv4MaskText.Text = info.Ipv4SubnetMask;
             Ipv4GatewayText.Text = info.Ipv4Gateway;
             Ipv4DnsText.Text = info.Ipv4Dns;
-            Ipv6TypeText.Text = info.Ipv6ConnectionType;
+            LocalizationService.SetText(Ipv6TypeText, info.Ipv6ConnectionType);
             WanIpv6AddressText.Text = info.WanIpv6Address;
             WanIpv6GatewayText.Text = info.WanIpv6Gateway;
             LanIpv6AddressText.Text = info.LanIpv6Address;
@@ -1691,7 +1695,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         }
         catch (Exception exception)
         {
-            RouterInfoLoadingText.Text = $"读取失败：{exception.Message}";
+            LocalizationService.SetText(RouterInfoLoadingText, "读取失败：{0}", exception.Message);
             RouterInfoLoadingBorder.Visibility = Visibility.Visible;
         }
         finally
@@ -1729,7 +1733,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         RouterRestartProgressBar.Visibility = Visibility.Visible;
         RouterRestartProgressBorder.Background =
             (System.Windows.Media.Brush)FindResource("ProgressInfoBrush");
-        RouterRestartStatusText.Text = "正在向路由器发送重启指令…";
+        LocalizationService.SetText(RouterRestartStatusText, "正在向路由器发送重启指令…");
         RestartRouterButton.IsEnabled = false;
         try
         {
@@ -1737,7 +1741,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             RouterRestartProgressBar.Visibility = Visibility.Collapsed;
             RouterRestartProgressBorder.Background =
                 (System.Windows.Media.Brush)FindResource("ProgressSuccessBrush");
-            RouterRestartStatusText.Text = "重启完成，路由器与互联网连接已恢复";
+            LocalizationService.SetText(RouterRestartStatusText, "重启完成，路由器与互联网连接已恢复");
             AnimateFeedback(RouterRestartProgressBorder);
             await LoadRouterInfoAsync(showLoadingMessage: true);
         }
@@ -1746,7 +1750,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             RouterRestartProgressBar.Visibility = Visibility.Collapsed;
             RouterRestartProgressBorder.Background =
                 (System.Windows.Media.Brush)FindResource("ProgressErrorBrush");
-            RouterRestartStatusText.Text = $"重启未完成：{exception.Message}";
+            LocalizationService.SetText(RouterRestartStatusText, "重启未完成：{0}", exception.Message);
         }
         finally
         {
@@ -1877,14 +1881,14 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         if (ReferenceEquals(sender, RouterAddressBox))
         {
-            _hasSavedRouterPassword = _credentialService.HasPassword(RouterAddressBox.Text.Trim());
+            _savedRouterPasswordLength = _credentialService.GetPasswordLength(RouterAddressBox.Text.Trim());
             RefreshPasswordIndicator();
         }
 
         _routerSettingsSaveCancellation?.Cancel();
         _routerSettingsSaveCancellation?.Dispose();
         _routerSettingsSaveCancellation = new CancellationTokenSource();
-        AppSettingsAutoSaveText.Text = "正在等待输入完成…";
+        LocalizationService.SetText(AppSettingsAutoSaveText, "正在等待输入完成…");
         _ = ApplyRouterConnectionSettingsAsync(_routerSettingsSaveCancellation.Token);
     }
 
@@ -1896,7 +1900,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             var address = RouterAddressBox.Text.Trim();
             if (string.IsNullOrWhiteSpace(address))
             {
-                AppSettingsAutoSaveText.Text = "请输入路由器地址";
+                LocalizationService.SetText(AppSettingsAutoSaveText, "请输入路由器地址");
                 return;
             }
 
@@ -1906,11 +1910,11 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 : enteredPassword;
             if (string.IsNullOrEmpty(password))
             {
-                AppSettingsAutoSaveText.Text = "请输入管理员密码";
+                LocalizationService.SetText(AppSettingsAutoSaveText, "请输入管理员密码");
                 return;
             }
 
-            AppSettingsAutoSaveText.Text = "正在连接并应用…";
+            LocalizationService.SetText(AppSettingsAutoSaveText, "正在连接并应用…");
             var connected = await ConnectAsync(
                 address,
                 password,
@@ -1919,7 +1923,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             cancellationToken.ThrowIfCancellationRequested();
             if (!connected)
             {
-                AppSettingsAutoSaveText.Text = "连接失败，请检查设置";
+                LocalizationService.SetText(AppSettingsAutoSaveText, "连接失败，请检查设置");
                 return;
             }
 
@@ -1938,17 +1942,17 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 }
             }
 
-            _hasSavedRouterPassword = true;
+            _savedRouterPasswordLength = password.Length;
             RefreshPasswordIndicator();
             SettingsMessageBorder.Visibility = Visibility.Collapsed;
-            AppSettingsAutoSaveText.Text = "已自动应用";
+            LocalizationService.SetText(AppSettingsAutoSaveText, "已自动应用");
         }
         catch (OperationCanceledException)
         {
         }
         catch (Exception exception)
         {
-            AppSettingsAutoSaveText.Text = $"自动应用失败：{exception.Message}";
+            LocalizationService.SetText(AppSettingsAutoSaveText, "自动应用失败：{0}", exception.Message);
         }
     }
 
@@ -1962,7 +1966,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         Controls.InputPlaceholder.SetSuppressed(RouterPasswordBox, _hasSavedRouterPassword);
         if (SavedRouterPasswordMask is not null)
+        {
+            SavedRouterPasswordMask.Text = new string(RouterPasswordBox.PasswordChar, _savedRouterPasswordLength);
             SavedRouterPasswordMask.Visibility = _hasSavedRouterPassword && RouterPasswordBox.Password.Length == 0 ? Visibility.Visible : Visibility.Collapsed;
+        }
     }
 
     private void PopulateSettings(AppSettings settings)
@@ -1972,7 +1979,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         {
             LanAccessCheck.IsChecked = settings.LanAccessEnabled;
             RouterAddressBox.Text = settings.RouterAddress;
-            _hasSavedRouterPassword = _credentialService.HasPassword(settings.RouterAddress);
+            _savedRouterPasswordLength = _credentialService.GetPasswordLength(settings.RouterAddress);
             RefreshPasswordIndicator();
             _startupPreferenceChanged = false;
             StartWithWindowsCheck.IsChecked = settings.StartWithWindows;
@@ -1982,6 +1989,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 .FirstOrDefault(item =>
                     item.Tag?.ToString() == ThemeService.NormalizeMode(settings.ThemeMode))
                 ?? ThemeModeCombo.Items.Cast<ComboBoxItem>().First();
+            InterfaceLanguageCombo.SelectedItem = InterfaceLanguageCombo.Items
+                .Cast<ComboBoxItem>()
+                .First(item => item.Tag?.ToString() == LocalizationService.NormalizeLanguage(settings.InterfaceLanguage));
             DoNotDisturbCheck.IsChecked = settings.DoNotDisturbEnabled;
             DoNotDisturbStartBox.Text = NotificationSchedule.FormatTime(
                 settings.DoNotDisturbStartMinutes);
@@ -2012,7 +2022,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         catch (OperationCanceledException) { }
         catch (Exception exception)
         {
-            if (!_isExiting) ShowSettings($"保存新设备通知设置失败：{exception.Message}");
+            if (!_isExiting) ShowSettings(LocalizationService.Format("保存新设备通知设置失败：{0}", exception.Message));
         }
     }
 
@@ -2058,7 +2068,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                     DoNotDisturbEndBox.Text,
                     out var doNotDisturbEndMinutes))
             {
-                SettingsMessageText.Text = "免打扰时间格式不正确，请使用\u200924\u2009小时制，例如\u200922:30。";
+                LocalizationService.SetText(SettingsMessageText, "免打扰时间格式不正确，请使用\u200924\u2009小时制，例如\u200922:30。");
                 SettingsMessageBorder.Visibility = Visibility.Visible;
                 return;
             }
@@ -2081,7 +2091,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         }
         catch (Exception exception)
         {
-            ShowSettings($"保存应用设置失败：{exception.Message}");
+            ShowSettings(LocalizationService.Format("保存应用设置失败：{0}", exception.Message));
         }
     }
 
@@ -2949,9 +2959,14 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             return;
         }
 
+        UpdateWindowStateButtons();
+    }
+
+    private void UpdateWindowStateButtons()
+    {
         var isMaximized = WindowState == WindowState.Maximized;
         MaximizeWindowGlyph.Text = isMaximized ? "\uE923" : "\uE922";
-        MaximizeWindowButton.ToolTip = isMaximized ? "还原" : "最大化";
+        MaximizeWindowButton.SetResourceReference(FrameworkElement.ToolTipProperty, "Text." + (isMaximized ? "还原" : "最大化"));
     }
 
     public void PrepareForExit()

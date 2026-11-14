@@ -1,3 +1,4 @@
+import { t, getLanguage, applyLocalization } from "./localization.js";
 import {
   $,
   esc,
@@ -7,6 +8,7 @@ import {
   text,
   bytes,
   date,
+  dateRange,
   clock,
   duration,
   relativeTime,
@@ -66,6 +68,7 @@ const state = {
 };
 const rows = new Map();
 const rowHistory = new Map();
+let localizationLoaded = false;
 let detailController,
   historyController,
   selectionGeneration = 0,
@@ -113,8 +116,8 @@ async function request(path, signal) {
     if (!response.ok)
       throw new Error(
         response.status === 404
-          ? "该设备已不在列表中"
-          : `请求失败（${response.status}）`,
+          ? t("该设备已不在列表中")
+          : t("请求失败（{0}）", response.status),
       );
     return await response.json();
   } finally {
@@ -129,7 +132,7 @@ function sortedDevices() {
       (a, b) =>
         new Date(b.listSortAt || b.statusChangedAt || b.lastSeen) -
           new Date(a.listSortAt || a.statusChangedAt || a.lastSeen) ||
-        a.name.localeCompare(b.name, "zh-CN"),
+        a.name.localeCompare(b.name, getLanguage()),
     );
 }
 function selectedDevice() {
@@ -177,7 +180,7 @@ function renderConnection() {
   if (healthy && s.refreshedAt) {
     const value = clock(s.refreshedAt),
       status = $("connection-status");
-    rollingText(status, value + " 更新");
+    rollingText(status, t("{0} 更新", value));
   } else text("connection-status", s?.connection || "尚未连接");
 }
 function renderList(force = false) {
@@ -233,7 +236,7 @@ function renderList(force = false) {
     row.querySelector(".row-elapsed").textContent = relativeTime(since, now);
     row.setAttribute(
       "aria-label",
-      `${d.name}，${d.online ? "在线" : "离线"}，${relativeTime(since, now)}`,
+      `${d.name}, ${t(d.online ? "在线" : "离线")}, ${relativeTime(since, now)}`,
     );
   }
   // Move only out-of-order nodes; polling does not recreate focused controls.
@@ -275,7 +278,7 @@ function renderDevice(d, data = state.detail) {
     else text(field + "-value", parts.value);
     text(field + "-unit", parts.unit);
   }
-  const range = dateMarkup(d.recordRange || "暂无记录");
+  const range = dateMarkup(dateRange(d.firstSeen, d.lastSeen));
   for (const id of ["download-range", "upload-range"])
     if ($(id).innerHTML !== range) $(id).innerHTML = range;
   chart.update(
@@ -371,7 +374,7 @@ function renderSessions(userAction = false) {
   toggle.setAttribute("aria-expanded", String(expanded));
   toggle.setAttribute(
     "aria-label",
-    expanded ? "收起到最近三条上下线记录" : "最多再展示十五条上下线记录",
+    t(expanded ? "收起到最近三条上下线记录" : "最多再展示十五条上下线记录"),
   );
   if (!userAction && motion.has($("history-reveal"))) {
     scheduleLayout();
@@ -477,13 +480,13 @@ function renderRouter() {
     ["LAN 前缀", info?.lanIpv6Prefix],
     ["DNS", info?.ipv6Dns],
   ]);
-  const signature = JSON.stringify(mesh);
+  const signature = getLanguage() + JSON.stringify(mesh);
   if ($("mesh-list").dataset.content !== signature) {
     $("mesh-list").dataset.content = signature;
     $("mesh-list").innerHTML = mesh
       .map(
         (n) =>
-          `<article class="mesh-node ${n.isGateway ? "gateway" : "child"}" data-node-id="${esc(n.nodeId || (n.isGateway ? "root" : "node-" + mesh.indexOf(n)))}" data-parent-id="${esc(n.parentNodeId || (n.isGateway ? "" : mesh.find((p) => p.isGateway)?.nodeId || "root"))}"><span class="mesh-icon">${deviceIcon("路由器")}</span><div><div class="mesh-title"><strong>${deviceNameMarkup(n.displayName)}</strong><span class="mesh-role">${n.isGateway ? "主路由" : "Mesh 节点"}</span>${!n.isGateway && n.connectionText && n.connectionText !== "Mesh 节点" ? `<span class="mesh-backhaul">${esc(n.connectionText)}</span>` : ""}</div><div class="mesh-ip">${esc(n.ipAddress)}</div><div class="mesh-hardware">${esc(n.hardware)}</div></div><div class="mesh-count"><strong>${Math.max(0, Number(n.connectedDeviceCount) || 0)}</strong><small>连接设备</small></div></article>`,
+          `<article class="mesh-node ${n.isGateway ? "gateway" : "child"}" data-node-id="${esc(n.nodeId || (n.isGateway ? "root" : "node-" + mesh.indexOf(n)))}" data-parent-id="${esc(n.parentNodeId || (n.isGateway ? "" : mesh.find((p) => p.isGateway)?.nodeId || "root"))}"><span class="mesh-icon">${deviceIcon("路由器")}</span><div><div class="mesh-title"><strong>${deviceNameMarkup(n.displayName)}</strong><span class="mesh-role">${esc(t(n.isGateway ? "主路由" : "Mesh 节点"))}</span>${!n.isGateway && n.connectionText && n.connectionText !== "Mesh 节点" ? `<span class="mesh-backhaul">${esc(t(n.connectionText))}</span>` : ""}</div><div class="mesh-ip">${esc(n.ipAddress)}</div><div class="mesh-hardware">${esc(n.hardware)}</div></div><div class="mesh-count"><strong>${Math.max(0, Number(n.connectedDeviceCount) || 0)}</strong><small>${esc(t("连接设备"))}</small></div></article>`,
       )
       .join("");
   }
@@ -779,6 +782,12 @@ async function refresh() {
     const data = await request("snapshot?view=overview"),
       first = !state.snapshot,
       previousRefresh = state.snapshot?.refreshedAt;
+    const language = data.preferences?.interfaceLanguage || "zh-Hans";
+    if (!localizationLoaded || language !== getLanguage()) {
+      const localized = await request("localization/" + encodeURIComponent(language));
+      applyLocalization(localized.language, localized.strings);
+      localizationLoaded = true;
+    }
     state.snapshot = data;
     state.connected = true;
     if (first && !state.selected) {
@@ -1542,8 +1551,8 @@ function layoutSessions() {
   for (const row of $("session-list").children) {
     if (row.hidden) continue;
     const labels = row.querySelectorAll(".session-label");
-    labels[0].textContent = compact.matches ? "离线" : "离线时间";
-    labels[1].textContent = compact.matches ? "上线" : "上线时间";
+    labels[0].textContent = t(compact.matches ? "离线" : "离线时间");
+    labels[1].textContent = t(compact.matches ? "上线" : "上线时间");
     row.classList.remove("stacked", "history-labels-above");
     for (const key of ["marker", "label", "gap", "inline-gap"])
       row.style.removeProperty("--history-" + key);
@@ -1561,8 +1570,10 @@ function layoutSessions() {
       ),
     );
     const available = row.clientWidth - 24;
-    const normalLabel = compact.matches ? 30 : 62;
-    if (compact.matches) row.style.setProperty("--history-label", "30px");
+    ctx.font = getComputedStyle(labels[0]).font;
+    const normalLabel = Math.max(compact.matches ? 30 : 62,
+      Math.ceil(Math.max(...[...labels].map((label) => ctx.measureText(label.textContent).width))));
+    row.style.setProperty("--history-label", normalLabel + "px");
     if (24 + normalLabel + 10 + natural + 12 + badgeText + 36 > available) {
       ctx.font = getComputedStyle(time.querySelector(".session-label")).font;
       const label =

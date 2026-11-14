@@ -1,3 +1,4 @@
+import { t } from "./localization.js";
 import { deviceIconNames, deviceIconPaths } from "./device-icons.js";
 export const $ = (id) => document.getElementById(id);
 export const esc = (value) =>
@@ -46,7 +47,7 @@ export function hydrateIcons(root = document) {
 }
 export function text(id, value) {
   const el = $(id),
-    s = String(value ?? "—");
+    s = t(String(value ?? "—"));
   if (el && el.textContent !== s) el.textContent = s;
 }
 export function deviceNameParts(value) {
@@ -172,44 +173,54 @@ function parts(value) {
 export function date(value) {
   const p = parts(value);
   return !p || p.year < 2000
-    ? "暂无记录"
-    : `${p.month}\u2009月\u2009${p.day}\u2009日`;
+    ? t("暂无记录")
+    : t("{0}\u2009月\u2009{1}\u2009日", p.month, p.day);
 }
 export function clock(value, seconds = true) {
   const p = parts(value);
   return p ? `${p.hour}:${p.minute}${seconds ? ":" + p.second : ""}` : "—";
 }
+export function dateRange(start, end) {
+  const first = parts(start), last = parts(end);
+  if ((!first || first.year < 2000) && (!last || last.year < 2000)) return t("暂无记录");
+  if (!first || first.year < 2000) return date(end);
+  if (!last || last.year < 2000) return date(start);
+  if (first.year === last.year && first.month === last.month && first.day === last.day) return date(start);
+  return new Date(start) > new Date(end)
+    ? `${date(end)} ~ ${date(start)}`
+    : `${date(start)} ~ ${date(end)}`;
+}
 export function relativeDate(value, now) {
   const p = parts(value),
     n = parts(now);
-  if (!p || p.year < 2000 || !n) return "暂无记录";
+  if (!p || p.year < 2000 || !n) return t("暂无记录");
   const days =
     (Date.UTC(n.year, +n.month - 1, +n.day) -
       Date.UTC(p.year, +p.month - 1, +p.day)) /
     86400000;
   return days === 0
-    ? "今天"
+    ? t("今天")
     : days === 1
-      ? "昨天"
+      ? t("昨天")
       : days === 2
-        ? "前天"
+        ? t("前天")
         : date(value);
 }
 export function relativeTime(value, now = Date.now()) {
-  if (!value) return "时间未知";
+  if (!value) return t("时间未知");
   const elapsed = Math.max(0, new Date(now) - new Date(value));
-  if (elapsed < 60000) return "刚刚";
-  if (elapsed < 3600000) return `${Math.floor(elapsed / 60000)}\u2009分钟前`;
-  if (elapsed < 86400000) return `${Math.floor(elapsed / 3600000)}\u2009小时前`;
-  return `${Math.floor(elapsed / 86400000)}\u2009天前`;
+  if (elapsed < 60000) return t("刚刚");
+  if (elapsed < 3600000) return t("{0}\u2009分钟前", Math.floor(elapsed / 60000));
+  if (elapsed < 86400000) return t("{0}\u2009小时前", Math.floor(elapsed / 3600000));
+  return t("{0}\u2009天前", Math.floor(elapsed / 86400000));
 }
 export function duration(start, end = Date.now()) {
-  if (!start) return "暂无时长";
+  if (!start) return t("暂无时长");
   const m = Math.max(0, Math.floor((new Date(end) - new Date(start)) / 60000));
-  if (m < 60) return `${m}\u2009分钟`;
+  if (m < 60) return t("{0}\u2009分钟", m);
   if (m < 1440)
-    return `${Math.floor(m / 60)}\u2009小时\u2009${m % 60}\u2009分钟`;
-  return `${Math.floor(m / 1440)}\u2009天\u2009${Math.floor((m % 1440) / 60)}\u2009小时`;
+    return t("{0}\u2009小时\u2009{1}\u2009分钟", Math.floor(m / 60), m % 60);
+  return t("{0}\u2009天\u2009{1}\u2009小时", Math.floor(m / 1440), Math.floor((m % 1440) / 60));
 }
 export function dateMarkup(value) {
   return esc(value)
@@ -221,16 +232,16 @@ export function dateMarkup(value) {
     );
 }
 export function fields(root, rows) {
-  const shape = JSON.stringify(rows.map((row) => row[0]));
+  const shape = JSON.stringify(rows.map((row) => t(row[0])));
   if (root.dataset.shape !== shape) {
     root.dataset.shape = shape;
     root.innerHTML = rows
-      .map(([label]) => `<div><dt>${esc(label)}</dt><dd></dd></div>`)
+      .map(([label]) => `<div><dt>${esc(t(label))}</dt><dd></dd></div>`)
       .join("");
   }
   rows.forEach(([, value], index) => {
     const el = root.children[index].querySelector("dd"),
-      s = String(value || "—");
+      s = t(String(value || "—"));
     if (el.textContent !== s) el.textContent = s;
   });
 }
@@ -238,7 +249,7 @@ export function sessionsMarkup(items, now, compact = false) {
   return items
     .map(
       (s) =>
-        `<div class="session-row" data-online-at="${esc(s.onlineAt)}"><span class="session-track" aria-hidden="true"><i></i><i></i></span><div class="session-times"><span class="session-label">${compact ? "离线" : "离线时间"}</span><span class="session-time"><span>${s.offlineAt ? dateMarkup(relativeDate(s.offlineAt, now)) : "当前在线"}</span>${s.offlineAt ? `<span>${clock(s.offlineAt, false)}</span>` : ""}</span><span class="session-label">${compact ? "上线" : "上线时间"}</span><span class="session-time"><span>${dateMarkup(relativeDate(s.onlineAt, now))}</span><span>${clock(s.onlineAt, false)}</span></span></div><span class="session-duration">${esc(duration(s.onlineAt, s.offlineAt || now))}</span></div>`,
+        `<div class="session-row" data-online-at="${esc(s.onlineAt)}"><span class="session-track" aria-hidden="true"><i></i><i></i></span><div class="session-times"><span class="session-label">${esc(t(compact ? "离线" : "离线时间"))}</span><span class="session-time"><span>${s.offlineAt ? dateMarkup(relativeDate(s.offlineAt, now)) : esc(t("当前在线"))}</span>${s.offlineAt ? `<span>${clock(s.offlineAt, false)}</span>` : ""}</span><span class="session-label">${esc(t(compact ? "上线" : "上线时间"))}</span><span class="session-time"><span>${dateMarkup(relativeDate(s.onlineAt, now))}</span><span>${clock(s.onlineAt, false)}</span></span></div><span class="session-duration">${esc(duration(s.onlineAt, s.offlineAt || now))}</span></div>`,
     )
     .join("");
 }
@@ -263,8 +274,8 @@ export async function copy(value) {
       el.remove();
       if (!copied) throw new Error("copy");
     }
-    toast("已复制");
+    toast(t("已复制"));
   } catch {
-    toast("请长按文字复制");
+    toast(t("请长按文字复制"));
   }
 }

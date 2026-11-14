@@ -5,6 +5,8 @@ using LanPod.Services;
 using LanPod.ViewModels;
 using System.Diagnostics;
 using System.Reflection;
+if(args.Contains("--settings-language-regression")) return SettingsLanguageRegression.Run();
+if(args.Contains("--settings-language-preview")) return SettingsLanguageRegression.Run(preview: true);
 if (args.Contains("--viewport-fade-regression")) return ViewportFadeRegression.Run();
 if (args.Contains("--traffic-raster-regression")) return TrafficRasterRegression.Run();
 if (args.Contains("--filter-frame-regression")) return FilterFrameRegression.Run(args.Contains("--profile-only"), args.FirstOrDefault(a => a.StartsWith("--rendering-probe="))?.Split('=')[1]);
@@ -435,7 +437,7 @@ Check(
     Math.Abs(SmoothScrollBehavior.GetBoundedTargetOffset(100d, 164d, -100d, 500d) - 0d) < 0.0001d,
     "反向滚轮输入应立即反向，不能延续上一方向的惯性");
 Check(
-    MainWindow.GetDisplayVersion() == "v0.1.20",
+    MainWindow.GetDisplayVersion() == "v0.1.25",
     "设置界面应显示当前实际软件版本");
 var viewModelData = new DeviceViewData
 {
@@ -2084,6 +2086,8 @@ var trayMenuThread = new Thread(() =>
         trayHoverColorAndSpacingConfigured = item.Height == 29 && item.FontSize == 12.75 && menu.Items.Count == 2;
         trayOpenIconTextAligned = ((System.Windows.Controls.TextBlock)((System.Windows.Controls.Grid)((System.Windows.Controls.Grid)item.Template.FindName("StudioRoot",item)).Children[1]).Children[0]).VerticalAlignment == System.Windows.VerticalAlignment.Center;
         item.RaiseEvent(new System.Windows.RoutedEventArgs(System.Windows.Controls.MenuItem.ClickEvent));
+        commands.Dispose();
+        PumpWpf(application.Dispatcher, TimeSpan.FromMilliseconds(100));
         application.Shutdown();
     }
     catch (TargetInvocationException exception)
@@ -3023,7 +3027,7 @@ int RunSettingsShortcutRegression()
             "08月30日 ~ 08月31日",
         "总量卡片悬停日期区间应仅显示月日范围");
     CheckRegression(
-        MainWindow.GetDisplayVersion() == "v0.1.5",
+        MainWindow.GetDisplayVersion() == "v0.1.25",
         "设置界面应显示当前开发版本");
     var legacy = System.Text.Json.JsonSerializer.Deserialize<AppSettings>("{\"EmergencyHotKeyEnabled\":true,\"EmergencyHotKeyVirtualKey\":112,\"RefreshIntervalSeconds\":5}")!;
     CheckRegression(legacy.RefreshIntervalSeconds == 5 && typeof(AppSettings).GetProperty("EmergencyHotKeyEnabled") is null && typeof(AppSettings).Assembly.GetType("LanPod.Services.EmergencyHotKeyService") is null,
@@ -3192,7 +3196,8 @@ int RunSettingsShortcutRegression()
                 trafficSummaryCard is not null &&
                 !IsLogicalDescendant(trafficSummaryHeader, trafficSummaryCard) &&
                 window.TrafficRangeSegments.Items.Count == 3 &&
-                window.TrafficRangeSegments.SelectedIndex == 2;
+                window.TrafficRangeSegments.SelectedIndex == 0 &&
+                window.TrafficRangeMinutes == 1;
             var routerInfoCardsConfigured = RouterInfoCardsUseCurrentAdaptiveLayout(
                 routerStack,
                 routerNetworkLayout,

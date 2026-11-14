@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <data name="返回" xml:space="preserve"><value>返回</value></data>
+  <data name="返回设备列表" xml:space="preserve"><value>返回裝置清單</value></data>
+  <data name="最小化" xml:space="preserve"><value>最小化</value></data>
+  <data name="最大化" xml:space="preserve"><value>最大化</value></data>
+  <data name="还原" xml:space="preserve"><value>還原</value></data>
+  <data name="关闭" xml:space="preserve"><value>關閉</value></data>
+  <data name="收起侧栏" xml:space="preserve"><value>收起側欄</value></data>
+  <data name="展开侧栏" xml:space="preserve"><value>展開側欄</value></data>
+  <data name="设备状态筛选" xml:space="preserve"><value>裝置狀態篩選</value></data>
+  <data name="在线设备" xml:space="preserve"><value>線上裝置</value></data>
+  <data name="在线" xml:space="preserve"><value>線上</value></data>
+  <data name="离线设备" xml:space="preserve"><value>離線裝置</value></data>
+  <data name="离线" xml:space="preserve"><value>離線</value></data>
+  <data name="上线" xml:space="preserve"><value>上線</value></data>
+  <data name="尚未连接" xml:space="preserve"><value>尚未連線</value></data>
+  <data name="已连接" xml:space="preserve"><value>已連線</value></data>
+  <data name="等待刷新" xml:space="preserve"><value>等待更新</value></data>
+  <data name="路由器" xml:space="preserve"><value>路由器</value></data>
+  <data name="设置" xml:space="preserve"><value>設定</value></data>
+  <data name="调整设备栏宽度" xml:space="preserve"><value>調整裝置欄寬度</value></data>
+  <data name="连接信息" xml:space="preserve"><value>連線資訊</value></data>
+  <data name="连接状态" xml:space="preserve"><value>連線狀態</value></data>
+  <data name="连接类型" xml:space="preserve"><value>連線類型</value></data>
+  <data name="IP 地址" xml:space="preserve"><value>IP 位址</value></data>
+  <data name="MAC 地址" xml:space="preserve"><value>MAC 位址</value></data>
+  <data name="流量统计" xml:space="preserve"><value>流量統計</value></data>
+  <data name="流量统计时间区间" xml:space="preserve"><value>流量統計時間區間</value></data>
+  <data name="1 分钟" xml:space="preserve"><value>1 分鐘</value></data>
+  <data name="5 分钟" xml:space="preserve"><value>5 分鐘</value></data>
+  <data name="10 分钟" xml:space="preserve"><value>10 分鐘</value></data>
+  <data name="流量统计曲线" xml:space="preserve"><value>流量統計曲線</value></data>
+  <data name="下载速度" xml:space="preserve"><value>下載速度</value></data>
+  <data name="上传速度" xml:space="preserve"><value>上傳速度</value></data>
+  <data name="下载总量统计" xml:space="preserve"><value>下載總量統計</value></data>
+  <data name="下载总量" xml:space="preserve"><value>下載總量</value></data>
+  <data name="上传总量统计" xml:space="preserve"><value>上傳總量統計</value></data>
+  <data name="上传总量" xml:space="preserve"><value>上傳總量</value></data>
+  <data name="上下线历史" xml:space="preserve"><value>上下線記錄</value></data>
+  <data name="离线时间" xml:space="preserve"><value>離線時間</value></data>
+  <data name="上线时间" xml:space="preserve"><value>上線時間</value></data>
+  <data name="设备设置" xml:space="preserve"><value>裝置設定</value></data>
+  <data name="自定义名称" xml:space="preserve"><value>自訂名稱</value></data>
+  <data name="留空时使用自动识别名称" xml:space="preserve"><value>留空時使用自動辨識名稱</value></data>
+  <data name="设备类型与图标" xml:space="preserve"><value>裝置類型與圖示</value></data>
+  <data name="当设备上下线时，推送 Windows 通知" xml:space="preserve"><value>當裝置上下線時，傳送 Windows 通知</value></data>
+  <data name="设备管理" xml:space="preserve"><value>裝置管理</value></data>
+  <data name="移除该设备" xml:space="preserve"><value>移除此裝置</value></data>
+  <data name="确认移除？历史记录会保留，再次上线后会重新显示。" xml:space="preserve"><value>確定移除？歷史記錄會保留，再次上線後會重新顯示。</value></data>
+  <data name="取消" xml:space="preserve"><value>取消</value></data>
+  <data name="确认移除" xml:space="preserve"><value>確認移除</value></data>
+  <data name="路由器与上网信息" xml:space="preserve"><value>路由器與網際網路資訊</value></data>
+  <data name="正在读取" xml:space="preserve"><value>正在讀取</value></data>
+  <data name="刷新" xml:space="preserve"><value>重新整理</value></data>
+  <data name="正在读取上网信息…" xml:space="preserve"><value>正在讀取網際網路資訊…</value></data>
+  <data name="网络连接" xml:space="preserve"><value>網路連線</value></data>
+  <data name="子网掩码" xml:space="preserve"><value>子網路遮罩</value></data>
+  <data name="默认网关" xml:space="preserve"><value>預設閘道</value></data>
+  <data name="WAN 地址" xml:space="preserve"><value>WAN 位址</value></data>
+  <data name="WAN 网关" xml:space="preserve"><value>WAN 閘道</value></data>
+  <data name="LAN 地址" xml:space="preserve"><value>LAN 位址</value></data>
+  <data name="LAN 前缀" xml:space="preserve"><value>LAN 前綴</value></data>
+  <data name="Mesh 网络" xml:space="preserve"><value>Mesh 網路</value></data>
+  <data name="暂无 Mesh 节点" xml:space="preserve"><value>尚無 Mesh 節點</value></data>
+  <data name="Mesh 节点" xml:space="preserve"><value>Mesh 節點</value></data>
+  <data name="Mesh 节点" xml:space="preserve"><value>Mesh 節點</value></data>
+  <data name="连接设备" xml:space="preserve"><value>連線裝置</value></data>
+  <data name="主路由" xml:space="preserve"><value>主路由</value></data>
+  <data name="有线回程" xml:space="preserve"><value>有線回程</value></data>
+  <data name="无线回程" xml:space="preserve"><value>無線回程</value></data>
+  <data name="路由器操作" xml:space="preserve"><value>路由器操作</value></data>
+  <data name="重启路由器" xml:space="preserve"><value>重新啟動路由器</value></data>
+  <data name="重启期间设备会暂时断网，应用会持续显示恢复进度" xml:space="preserve"><value>重新啟動期間裝置會暫時斷網，應用程式會持續顯示恢復進度</value></data>
+  <data name="确认重启" xml:space="preserve"><value>確認重新啟動</value></data>
+  <data name="正在准备重启…" xml:space="preserve"><value>正在準備重新啟動…</value></data>
+  <data name="通用" xml:space="preserve"><value>一般</value></data>
+  <data name="颜色主题" xml:space="preserve"><value>色彩主題</value></data>
+  <data name="跟随系统" xml:space="preserve"><value>跟隨系統</value></data>
+  <data name="浅色模式" xml:space="preserve"><value>淺色模式</value></data>
+  <data name="深色模式" xml:space="preserve"><value>深色模式</value></data>
+  <data name="界面语言" xml:space="preserve"><value>介面語言</value></data>
+  <data name="开机启动" xml:space="preserve"><value>開機啟動</value></data>
+  <data name="路由器连接" xml:space="preserve"><value>路由器連線</value></data>
+  <data name="路由器地址" xml:space="preserve"><value>路由器位址</value></data>
+  <data name="例如 192.168.31.1" xml:space="preserve"><value>例如 192.168.31.1</value></data>
+  <data name="管理员密码" xml:space="preserve"><value>管理員密碼</value></data>
+  <data name="输入管理员密码" xml:space="preserve"><value>輸入管理員密碼</value></data>
+  <data name="输入新密码可替换已保存的密码" xml:space="preserve"><value>輸入新密碼可取代已儲存的密碼</value></data>
+  <data name="通知" xml:space="preserve"><value>通知</value></data>
+  <data name="定时免打扰" xml:space="preserve"><value>排程勿擾</value></data>
+  <data name="免打扰时段" xml:space="preserve"><value>勿擾時段</value></data>
+  <data name="免打扰开始时间" xml:space="preserve"><value>勿擾開始時間</value></data>
+  <data name="至" xml:space="preserve"><value>至</value></data>
+  <data name="免打扰结束时间" xml:space="preserve"><value>勿擾結束時間</value></data>
+  <data name="当新设备上线时，推送 Windows 通知" xml:space="preserve"><value>當新裝置上線時，傳送 Windows 通知</value></data>
+  <data name="当新设备上线时，推送 Windows 通知" xml:space="preserve"><value>當新裝置上線時，傳送 Windows 通知</value></data>
+  <data name="当 IPv6 连接类型不是 Native 时，推送 Windows 通知" xml:space="preserve"><value>當 IPv6 連線類型不是 Native 時，傳送 Windows 通知</value></data>
+  <data name="当 IPv6 连接类型不是 Native 时，推送 Windows 通知" xml:space="preserve"><value>當 IPv6 連線類型不是 Native 時，傳送 Windows 通知</value></data>
+  <data name="局域网访问" xml:space="preserve"><value>區域網路存取</value></data>
+  <data name="允许局域网访问" xml:space="preserve"><value>允許區域網路存取</value></data>
+  <data name="开启后显示访问地址" xml:space="preserve"><value>開啟後顯示存取位址</value></data>
+  <data name="局域网访问地址" xml:space="preserve"><value>區域網路存取位址</value></data>
+  <data name="复制链接" xml:space="preserve"><value>複製連結</value></data>
+  <data name="在 GitHub 查看项目" xml:space="preserve"><value>在 GitHub 檢視專案</value></data>
+  <data name="在 GitHub 查看 LanPod" xml:space="preserve"><value>在 GitHub 檢視 LanPod</value></data>
+  <data name="未知" xml:space="preserve"><value>未知</value></data>
+  <data name="无法打开 GitHub 仓库：{0}" xml:space="preserve"><value>無法開啟 GitHub 儲存庫：{0}</value></data>
+  <data name="首次使用，请输入小米路由器管理员密码。" xml:space="preserve"><value>首次使用，請輸入小米路由器管理員密碼。</value></data>
+  <data name="正在连接路由器…" xml:space="preserve"><value>正在連線至路由器…</value></data>
+  <data name="连接异常，正在重试" xml:space="preserve"><value>連線異常，正在重試</value></data>
+  <data name="路由器连接异常" xml:space="preserve"><value>路由器連線異常</value></data>
+  <data name="连接异常：{0}" xml:space="preserve"><value>連線異常：{0}</value></data>
+  <data name="更新于 {0:HH:mm:ss}" xml:space="preserve"><value>更新於 {0:HH:mm:ss}</value></data>
+  <data name="最多再展示十五条上下线记录" xml:space="preserve"><value>最多再顯示十五筆上下線記錄</value></data>
+  <data name="收起到最近三条上下线记录" xml:space="preserve"><value>收起至最近三筆上下線記錄</value></data>
+  <data name="修改会自动保存" xml:space="preserve"><value>修改會自動儲存</value></data>
+  <data name="网线接入" xml:space="preserve"><value>網路線連接</value></data>
+  <data name="网线" xml:space="preserve"><value>網路線</value></data>
+  <data name="访客 Wi-Fi" xml:space="preserve"><value>訪客 Wi-Fi</value></data>
+  <data name="Mesh 接入" xml:space="preserve"><value>Mesh 連接</value></data>
+  <data name="移除设备失败：{0}" xml:space="preserve"><value>移除裝置失敗：{0}</value></data>
+  <data name="正在自动保存…" xml:space="preserve"><value>正在自動儲存…</value></data>
+  <data name="已自动保存" xml:space="preserve"><value>已自動儲存</value></data>
+  <data name="保存失败：{0}" xml:space="preserve"><value>儲存失敗：{0}</value></data>
+  <data name="正在读取上网信息与 Mesh 节点…" xml:space="preserve"><value>正在讀取網際網路資訊與 Mesh 節點…</value></data>
+  <data name="互联网已连接" xml:space="preserve"><value>網際網路已連線</value></data>
+  <data name="互联网未连接" xml:space="preserve"><value>網際網路未連線</value></data>
+  <data name="读取失败：{0}" xml:space="preserve"><value>讀取失敗：{0}</value></data>
+  <data name="正在向路由器发送重启指令…" xml:space="preserve"><value>正在向路由器傳送重新啟動指令…</value></data>
+  <data name="重启完成，路由器与互联网连接已恢复" xml:space="preserve"><value>重新啟動完成，路由器與網際網路連線已恢復</value></data>
+  <data name="重启未完成：{0}" xml:space="preserve"><value>重新啟動未完成：{0}</value></data>
+  <data name="正在等待输入完成…" xml:space="preserve"><value>正在等待輸入完成…</value></data>
+  <data name="请输入路由器地址" xml:space="preserve"><value>請輸入路由器位址</value></data>
+  <data name="请输入管理员密码" xml:space="preserve"><value>請輸入管理員密碼</value></data>
+  <data name="正在连接并应用…" xml:space="preserve"><value>正在連線並套用…</value></data>
+  <data name="连接失败，请检查设置" xml:space="preserve"><value>連線失敗，請檢查設定</value></data>
+  <data name="已自动应用" xml:space="preserve"><value>已自動套用</value></data>
+  <data name="自动应用失败：{0}" xml:space="preserve"><value>自動套用失敗：{0}</value></data>
+  <data name="保存新设备通知设置失败：{0}" xml:space="preserve"><value>儲存新裝置通知設定失敗：{0}</value></data>
+  <data name="免打扰时间格式不正确，请使用 24 小时制，例如 22:30。" xml:space="preserve"><value>勿擾時間格式不正確，請使用 24 小時制，例如 22:30。</value></data>
+  <data name="保存应用设置失败：{0}" xml:space="preserve"><value>儲存應用程式設定失敗：{0}</value></data>
+  <data name="保存界面语言失败：{0}" xml:space="preserve"><value>儲存介面語言失敗：{0}</value></data>
+  <data name="正在准备局域网访问；若 Windows 弹出授权，请允许此程序。" xml:space="preserve"><value>正在準備區域網路存取；若 Windows 要求授權，請允許此程式。</value></data>
+  <data name="暂未发现局域网连接，目前仅本机可访问。连接网络后重新开启。" xml:space="preserve"><value>暫未發現區域網路連線，目前僅本機可存取。連線後請重新開啟。</value></data>
+  <data name="未能开启网页访问，请重试。{0}" xml:space="preserve"><value>無法開啟網頁存取，請重試。{0}</value></data>
+  <data name="链接已复制，手机打开即可查看。" xml:space="preserve"><value>連結已複製，可在手機開啟查看。</value></data>
+  <data name="暂时无法复制，请直接选择链接复制。" xml:space="preserve"><value>暫時無法複製，請直接選取連結複製。</value></data>
+  <data name="上线于 {0}" xml:space="preserve"><value>上線於 {0}</value></data>
+  <data name="离线于 {0}" xml:space="preserve"><value>離線於 {0}</value></data>
+  <data name="尚无可确认的上线时间" xml:space="preserve"><value>尚無可確認的上線時間</value></data>
+  <data name="尚无可确认的离线时间" xml:space="preserve"><value>尚無可確認的離線時間</value></data>
+  <data name="时间未知" xml:space="preserve"><value>時間未知</value></data>
+  <data name="刚刚" xml:space="preserve"><value>剛剛</value></data>
+  <data name="{0} 分钟前" xml:space="preserve"><value>{0} 分鐘前</value></data>
+  <data name="{0} 小时前" xml:space="preserve"><value>{0} 小時前</value></data>
+  <data name="{0} 天前" xml:space="preserve"><value>{0} 天前</value></data>
+  <data name="尚无记录" xml:space="preserve"><value>尚無記錄</value></data>
+  <data name="暂无记录" xml:space="preserve"><value>尚無記錄</value></data>
+  <data name="当前在线" xml:space="preserve"><value>目前線上</value></data>
+  <data name="{0} 最后在线" xml:space="preserve"><value>最後上線於 {0}</value></data>
+  <data name="今天" xml:space="preserve"><value>今天</value></data>
+  <data name="昨天" xml:space="preserve"><value>昨天</value></data>
+  <data name="前天" xml:space="preserve"><value>前天</value></data>
+  <data name="{0} 天 {1} 小时" xml:space="preserve"><value>{0} 天 {1} 小時</value></data>
+  <data name="{0} 小时 {1} 分钟" xml:space="preserve"><value>{0} 小時 {1} 分鐘</value></data>
+  <data name="{0} 分钟" xml:space="preserve"><value>{0} 分鐘</value></data>
+  <data name="MM 月 dd 日" xml:space="preserve"><value>MM 月 dd 日</value></data>
+  <data name="MM 月 dd 日 HH:mm" xml:space="preserve"><value>MM 月 dd 日 HH:mm</value></data>
+  <data name="yyyy 年 MM 月 dd 日 HH:mm:ss" xml:space="preserve"><value>yyyy 年 MM 月 dd 日 HH:mm:ss</value></data>
+  <data name="手机" xml:space="preserve"><value>手機</value></data>
+  <data name="平板电脑" xml:space="preserve"><value>平板電腦</value></data>
+  <data name="笔记本电脑" xml:space="preserve"><value>筆記型電腦</value></data>
+  <data name="台式电脑" xml:space="preserve"><value>桌上型電腦</value></data>
+  <data name="打印机" xml:space="preserve"><value>印表機</value></data>
+  <data name="智能音箱" xml:space="preserve"><value>智慧音箱</value></data>
+  <data name="灯" xml:space="preserve"><value>燈</value></data>
+  <data name="插座" xml:space="preserve"><value>插座</value></data>
+  <data name="空调" xml:space="preserve"><value>空調</value></data>
+  <data name="监测设备" xml:space="preserve"><value>監測裝置</value></data>
+  <data name="窗帘" xml:space="preserve"><value>窗簾</value></data>
+  <data name="传感器" xml:space="preserve"><value>感測器</value></data>
+  <data name="电视" xml:space="preserve"><value>電視</value></data>
+  <data name="游戏设备" xml:space="preserve"><value>遊戲裝置</value></data>
+  <data name="摄像头" xml:space="preserve"><value>攝影機</value></data>
+  <data name="其他设备" xml:space="preserve"><value>其他裝置</value></data>
+  <data name="小米路由器" xml:space="preserve"><value>小米路由器</value></data>
+  <data name="小爱音箱" xml:space="preserve"><value>小愛音箱</value></data>
+  <data name="智能灯" xml:space="preserve"><value>智慧燈</value></data>
+  <data name="空调伴侣" xml:space="preserve"><value>空調伴侶</value></data>
+  <data name="智能插座" xml:space="preserve"><value>智慧插座</value></data>
+  <data name="空气检测仪" xml:space="preserve"><value>空氣偵測器</value></data>
+  <data name="智能窗帘" xml:space="preserve"><value>智慧窗簾</value></data>
+  <data name="等待监控数据" xml:space="preserve"><value>等待監控資料</value></data>
+  <data name="路由器正在重启，请保持应用开启…" xml:space="preserve"><value>路由器正在重新啟動，請保持應用程式開啟…</value></data>
+  <data name="路由器已重启并恢复连接" xml:space="preserve"><value>路由器已重新啟動並恢復連線</value></data>
+  <data name="路由器正在重启，已等待 {0} 秒…" xml:space="preserve"><value>路由器正在重新啟動，已等待 {0} 秒…</value></data>
+  <data name="路由器重启等待超时，请稍后检查网络连接。" xml:space="preserve"><value>等待路由器重新啟動逾時，請稍後檢查網路連線。</value></data>
+  <data name="路由器已启动，正在等待外网连接。" xml:space="preserve"><value>路由器已啟動，正在等待對外連線。</value></data>
+  <data name="未启用" xml:space="preserve"><value>未啟用</value></data>
+  <data name="静态 IP" xml:space="preserve"><value>靜態 IP</value></data>
+  <data name="跳转到详情" xml:space="preserve"><value>跳至詳細資訊</value></data>
+  <data name="设备栏" xml:space="preserve"><value>裝置欄</value></data>
+  <data name="设备列表" xml:space="preserve"><value>裝置清單</value></data>
+  <data name="设备详情" xml:space="preserve"><value>裝置詳細資訊</value></data>
+  <data name="展开上下线历史" xml:space="preserve"><value>展開上下線記錄</value></data>
+  <data name="该设备已不在列表中" xml:space="preserve"><value>此裝置已不在清單中</value></data>
+  <data name="请求失败（{0}）" xml:space="preserve"><value>請求失敗（{0}）</value></data>
+  <data name="{0} 更新" xml:space="preserve"><value>{0} 更新</value></data>
+  <data name="连接中断，正在重试" xml:space="preserve"><value>連線中斷，正在重試</value></data>
+  <data name="{0} 月 {1} 日" xml:space="preserve"><value>{0} 月 {1} 日</value></data>
+  <data name="暂无时长" xml:space="preserve"><value>尚無時長</value></data>
+  <data name="已复制" xml:space="preserve"><value>已複製</value></data>
+  <data name="请长按文字复制" xml:space="preserve"><value>請長按文字複製</value></data>
+  <data name="已上线" xml:space="preserve"><value>已上線</value></data>
+  <data name="已离线" xml:space="preserve"><value>已離線</value></data>
+  <data name="新设备上线：{0}" xml:space="preserve"><value>新裝置上線：{0}</value></data>
+  <data name="发生时间：{0}" xml:space="preserve"><value>發生時間：{0}</value></data>
+  <data name="当前 IPv6 连接类型不是 Native" xml:space="preserve"><value>目前 IPv6 連線類型不是 Native</value></data>
+  <data name="当前连接类型：{0}" xml:space="preserve"><value>目前連線類型：{0}</value></data>
+  <data name="Windows 系统通知测试" xml:space="preserve"><value>Windows 系統通知測試</value></data>
+  <data name="LanPod已将这条通知提交到 Windows。" xml:space="preserve"><value>LanPod 已將此通知提交至 Windows。</value></data>
+  <data name="路由器地址不能为空。" xml:space="preserve"><value>路由器位址不能為空。</value></data>
+  <data name="路由器地址格式不正确。" xml:space="preserve"><value>路由器位址格式不正確。</value></data>
+  <data name="请先输入路由器管理员密码。" xml:space="preserve"><value>請先輸入路由器管理員密碼。</value></data>
+  <data name="无法连接路由器，请检查地址和网络连接。" xml:space="preserve"><value>無法連線至路由器，請檢查位址和網路連線。</value></data>
+  <data name="路由器登录页格式不受支持，未找到认证参数。" xml:space="preserve"><value>不支援此路由器登入頁格式，找不到驗證參數。</value></data>
+  <data name="路由器管理员密码不正确。" xml:space="preserve"><value>路由器管理員密碼不正確。</value></data>
+  <data name="路由器登录失败（代码 {0}）。" xml:space="preserve"><value>路由器登入失敗（代碼 {0}）。</value></data>
+  <data name="路由器登录成功，但未返回访问令牌。" xml:space="preserve"><value>路由器登入成功，但未傳回存取權杖。</value></data>
+  <data name="路由器没有返回上网信息。" xml:space="preserve"><value>路由器未傳回網際網路資訊。</value></data>
+  <data name="未获取到有效的 Mesh 拓扑。" xml:space="preserve"><value>未取得有效的 Mesh 拓撲。</value></data>
+  <data name="Mesh 拓扑缺少有效的节点身份。" xml:space="preserve"><value>Mesh 拓撲缺少有效的節點識別資料。</value></data>
+  <data name="路由器设备接口返回了不完整的数据。" xml:space="preserve"><value>路由器裝置介面傳回的資料不完整。</value></data>
+  <data name="无法读取路由器认证模式。" xml:space="preserve"><value>無法讀取路由器驗證模式。</value></data>
+  <data name="路由器会话尚未建立。" xml:space="preserve"><value>路由器工作階段尚未建立。</value></data>
+  <data name="读取路由器设备数据失败。" xml:space="preserve"><value>讀取路由器裝置資料失敗。</value></data>
+  <data name="路由器返回了无法识别的数据。" xml:space="preserve"><value>路由器傳回無法辨識的資料。</value></data>
+  <data name="路由器接口返回错误（代码 {0}）。" xml:space="preserve"><value>路由器介面傳回錯誤（代碼 {0}）。</value></data>
+  <data name="无法向路由器发送操作请求。" xml:space="preserve"><value>無法向路由器傳送操作請求。</value></data>
+  <data name="路由器返回了无法识别的操作结果。" xml:space="preserve"><value>路由器傳回無法辨識的操作結果。</value></data>
+  <data name="路由器操作失败（代码 {0}）。" xml:space="preserve"><value>路由器操作失敗（代碼 {0}）。</value></data>
+  <data name="无法保存路由器密码到 Windows 凭据管理器。" xml:space="preserve"><value>無法將路由器密碼儲存至 Windows 認證管理員。</value></data>
+  <data name="无法读取 Windows 凭据管理器。" xml:space="preserve"><value>無法讀取 Windows 認證管理員。</value></data>
+  <data name="无法读取已保存凭据状态。" xml:space="preserve"><value>無法讀取已儲存認證的狀態。</value></data>
+  <data name="设备列表滚动条" xml:space="preserve"><value>裝置清單捲軸</value></data>
+  <data name="设备详情滚动条" xml:space="preserve"><value>裝置詳細資訊捲軸</value></data>
+  <data name="路由器信息滚动条" xml:space="preserve"><value>路由器資訊捲軸</value></data>
+  <data name="等待新的流量采样" xml:space="preserve"><value>等待新的流量取樣</value></data>
+</root>

@@ -29,7 +29,7 @@ public sealed class RouterCredentialService
 
             if (!CredWrite(ref credential, 0))
             {
-                throw new Win32Exception(Marshal.GetLastWin32Error(), "无法保存路由器密码到 Windows 凭据管理器。");
+                throw new Win32Exception(Marshal.GetLastWin32Error(), LocalizationService.Text("无法保存路由器密码到 Windows 凭据管理器。"));
             }
         }
         finally
@@ -49,7 +49,7 @@ public sealed class RouterCredentialService
         if (!CredRead(GetTarget(routerAddress), CredentialTypeGeneric, 0, out var credentialPointer))
         {
             var error = Marshal.GetLastWin32Error();
-            return error == 1168 ? null : throw new Win32Exception(error, "无法读取 Windows 凭据管理器。");
+            return error == 1168 ? null : throw new Win32Exception(error, LocalizationService.Text("无法读取 Windows 凭据管理器。"));
         }
 
         try
@@ -65,14 +65,17 @@ public sealed class RouterCredentialService
         }
     }
 
-    public bool HasPassword(string routerAddress)
+    public bool HasPassword(string routerAddress) => GetPasswordLength(routerAddress) > 0;
+
+    public int GetPasswordLength(string routerAddress)
     {
         if (!CredRead(GetTarget(routerAddress), CredentialTypeGeneric, 0, out var pointer))
         {
             var error = Marshal.GetLastWin32Error();
-            return error == 1168 ? false : throw new Win32Exception(error, "无法读取已保存凭据状态。");
+            return error == 1168 ? 0 : throw new Win32Exception(error, LocalizationService.Text("无法读取已保存凭据状态。"));
         }
-        try { return Marshal.PtrToStructure<NativeCredential>(pointer).CredentialBlobSize > 0; }
+        // SavePassword stores UTF-16 code units, matching PasswordBox's mask count.
+        try { return Marshal.PtrToStructure<NativeCredential>(pointer).CredentialBlobSize / sizeof(char); }
         finally { CredFree(pointer); }
     }
 

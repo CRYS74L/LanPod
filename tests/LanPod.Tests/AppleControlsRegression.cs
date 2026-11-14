@@ -371,7 +371,7 @@ var iconLeft = window.ShellAppIcon.TranslatePoint(new Point(),window.SidebarExpa
                 typeof(MainWindow).GetMethod("ShowSettingsPanel", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(window, null);
                 Pump(500);
                 window.RouterAddressBox.Text = "10.77.0.1";
-                typeof(MainWindow).GetField("_hasSavedRouterPassword",BindingFlags.Instance|BindingFlags.NonPublic)!.SetValue(window,true);
+                typeof(MainWindow).GetField("_savedRouterPasswordLength",BindingFlags.Instance|BindingFlags.NonPublic)!.SetValue(window,8);
                 window.RouterPasswordBox.Password="";
                 typeof(MainWindow).GetMethod("RefreshPasswordIndicator",BindingFlags.Instance|BindingFlags.NonPublic)!.Invoke(window,null);
                 Require(window.SavedRouterPasswordMask.Visibility==Visibility.Visible,"已有凭据没有掩码提示");

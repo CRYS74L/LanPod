@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <data name="返回" xml:space="preserve"><value>戻る</value></data>
+  <data name="返回设备列表" xml:space="preserve"><value>デバイス一覧に戻る</value></data>
+  <data name="最小化" xml:space="preserve"><value>最小化</value></data>
+  <data name="最大化" xml:space="preserve"><value>最大化</value></data>
+  <data name="还原" xml:space="preserve"><value>元に戻す</value></data>
+  <data name="关闭" xml:space="preserve"><value>閉じる</value></data>
+  <data name="收起侧栏" xml:space="preserve"><value>サイドバーを折りたたむ</value></data>
+  <data name="展开侧栏" xml:space="preserve"><value>サイドバーを展開</value></data>
+  <data name="设备状态筛选" xml:space="preserve"><value>デバイス状態で絞り込み</value></data>
+  <data name="在线设备" xml:space="preserve"><value>オンラインのデバイス</value></data>
+  <data name="在线" xml:space="preserve"><value>オンライン</value></data>
+  <data name="离线设备" xml:space="preserve"><value>オフラインのデバイス</value></data>
+  <data name="离线" xml:space="preserve"><value>オフライン</value></data>
+  <data name="上线" xml:space="preserve"><value>オンライン</value></data>
+  <data name="尚未连接" xml:space="preserve"><value>未接続</value></data>
+  <data name="已连接" xml:space="preserve"><value>接続済み</value></data>
+  <data name="等待刷新" xml:space="preserve"><value>更新待ち</value></data>
+  <data name="路由器" xml:space="preserve"><value>ルーター</value></data>
+  <data name="设置" xml:space="preserve"><value>設定</value></data>
+  <data name="调整设备栏宽度" xml:space="preserve"><value>デバイス欄の幅を調整</value></data>
+  <data name="连接信息" xml:space="preserve"><value>接続情報</value></data>
+  <data name="连接状态" xml:space="preserve"><value>接続状態</value></data>
+  <data name="连接类型" xml:space="preserve"><value>接続タイプ</value></data>
+  <data name="IP 地址" xml:space="preserve"><value>IP アドレス</value></data>
+  <data name="MAC 地址" xml:space="preserve"><value>MAC アドレス</value></data>
+  <data name="流量统计" xml:space="preserve"><value>トラフィック統計</value></data>
+  <data name="流量统计时间区间" xml:space="preserve"><value>トラフィックの表示期間</value></data>
+  <data name="1 分钟" xml:space="preserve"><value>1 分</value></data>
+  <data name="5 分钟" xml:space="preserve"><value>5 分</value></data>
+  <data name="10 分钟" xml:space="preserve"><value>10 分</value></data>
+  <data name="流量统计曲线" xml:space="preserve"><value>トラフィックグラフ</value></data>
+  <data name="下载速度" xml:space="preserve"><value>ダウンロード速度</value></data>
+  <data name="上传速度" xml:space="preserve"><value>アップロード速度</value></data>
+  <data name="下载总量统计" xml:space="preserve"><value>ダウンロード総量</value></data>
+  <data name="下载总量" xml:space="preserve"><value>ダウンロード総量</value></data>
+  <data name="上传总量统计" xml:space="preserve"><value>アップロード総量</value></data>
+  <data name="上传总量" xml:space="preserve"><value>アップロード総量</value></data>
+  <data name="上下线历史" xml:space="preserve"><value>接続履歴</value></data>
+  <data name="离线时间" xml:space="preserve"><value>切断時刻</value></data>
+  <data name="上线时间" xml:space="preserve"><value>接続時刻</value></data>
+  <data name="设备设置" xml:space="preserve"><value>デバイス設定</value></data>
+  <data name="自定义名称" xml:space="preserve"><value>カスタム名</value></data>
+  <data name="留空时使用自动识别名称" xml:space="preserve"><value>空欄の場合は自動検出名を使用</value></data>
+  <data name="设备类型与图标" xml:space="preserve"><value>デバイスの種類とアイコン</value></data>
+  <data name="当设备上下线时，推送 Windows 通知" xml:space="preserve"><value>デバイスの接続・切断時に Windows 通知を送信</value></data>
+  <data name="设备管理" xml:space="preserve"><value>デバイス管理</value></data>
+  <data name="移除该设备" xml:space="preserve"><value>このデバイスを削除</value></data>
+  <data name="确认移除？历史记录会保留，再次上线后会重新显示。" xml:space="preserve"><value>削除しますか？履歴は保持され、再接続時に再表示されます。</value></data>
+  <data name="取消" xml:space="preserve"><value>キャンセル</value></data>
+  <data name="确认移除" xml:space="preserve"><value>削除</value></data>
+  <data name="路由器与上网信息" xml:space="preserve"><value>ルーターとインターネット</value></data>
+  <data name="正在读取" xml:space="preserve"><value>読み込み中</value></data>
+  <data name="刷新" xml:space="preserve"><value>更新</value></data>
+  <data name="正在读取上网信息…" xml:space="preserve"><value>インターネット情報を読み込み中…</value></data>
+  <data name="网络连接" xml:space="preserve"><value>ネットワーク接続</value></data>
+  <data name="子网掩码" xml:space="preserve"><value>サブネットマスク</value></data>
+  <data name="默认网关" xml:space="preserve"><value>デフォルトゲートウェイ</value></data>
+  <data name="WAN 地址" xml:space="preserve"><value>WAN アドレス</value></data>
+  <data name="WAN 网关" xml:space="preserve"><value>WAN ゲートウェイ</value></data>
+  <data name="LAN 地址" xml:space="preserve"><value>LAN アドレス</value></data>
+  <data name="LAN 前缀" xml:space="preserve"><value>LAN プレフィックス</value></data>
+  <data name="Mesh 网络" xml:space="preserve"><value>Mesh ネットワーク</value></data>
+  <data name="暂无 Mesh 节点" xml:space="preserve"><value>Mesh ノードはありません</value></data>
+  <data name="Mesh 节点" xml:space="preserve"><value>Mesh ノード</value></data>
+  <data name="Mesh 节点" xml:space="preserve"><value>Mesh ノード</value></data>
+  <data name="连接设备" xml:space="preserve"><value>接続数</value></data>
+  <data name="主路由" xml:space="preserve"><value>メインルーター</value></data>
+  <data name="有线回程" xml:space="preserve"><value>有線バックホール</value></data>
+  <data name="无线回程" xml:space="preserve"><value>無線バックホール</value></data>
+  <data name="路由器操作" xml:space="preserve"><value>ルーター操作</value></data>
+  <data name="重启路由器" xml:space="preserve"><value>ルーターを再起動</value></data>
+  <data name="重启期间设备会暂时断网，应用会持续显示恢复进度" xml:space="preserve"><value>再起動中は一時的に接続が切れます。復旧状況は引き続き表示されます。</value></data>
+  <data name="确认重启" xml:space="preserve"><value>再起動</value></data>
+  <data name="正在准备重启…" xml:space="preserve"><value>再起動を準備中…</value></data>
+  <data name="通用" xml:space="preserve"><value>一般</value></data>
+  <data name="颜色主题" xml:space="preserve"><value>カラーテーマ</value></data>
+  <data name="跟随系统" xml:space="preserve"><value>システム設定</value></data>
+  <data name="浅色模式" xml:space="preserve"><value>ライト</value></data>
+  <data name="深色模式" xml:space="preserve"><value>ダーク</value></data>
+  <data name="界面语言" xml:space="preserve"><value>表示言語</value></data>
+  <data name="开机启动" xml:space="preserve"><value>ログイン時に起動</value></data>
+  <data name="路由器连接" xml:space="preserve"><value>ルーター接続</value></data>
+  <data name="路由器地址" xml:space="preserve"><value>ルーターアドレス</value></data>
+  <data name="例如 192.168.31.1" xml:space="preserve"><value>例 192.168.31.1</value></data>
+  <data name="管理员密码" xml:space="preserve"><value>管理者パスワード</value></data>
+  <data name="输入管理员密码" xml:space="preserve"><value>管理者パスワードを入力</value></data>
+  <data name="输入新密码可替换已保存的密码" xml:space="preserve"><value>新しいパスワードを入力すると保存済みのものを置き換えます</value></data>
+  <data name="通知" xml:space="preserve"><value>通知</value></data>
+  <data name="定时免打扰" xml:space="preserve"><value>通知の休止時間</value></data>
+  <data name="免打扰时段" xml:space="preserve"><value>休止時間帯</value></data>
+  <data name="免打扰开始时间" xml:space="preserve"><value>休止開始時刻</value></data>
+  <data name="至" xml:space="preserve"><value>〜</value></data>
+  <data name="免打扰结束时间" xml:space="preserve"><value>休止終了時刻</value></data>
+  <data name="当新设备上线时，推送 Windows 通知" xml:space="preserve"><value>新しいデバイスの接続時に Windows 通知を送信</value></data>
+  <data name="当新设备上线时，推送 Windows 通知" xml:space="preserve"><value>新しいデバイスの接続時に Windows 通知を送信</value></data>
+  <data name="当 IPv6 连接类型不是 Native 时，推送 Windows 通知" xml:space="preserve"><value>IPv6 接続タイプが Native 以外のときに Windows 通知を送信</value></data>
+  <data name="当 IPv6 连接类型不是 Native 时，推送 Windows 通知" xml:space="preserve"><value>IPv6 接続タイプが Native 以外のときに Windows 通知を送信</value></data>
+  <data name="局域网访问" xml:space="preserve"><value>LAN アクセス</value></data>
+  <data name="允许局域网访问" xml:space="preserve"><value>LAN アクセスを許可</value></data>
+  <data name="开启后显示访问地址" xml:space="preserve"><value>有効にするとアクセス先を表示</value></data>
+  <data name="局域网访问地址" xml:space="preserve"><value>LAN アクセス先</value></data>
+  <data name="复制链接" xml:space="preserve"><value>リンクをコピー</value></data>
+  <data name="在 GitHub 查看项目" xml:space="preserve"><value>GitHub でプロジェクトを表示</value></data>
+  <data name="在 GitHub 查看 LanPod" xml:space="preserve"><value>GitHub で LanPod を表示</value></data>
+  <data name="未知" xml:space="preserve"><value>不明</value></data>
+  <data name="无法打开 GitHub 仓库：{0}" xml:space="preserve"><value>GitHub リポジトリを開けません。{0}</value></data>
+  <data name="首次使用，请输入小米路由器管理员密码。" xml:space="preserve"><value>初回設定として Xiaomi ルーターの管理者パスワードを入力してください。</value></data>
+  <data name="正在连接路由器…" xml:space="preserve"><value>ルーターに接続中…</value></data>
+  <data name="连接异常，正在重试" xml:space="preserve"><value>接続エラー。再試行中</value></data>
+  <data name="路由器连接异常" xml:space="preserve"><value>ルーター接続エラー</value></data>
+  <data name="连接异常：{0}" xml:space="preserve"><value>接続エラー。{0}</value></data>
+  <data name="更新于 {0:HH:mm:ss}" xml:space="preserve"><value>更新 {0:HH:mm:ss}</value></data>
+  <data name="最多再展示十五条上下线记录" xml:space="preserve"><value>接続履歴を最大15件追加表示</value></data>
+  <data name="收起到最近三条上下线记录" xml:space="preserve"><value>最新3件の接続履歴に折りたたむ</value></data>
+  <data name="修改会自动保存" xml:space="preserve"><value>変更は自動保存されます</value></data>
+  <data name="网线接入" xml:space="preserve"><value>有線接続</value></data>
+  <data name="网线" xml:space="preserve"><value>有線</value></data>
+  <data name="访客 Wi-Fi" xml:space="preserve"><value>ゲスト Wi-Fi</value></data>
+  <data name="Mesh 接入" xml:space="preserve"><value>Mesh 接続</value></data>
+  <data name="移除设备失败：{0}" xml:space="preserve"><value>デバイスを削除できません。{0}</value></data>
+  <data name="正在自动保存…" xml:space="preserve"><value>自動保存中…</value></data>
+  <data name="已自动保存" xml:space="preserve"><value>自動保存済み</value></data>
+  <data name="保存失败：{0}" xml:space="preserve"><value>保存できません。{0}</value></data>
+  <data name="正在读取上网信息与 Mesh 节点…" xml:space="preserve"><value>インターネット情報と Mesh ノードを読み込み中…</value></data>
+  <data name="互联网已连接" xml:space="preserve"><value>インターネット接続済み</value></data>
+  <data name="互联网未连接" xml:space="preserve"><value>インターネット未接続</value></data>
+  <data name="读取失败：{0}" xml:space="preserve"><value>読み込めません。{0}</value></data>
+  <data name="正在向路由器发送重启指令…" xml:space="preserve"><value>ルーターに再起動コマンドを送信中…</value></data>
+  <data name="重启完成，路由器与互联网连接已恢复" xml:space="preserve"><value>再起動が完了し、ルーターとインターネット接続が復旧しました</value></data>
+  <data name="重启未完成：{0}" xml:space="preserve"><value>再起動が完了していません。{0}</value></data>
+  <data name="正在等待输入完成…" xml:space="preserve"><value>入力の完了を待機中…</value></data>
+  <data name="请输入路由器地址" xml:space="preserve"><value>ルーターアドレスを入力してください</value></data>
+  <data name="请输入管理员密码" xml:space="preserve"><value>管理者パスワードを入力してください</value></data>
+  <data name="正在连接并应用…" xml:space="preserve"><value>接続して適用中…</value></data>
+  <data name="连接失败，请检查设置" xml:space="preserve"><value>接続できません。設定を確認してください</value></data>
+  <data name="已自动应用" xml:space="preserve"><value>自動適用済み</value></data>
+  <data name="自动应用失败：{0}" xml:space="preserve"><value>自動適用できません。{0}</value></data>
+  <data name="保存新设备通知设置失败：{0}" xml:space="preserve"><value>新規デバイスの通知設定を保存できません。{0}</value></data>
+  <data name="免打扰时间格式不正确，请使用 24 小时制，例如 22:30。" xml:space="preserve"><value>休止時間は24時間形式で入力してください。例 22:30。</value></data>
+  <data name="保存应用设置失败：{0}" xml:space="preserve"><value>アプリの設定を保存できません。{0}</value></data>
+  <data name="保存界面语言失败：{0}" xml:space="preserve"><value>表示言語を保存できません。{0}</value></data>
+  <data name="正在准备局域网访问；若 Windows 弹出授权，请允许此程序。" xml:space="preserve"><value>LAN アクセスを準備中です。Windows の確認が表示されたら、このアプリを許可してください。</value></data>
+  <data name="暂未发现局域网连接，目前仅本机可访问。连接网络后重新开启。" xml:space="preserve"><value>LAN 接続が見つかりません。現在はこの PC からのみアクセスできます。接続後に再度有効にしてください。</value></data>
+  <data name="未能开启网页访问，请重试。{0}" xml:space="preserve"><value>Web アクセスを有効にできません。再試行してください。{0}</value></data>
+  <data name="链接已复制，手机打开即可查看。" xml:space="preserve"><value>リンクをコピーしました。スマートフォンで開いてください。</value></data>
+  <data name="暂时无法复制，请直接选择链接复制。" xml:space="preserve"><value>コピーできません。リンクを選択してコピーしてください。</value></data>
+  <data name="上线于 {0}" xml:space="preserve"><value>接続時刻 {0}</value></data>
+  <data name="离线于 {0}" xml:space="preserve"><value>切断時刻 {0}</value></data>
+  <data name="尚无可确认的上线时间" xml:space="preserve"><value>接続時刻は不明です</value></data>
+  <data name="尚无可确认的离线时间" xml:space="preserve"><value>切断時刻は不明です</value></data>
+  <data name="时间未知" xml:space="preserve"><value>時刻不明</value></data>
+  <data name="刚刚" xml:space="preserve"><value>たった今</value></data>
+  <data name="{0} 分钟前" xml:space="preserve"><value>{0} 分前</value></data>
+  <data name="{0} 小时前" xml:space="preserve"><value>{0} 時間前</value></data>
+  <data name="{0} 天前" xml:space="preserve"><value>{0} 日前</value></data>
+  <data name="尚无记录" xml:space="preserve"><value>記録なし</value></data>
+  <data name="暂无记录" xml:space="preserve"><value>記録なし</value></data>
+  <data name="当前在线" xml:space="preserve"><value>現在オンライン</value></data>
+  <data name="{0} 最后在线" xml:space="preserve"><value>最終接続 {0}</value></data>
+  <data name="今天" xml:space="preserve"><value>今日</value></data>
+  <data name="昨天" xml:space="preserve"><value>昨日</value></data>
+  <data name="前天" xml:space="preserve"><value>一昨日</value></data>
+  <data name="{0} 天 {1} 小时" xml:space="preserve"><value>{0} 日 {1} 時間</value></data>
+  <data name="{0} 小时 {1} 分钟" xml:space="preserve"><value>{0} 時間 {1} 分</value></data>
+  <data name="{0} 分钟" xml:space="preserve"><value>{0} 分</value></data>
+  <data name="MM 月 dd 日" xml:space="preserve"><value>MM 月 dd 日</value></data>
+  <data name="MM 月 dd 日 HH:mm" xml:space="preserve"><value>MM 月 dd 日 HH:mm</value></data>
+  <data name="yyyy 年 MM 月 dd 日 HH:mm:ss" xml:space="preserve"><value>yyyy 年 MM 月 dd 日 HH:mm:ss</value></data>
+  <data name="手机" xml:space="preserve"><value>スマートフォン</value></data>
+  <data name="平板电脑" xml:space="preserve"><value>タブレット</value></data>
+  <data name="笔记本电脑" xml:space="preserve"><value>ノート PC</value></data>
+  <data name="台式电脑" xml:space="preserve"><value>デスクトップ PC</value></data>
+  <data name="打印机" xml:space="preserve"><value>プリンター</value></data>
+  <data name="智能音箱" xml:space="preserve"><value>スマートスピーカー</value></data>
+  <data name="灯" xml:space="preserve"><value>照明</value></data>
+  <data name="插座" xml:space="preserve"><value>スマートプラグ</value></data>
+  <data name="空调" xml:space="preserve"><value>エアコン</value></data>
+  <data name="监测设备" xml:space="preserve"><value>モニター機器</value></data>
+  <data name="窗帘" xml:space="preserve"><value>カーテン</value></data>
+  <data name="传感器" xml:space="preserve"><value>センサー</value></data>
+  <data name="电视" xml:space="preserve"><value>テレビ</value></data>
+  <data name="游戏设备" xml:space="preserve"><value>ゲーム機</value></data>
+  <data name="摄像头" xml:space="preserve"><value>カメラ</value></data>
+  <data name="其他设备" xml:space="preserve"><value>その他のデバイス</value></data>
+  <data name="小米路由器" xml:space="preserve"><value>Xiaomi ルーター</value></data>
+  <data name="小爱音箱" xml:space="preserve"><value>XiaoAI スピーカー</value></data>
+  <data name="智能灯" xml:space="preserve"><value>スマートライト</value></data>
+  <data name="空调伴侣" xml:space="preserve"><value>エアコンコントローラー</value></data>
+  <data name="智能插座" xml:space="preserve"><value>スマートプラグ</value></data>
+  <data name="空气检测仪" xml:space="preserve"><value>空気質モニター</value></data>
+  <data name="智能窗帘" xml:space="preserve"><value>スマートカーテン</value></data>
+  <data name="等待监控数据" xml:space="preserve"><value>監視データ待ち</value></data>
+  <data name="路由器正在重启，请保持应用开启…" xml:space="preserve"><value>ルーターを再起動中です。アプリを開いたままにしてください…</value></data>
+  <data name="路由器已重启并恢复连接" xml:space="preserve"><value>ルーターが再起動し、接続が復旧しました</value></data>
+  <data name="路由器正在重启，已等待 {0} 秒…" xml:space="preserve"><value>ルーターを再起動中。{0} 秒経過…</value></data>
+  <data name="路由器重启等待超时，请稍后检查网络连接。" xml:space="preserve"><value>ルーターの再起動がタイムアウトしました。ネットワーク接続を確認してください。</value></data>
+  <data name="路由器已启动，正在等待外网连接。" xml:space="preserve"><value>ルーターが起動しました。インターネット接続を待機中です。</value></data>
+  <data name="未启用" xml:space="preserve"><value>無効</value></data>
+  <data name="静态 IP" xml:space="preserve"><value>固定 IP</value></data>
+  <data name="跳转到详情" xml:space="preserve"><value>詳細へ移動</value></data>
+  <data name="设备栏" xml:space="preserve"><value>デバイスサイドバー</value></data>
+  <data name="设备列表" xml:space="preserve"><value>デバイス一覧</value></data>
+  <data name="设备详情" xml:space="preserve"><value>デバイスの詳細</value></data>
+  <data name="展开上下线历史" xml:space="preserve"><value>接続履歴を展開</value></data>
+  <data name="该设备已不在列表中" xml:space="preserve"><value>このデバイスは一覧にありません</value></data>
+  <data name="请求失败（{0}）" xml:space="preserve"><value>リクエストに失敗しました（{0}）</value></data>
+  <data name="{0} 更新" xml:space="preserve"><value>更新 {0}</value></data>
+  <data name="连接中断，正在重试" xml:space="preserve"><value>接続が切断されました。再試行中</value></data>
+  <data name="{0} 月 {1} 日" xml:space="preserve"><value>{0} 月 {1} 日</value></data>
+  <data name="暂无时长" xml:space="preserve"><value>所要時間なし</value></data>
+  <data name="已复制" xml:space="preserve"><value>コピーしました</value></data>
+  <data name="请长按文字复制" xml:space="preserve"><value>テキストを長押ししてコピーしてください</value></data>
+  <data name="已上线" xml:space="preserve"><value>接続しました</value></data>
+  <data name="已离线" xml:space="preserve"><value>切断されました</value></data>
+  <data name="新设备上线：{0}" xml:space="preserve"><value>新しいデバイスが接続しました。{0}</value></data>
+  <data name="发生时间：{0}" xml:space="preserve"><value>発生時刻 {0}</value></data>
+  <data name="当前 IPv6 连接类型不是 Native" xml:space="preserve"><value>現在の IPv6 接続タイプは Native 以外です</value></data>
+  <data name="当前连接类型：{0}" xml:space="preserve"><value>現在の接続タイプ {0}</value></data>
+  <data name="Windows 系统通知测试" xml:space="preserve"><value>Windows 通知テスト</value></data>
+  <data name="LanPod已将这条通知提交到 Windows。" xml:space="preserve"><value>LanPod がこの通知を Windows に送信しました。</value></data>
+  <data name="路由器地址不能为空。" xml:space="preserve"><value>ルーターアドレスを入力してください。</value></data>
+  <data name="路由器地址格式不正确。" xml:space="preserve"><value>ルーターアドレスの形式が正しくありません。</value></data>
+  <data name="请先输入路由器管理员密码。" xml:space="preserve"><value>ルーターの管理者パスワードを入力してください。</value></data>
+  <data name="无法连接路由器，请检查地址和网络连接。" xml:space="preserve"><value>ルーターに接続できません。アドレスとネットワーク接続を確認してください。</value></data>
+  <data name="路由器登录页格式不受支持，未找到认证参数。" xml:space="preserve"><value>ルーターのログインページ形式に対応していません。認証パラメーターが見つかりません。</value></data>
+  <data name="路由器管理员密码不正确。" xml:space="preserve"><value>ルーターの管理者パスワードが正しくありません。</value></data>
+  <data name="路由器登录失败（代码 {0}）。" xml:space="preserve"><value>ルーターへのログインに失敗しました（コード {0}）。</value></data>
+  <data name="路由器登录成功，但未返回访问令牌。" xml:space="preserve"><value>ルーターへのログインは成功しましたが、アクセストークンが返されませんでした。</value></data>
+  <data name="路由器没有返回上网信息。" xml:space="preserve"><value>ルーターからインターネット情報が返されませんでした。</value></data>
+  <data name="未获取到有效的 Mesh 拓扑。" xml:space="preserve"><value>有効な Mesh 構成を取得できませんでした。</value></data>
+  <data name="Mesh 拓扑缺少有效的节点身份。" xml:space="preserve"><value>Mesh 構成に有効なノード識別情報がありません。</value></data>
+  <data name="路由器设备接口返回了不完整的数据。" xml:space="preserve"><value>ルーターのデバイス API から不完全なデータが返されました。</value></data>
+  <data name="无法读取路由器认证模式。" xml:space="preserve"><value>ルーターの認証方式を読み込めません。</value></data>
+  <data name="路由器会话尚未建立。" xml:space="preserve"><value>ルーターのセッションが確立されていません。</value></data>
+  <data name="读取路由器设备数据失败。" xml:space="preserve"><value>ルーターのデバイス情報を読み込めません。</value></data>
+  <data name="路由器返回了无法识别的数据。" xml:space="preserve"><value>ルーターから認識できないデータが返されました。</value></data>
+  <data name="路由器接口返回错误（代码 {0}）。" xml:space="preserve"><value>ルーター API がエラーを返しました（コード {0}）。</value></data>
+  <data name="无法向路由器发送操作请求。" xml:space="preserve"><value>ルーターに操作リクエストを送信できません。</value></data>
+  <data name="路由器返回了无法识别的操作结果。" xml:space="preserve"><value>ルーターから認識できない操作結果が返されました。</value></data>
+  <data name="路由器操作失败（代码 {0}）。" xml:space="preserve"><value>ルーターの操作に失敗しました（コード {0}）。</value></data>
+  <data name="无法保存路由器密码到 Windows 凭据管理器。" xml:space="preserve"><value>ルーターのパスワードを Windows 資格情報マネージャーに保存できません。</value></data>
+  <data name="无法读取 Windows 凭据管理器。" xml:space="preserve"><value>Windows 資格情報マネージャーを読み込めません。</value></data>
+  <data name="无法读取已保存凭据状态。" xml:space="preserve"><value>保存済みの資格情報の状態を読み込めません。</value></data>
+  <data name="设备列表滚动条" xml:space="preserve"><value>デバイス一覧のスクロールバー</value></data>
+  <data name="设备详情滚动条" xml:space="preserve"><value>デバイス詳細のスクロールバー</value></data>
+  <data name="路由器信息滚动条" xml:space="preserve"><value>ルーター情報のスクロールバー</value></data>
+  <data name="等待新的流量采样" xml:space="preserve"><value>新しいトラフィックサンプルを待機中</value></data>
+</root>
