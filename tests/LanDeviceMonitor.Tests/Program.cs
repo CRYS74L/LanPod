@@ -42,6 +42,7 @@ if(args.Contains("--caption-initial-state-regression")) return PortraitCaptionBa
 if(args.Contains("--caption-initial-state-dark-regression")) return PortraitCaptionBackRegression.Run(initialOnly: true, initialTheme: ThemeService.DarkMode);
 if(args.Contains("--switch-menu-regression")) return SwitchMenuRegression.Run();
 if(args.Contains("--tray-click-regression")) return TrayClickRegression.Run();
+if(args.Contains("--tray-startup-regression")) return TrayStartupRegression.Run();
 if(args.Contains("--startup-portrait-regression")) return StartupPortraitRegression.Run();
 if(args.Contains("--startup-registration-regression")) return StartupRegistrationRegression.Run();
 if(args.Contains("--background-startup-regression")) return BackgroundStartupRegression.Run();

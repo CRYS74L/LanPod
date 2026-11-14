@@ -58,6 +58,10 @@ internal static class TrayClickRegression
                     () => exitCalls++);
                 var notifyIcon = GetIcon(tray);
                 var callbackHandle = notifyIcon.Handle;
+                var registrationDeadline = DateTime.UtcNow.AddSeconds(10);
+                while (!notifyIcon.IsAdded && DateTime.UtcNow < registrationDeadline) Pump(20);
+                if (!notifyIcon.IsAdded) throw new InvalidOperationException("The shell did not register the tray icon.");
+                Console.WriteLine("Tray shell registration: PASS (fully configured V4 icon)");
 
                 void HideWindow()
                 {
