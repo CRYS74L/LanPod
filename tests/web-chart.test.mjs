@@ -4,9 +4,9 @@ import { readFileSync } from "node:fs";
 import {
   trafficScale,
   trafficCurve,
-} from "../src/LanDeviceMonitor.App/Web/chart.js";
-import { rate, total, duration } from "../src/LanDeviceMonitor.App/Web/ui.js";
-import * as chartFunctions from "../src/LanDeviceMonitor.App/Web/chart.js";
+} from "../src/LanPod.App/Web/chart.js";
+import { rate, total, duration } from "../src/LanPod.App/Web/ui.js";
+import * as chartFunctions from "../src/LanPod.App/Web/chart.js";
 
 test("chart ingestion preserves equally spaced subsecond coordinates and original arrival identity",()=>{
  const origin=Date.parse("2026-10-25T00:00:00.125Z");

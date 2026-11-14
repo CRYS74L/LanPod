@@ -4,12 +4,12 @@ param(
 
 $ErrorActionPreference = 'Stop'
 $projectRoot = Split-Path -Parent $PSScriptRoot
-$projectPath = Join-Path $projectRoot 'src\LanDeviceMonitor.App\LanDeviceMonitor.App.csproj'
+$projectPath = Join-Path $projectRoot 'src\LanPod.App\LanPod.App.csproj'
 $projectXml = [xml](Get-Content -Raw -Encoding UTF8 -LiteralPath $projectPath)
 $applicationName = [string]$projectXml.Project.PropertyGroup.AssemblyName
 $executablePath = Join-Path (
     Join-Path (
-        Join-Path $projectRoot 'artifacts') $applicationName) "$applicationName.exe"
+        Join-Path $projectRoot 'dist') $applicationName) "$applicationName.exe"
 $executablePath = [System.IO.Path]::GetFullPath($executablePath)
 
 if (-not (Test-Path -LiteralPath $executablePath -PathType Leaf)) {

@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import * as chart from "../src/LanDeviceMonitor.App/Web/chart.js";
+import * as chart from "../src/LanPod.App/Web/chart.js";
 
 test("hover motion shares one interruptible timeline without tweening displayed rates", () => {
   assert.equal(typeof chart.ChartHoverMotion, "function");

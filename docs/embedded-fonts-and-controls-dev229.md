@@ -40,4 +40,4 @@ Windows 自己绘制的通知中心、系统对话框等界面由 Windows 决定
 
 ## 安装
 
-已部署至 `C:\Path\To\LanDeviceMonitor`。663 个发布文件逐个 SHA-256 校验一致，主窗口已启动；旧安装文件保存在 `.tools/deployment-backups/dev228-before-dev229-20261003-023359`。本轮开始时的未提交草稿保存在 `.tools/continuation-backups/before-dev229-20261003-020615`，未覆盖或删除原有的未跟踪 `tools/`。
+已部署至 `C:\Path\To\LanPod`。663 个发布文件逐个 SHA-256 校验一致，主窗口已启动；旧安装文件保存在 `.tools/deployment-backups/dev228-before-dev229-20261003-023359`。本轮开始时的未提交草稿保存在 `.tools/continuation-backups/before-dev229-20261003-020615`，未覆盖或删除原有的未跟踪 `tools/`。

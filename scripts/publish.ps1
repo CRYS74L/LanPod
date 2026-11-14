@@ -1,7 +1,7 @@
 $ErrorActionPreference = 'Stop'
 $projectRoot = Split-Path -Parent $PSScriptRoot
 $localDotnet = Join-Path $projectRoot '.tools\dotnet\dotnet.exe'
-$projectPath = Join-Path $projectRoot 'src\LanDeviceMonitor.App\LanDeviceMonitor.App.csproj'
+$projectPath = Join-Path $projectRoot 'src\LanPod.App\LanPod.App.csproj'
 $projectXml = [xml](Get-Content -Raw -Encoding UTF8 -LiteralPath $projectPath)
 $applicationName = [string]$projectXml.Project.PropertyGroup.AssemblyName
 $distDirectory = [System.IO.Path]::GetFullPath(

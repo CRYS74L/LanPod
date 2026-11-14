@@ -56,7 +56,7 @@ UINT_PTR WINAPI TestSetTimer(HWND hwnd, UINT_PTR id, UINT elapsed, TIMERPROC cal
 #undef CreateWindowW
 #define CreateWindowW TestCreateWindow
 #define SetTimer TestSetTimer
-#include "../../src/LanDeviceMonitor.App/Native/TrayRuntime.cpp"
+#include "../../src/LanPod.App/Native/TrayRuntime.cpp"
 #undef Shell_NotifyIconW
 #undef CreateWindowW
 #undef SetTimer

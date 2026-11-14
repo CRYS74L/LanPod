@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { TrafficChart, ChartValueMotion, ChartTimeline, ChartSamplingClock, EChartsLiveCurve } from "../src/LanDeviceMonitor.App/Web/chart.js";
+import { TrafficChart, ChartValueMotion, ChartTimeline, ChartSamplingClock, EChartsLiveCurve } from "../src/LanPod.App/Web/chart.js";
 
 // Exercise the production frame update and SVG transform with a controlled clock.
 function fixture(t, duration, highPeak = [510, 540]) {

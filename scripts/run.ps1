@@ -16,4 +16,4 @@ if (Test-Path -LiteralPath $localDotnet) {
     $env:PATH = "$env:DOTNET_ROOT;$env:PATH"
 }
 
-dotnet run --project (Join-Path $projectRoot 'src\LanDeviceMonitor.App\LanDeviceMonitor.App.csproj') --configuration $Configuration
+dotnet run --project (Join-Path $projectRoot 'src\LanPod.App\LanPod.App.csproj') --configuration $Configuration

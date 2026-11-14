@@ -4,7 +4,7 @@ import {
   deviceNameParts,
   deviceNameMarkup,
   sessionsMarkup,
-} from "../src/LanDeviceMonitor.App/Web/ui.js";
+} from "../src/LanPod.App/Web/ui.js";
 
 test("mixed device-name boundaries use one-fifth spaces while existing English words remain intact", () => {
   for (const [name, expected] of [

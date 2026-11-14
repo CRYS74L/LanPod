@@ -16,7 +16,7 @@
 ## 验证
 
 - Release 构建成功，0 警告、0 错误。
-- 历史比对：`git diff 42f6ea2 -- src/LanDeviceMonitor.App/Services/MicaWindowService.cs` 无差异。
+- 历史比对：`git diff 42f6ea2 -- src/LanPod.App/Services/MicaWindowService.cs` 无差异。
 - 恢复窗口回归：40 DIP 顶栏、Windows 控制符号、系统标题栏命中、无红绿灯、双屏最大化/还原、原材质、最小化/还原、关闭到托盘通过。
 - 控件回归：浅/深色、980/1180 宽度、侧栏收放、输入框和下拉菜单通过。退役的红绿灯专属断言已移除，其余行为继续检查。
 - 关闭到托盘回归通过：取消真正关闭、保留普通窗口表面、原生隐藏并恢复完整 UI。
@@ -26,6 +26,6 @@
 
 ## 安装与证据
 
-版本 `0.1.0-dev.236` 安装在 `C:\Path\To\LanDeviceMonitor`，665 个程序文件逐项 SHA-256 一致，真实设备数据持续更新。恢复后的进程正常响应。
+版本 `0.1.0-dev.236` 安装在 `C:\Path\To\LanPod`，665 个程序文件逐项 SHA-256 一致，真实设备数据持续更新。恢复后的进程正常响应。
 
 原 dev.235 程序文件备份为 `.tools/deployment-backups/dev235-before-dev236-20261003-205518/`；试验候选包另行备份。相关截图、恢复前差异和捕获工具在 `.tools/`，不纳入提交。用户数据未被覆盖。

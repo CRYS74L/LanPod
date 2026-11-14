@@ -6,4 +6,4 @@
 
 本次将 WorkspaceSurface.Background 改为 Transparent，保留底层 WindowRoot 原有遮色，不重复叠加。Windows 合成、全局主题颜色、卡片与控件材质、圆角和窗口行为均未修改。
 
-验证：Release 构建零警告/错误；Apple controls 浅深色布局、关闭到托盘材质、切换列表期间最小化回归通过；安装到 C:\Path\To\LanDeviceMonitor并重新打开；663 个发布文件 SHA256 一致。安装版截图位于 .tools/ui-dev214/installed-window.png。
+验证：Release 构建零警告/错误；Apple controls 浅深色布局、关闭到托盘材质、切换列表期间最小化回归通过；安装到 C:\Path\To\LanPod并重新打开；663 个发布文件 SHA256 一致。安装版截图位于 .tools/ui-dev214/installed-window.png。

@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { ChartTimeline, ChartSamplingClock, trafficViewportScale, trafficSeries, trafficCurveValue, EChartsLiveCurve, echartsSegments, TRAFFIC_DATA_UPDATE_MS, ChartValueMotion } from "../src/LanDeviceMonitor.App/Web/chart.js";
+import { ChartTimeline, ChartSamplingClock, trafficViewportScale, trafficSeries, trafficCurveValue, EChartsLiveCurve, echartsSegments, TRAFFIC_DATA_UPDATE_MS, ChartValueMotion } from "../src/LanPod.App/Web/chart.js";
 
 const samples = [
   { time: 0, download: 100, upload: 100 },

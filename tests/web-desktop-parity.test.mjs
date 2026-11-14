@@ -1,8 +1,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { desktopRound } from '../src/LanDeviceMonitor.App/Web/precision.js';
-import { dateMarkup, clock, relativeDate, relativeTime, bytes, deviceIcon } from '../src/LanDeviceMonitor.App/Web/ui.js';
-import { deviceIconNames, deviceIconPaths } from '../src/LanDeviceMonitor.App/Web/device-icons.js';
+import { desktopRound } from '../src/LanPod.App/Web/precision.js';
+import { dateMarkup, clock, relativeDate, relativeTime, bytes, deviceIcon } from '../src/LanPod.App/Web/ui.js';
+import { deviceIconNames, deviceIconPaths } from '../src/LanPod.App/Web/device-icons.js';
 
 test('printer category renders its dedicated shared icon',()=>{
   assert.equal(deviceIconNames['打印机'],'printer');

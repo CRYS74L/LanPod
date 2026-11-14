@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { meshLinkPath } from "../src/LanDeviceMonitor.App/Web/precision.js";
+import { meshLinkPath } from "../src/LanPod.App/Web/precision.js";
 test("mesh link follows actual parent contour and child center at both insets", () => {
   for (const inset of [30, 44])
     for (const heights of [

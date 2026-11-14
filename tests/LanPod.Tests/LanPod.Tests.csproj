@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <AssemblyName>LanPod.Tests</AssemblyName>
+    <!-- The application assembly owns Windows App SDK initialization. -->
+    <WindowsAppSdkAutoInitialize>false</WindowsAppSdkAutoInitialize>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\LanPod.App\LanPod.App.csproj"/>
+    <EmbeddedResource Include="..\fixtures\echarts-6.0.0-curves.json" LogicalName="LanPod.Tests.EChartsCurveReference" />
+  </ItemGroup>
+</Project>

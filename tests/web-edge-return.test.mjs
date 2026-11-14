@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import {
   shouldCompleteReturn,
   returnSpringFrames,
-} from "../src/LanDeviceMonitor.App/Web/edge-return.js";
+} from "../src/LanPod.App/Web/edge-return.js";
 
 test("edge return needs a deliberate drag, uses momentum and respects reversal", () => {
   assert.equal(shouldCompleteReturn(2, 4, 390), false);

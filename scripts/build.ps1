@@ -19,8 +19,8 @@ if (Test-Path -LiteralPath $localDotnet) {
 
 if (-not $NoRestore) {
     $projectFiles = @(
-        (Join-Path $projectRoot 'src\LanDeviceMonitor.App\LanDeviceMonitor.App.csproj'),
-        (Join-Path $projectRoot 'tests\LanDeviceMonitor.Tests\LanDeviceMonitor.Tests.csproj')
+        (Join-Path $projectRoot 'src\LanPod.App\LanPod.App.csproj'),
+        (Join-Path $projectRoot 'tests\LanPod.Tests\LanPod.Tests.csproj')
     )
 
     foreach ($projectFile in $projectFiles) {
@@ -31,7 +31,7 @@ if (-not $NoRestore) {
     }
 }
 
-dotnet build (Join-Path $projectRoot 'LanDeviceMonitor.sln') --configuration $Configuration --no-restore --disable-build-servers -m:1 -p:UseSharedCompilation=false
+dotnet build (Join-Path $projectRoot 'LanPod.sln') --configuration $Configuration --no-restore --disable-build-servers -m:1 -p:UseSharedCompilation=false
 if ($LASTEXITCODE -ne 0) {
     throw "dotnet build failed with exit code $LASTEXITCODE"
 }

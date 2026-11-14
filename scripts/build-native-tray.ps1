@@ -7,10 +7,10 @@ if(!$Compiler){
     if(Test-Path -LiteralPath $shared){$Compiler=$shared}
     else {$Compiler=(Get-Command clang++.exe -ErrorAction Stop).Source}
 }
-$source=Join-Path $root 'src\LanDeviceMonitor.App\Native\TrayRuntime.cpp'
+$source=Join-Path $root 'src\LanPod.App\Native\TrayRuntime.cpp'
 $output=Join-Path $root '.tools\native-tray'
 New-Item -ItemType Directory -Path $output -Force | Out-Null
-& $Compiler '-std=c++20' '-O2' '-shared' '-static' '-DUNICODE' '-D_UNICODE' '-D_WIN32_WINNT=0x0A00' $source '-o' (Join-Path $output 'LanDeviceMonitor.TrayRuntime.dll') '-luser32' '-lshell32'
+& $Compiler '-std=c++20' '-O2' '-shared' '-static' '-DUNICODE' '-D_UNICODE' '-D_WIN32_WINNT=0x0A00' $source '-o' (Join-Path $output 'LanPod.TrayRuntime.dll') '-luser32' '-lshell32'
 if($LASTEXITCODE -ne 0){throw "Native tray build failed ($LASTEXITCODE)"}
 
 if ($RunRegression) {
@@ -28,6 +28,6 @@ if ($RunRegression) {
     $desktopExecutable = Join-Path $testDirectory 'TrayDesktopRegression.exe'
     & $Compiler '-std=c++20' '-O2' '-static' '-municode' '-DUNICODE' '-D_UNICODE' '-D_WIN32_WINNT=0x0A00' $desktopSource '-o' $desktopExecutable '-luser32' '-lshell32'
     if ($LASTEXITCODE -ne 0) { throw "Desktop tray regression build failed ($LASTEXITCODE)" }
-    & $desktopExecutable (Join-Path $output 'LanDeviceMonitor.TrayRuntime.dll') (Join-Path $testDirectory 'desktop-runtime.log')
+    & $desktopExecutable (Join-Path $output 'LanPod.TrayRuntime.dll') (Join-Path $testDirectory 'desktop-runtime.log')
     if ($LASTEXITCODE -ne 0) { throw "Desktop tray regression failed ($LASTEXITCODE)" }
 }

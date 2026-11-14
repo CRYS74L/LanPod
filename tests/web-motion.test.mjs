@@ -5,7 +5,7 @@ import {
   nativeFrames,
   pageTiming,
   deviceTiming,
-} from "../src/LanDeviceMonitor.App/Web/motion.js";
+} from "../src/LanPod.App/Web/motion.js";
 test("page exits overlap delayed entrance, matching the native timeline", () => {
   assert.ok(pageTiming.delay < pageTiming.exit);
   assert.equal(pageTiming.delay + pageTiming.enter, 900);

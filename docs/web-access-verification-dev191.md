@@ -10,7 +10,7 @@
 - 实际 WPF 控件与设置处理：无效端口下独立关闭推送仍保持网页服务；无效端口下关闭局域网服务与推送，重新加载后仍关闭。测试用独立目录，不写入日常配置。
 - `--settings-shortcut-regression`、`--notification-once-regression`、`--offline-confirmation-regression`、`--rate-arrow-regression` 通过。
 - 侧边浏览器：390×844 竖屏列表/详情/返回、搜索、离线筛选；844×390 横屏双栏；IPv4/IPv6、Mesh、通知关闭状态；无横向溢出，无 console error/warn。使用明确标注的合成示例数据。
-- 发布部署：目标 `C:\Path\To\LanDeviceMonitor`，652 个发布文件 SHA-256 逐一比对，0 差异；旧文件保存在 Git 忽略的 `runtime-data/deployment-backups`。
+- 发布部署：目标 `C:\Path\To\LanPod`，652 个发布文件 SHA-256 逐一比对，0 差异；旧文件保存在 Git 忽略的 `runtime-data/deployment-backups`。
 
 ## 审查修复
 独立审查发现并修复：无效端口阻止关闭访问/推送、重置与订阅登记的竞态、进行中的推送未取消、测试通知跨授权代次、连接类型丢失细分、浏览器订阅与服务器状态不一致。定向复核无阻断问题。

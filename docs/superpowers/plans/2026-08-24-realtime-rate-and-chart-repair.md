@@ -14,7 +14,7 @@
 
 - 保留现有功能、布局、主题和图表颜色/样式；只恢复被 dev.141 改坏的连续折线数据表现。
 - 不以随机数、线性插值或旧值冒充未知的每秒瞬时值；累计值差分只作为真实观测区间的平均速率。
-- 只部署干净文件到 `C:\Path\To\LanDeviceMonitor`，不创建 E 盘其他备份或目录。
+- 只部署干净文件到 `C:\Path\To\LanPod`，不创建 E 盘其他备份或目录。
 - 修改完成后启动部署版本并保持运行，供用户验收；不进行长时间压力复现。
 
 ---
@@ -22,8 +22,8 @@
 ### Task 1: 轮询周期回归
 
 **Files:**
-- Modify: `tests/LanDeviceMonitor.Tests/Program.cs`
-- Modify: `src/LanDeviceMonitor.App/Services/MonitoringLoop.cs`
+- Modify: `tests/LanPod.Tests/Program.cs`
+- Modify: `src/LanPod.App/Services/MonitoringLoop.cs`
 
 - [x] **Step 1: Write the failing test**
 
@@ -31,7 +31,7 @@
 
 - [x] **Step 2: Run the focused test and verify it fails**
 
-Run: `dotnet run --project tests/LanDeviceMonitor.Tests/LanDeviceMonitor.Tests.csproj --configuration Release --no-restore`
+Run: `dotnet run --project tests/LanPod.Tests/LanPod.Tests.csproj --configuration Release --no-restore`
 
 Expected: 轮询节奏检查失败，现有实现返回 0 秒而不是 100ms。
 
@@ -41,18 +41,18 @@ Expected: 轮询节奏检查失败，现有实现返回 0 秒而不是 100ms。
 
 - [x] **Step 4: Run the focused test and verify it passes**
 
-Run: `dotnet run --project tests/LanDeviceMonitor.Tests/LanDeviceMonitor.Tests.csproj --configuration Release --no-restore`
+Run: `dotnet run --project tests/LanPod.Tests/LanPod.Tests.csproj --configuration Release --no-restore`
 
 Expected: 轮询节奏检查通过。
 
 ### Task 2: 累计差分的每周期有效显示与图表样本
 
 **Files:**
-- Modify: `tests/LanDeviceMonitor.Tests/Program.cs`
-- Modify: `src/LanDeviceMonitor.App/Services/DeviceRepository.cs`
-- Modify: `src/LanDeviceMonitor.App/Models/DeviceModels.cs`
-- Modify: `src/LanDeviceMonitor.App/MainWindow.xaml.cs`
-- Modify: `src/LanDeviceMonitor.App/Services/TrafficHistoryBuffer.cs`
+- Modify: `tests/LanPod.Tests/Program.cs`
+- Modify: `src/LanPod.App/Services/DeviceRepository.cs`
+- Modify: `src/LanPod.App/Models/DeviceModels.cs`
+- Modify: `src/LanPod.App/MainWindow.xaml.cs`
+- Modify: `src/LanPod.App/Services/TrafficHistoryBuffer.cs`
 
 - [x] **Step 1: Write the failing regression test**
 
@@ -60,7 +60,7 @@ Expected: 轮询节奏检查通过。
 
 - [x] **Step 2: Run the regression and verify it fails for the expected reason**
 
-Run: `dotnet run --project tests/LanDeviceMonitor.Tests/LanDeviceMonitor.Tests.csproj --configuration Release --no-restore -- --realtime-rate-regression`
+Run: `dotnet run --project tests/LanPod.Tests/LanPod.Tests.csproj --configuration Release --no-restore -- --realtime-rate-regression`
 
 Expected: 失败信息显示明确 0 被旧图表值覆盖，或累计无变化仍被标记为新样本。
 
@@ -70,15 +70,15 @@ Expected: 失败信息显示明确 0 被旧图表值覆盖，或累计无变化�
 
 - [x] **Step 4: Run the regression and verify it passes**
 
-Run: `dotnet run --project tests/LanDeviceMonitor.Tests/LanDeviceMonitor.Tests.csproj --configuration Release --no-restore -- --realtime-rate-regression`
+Run: `dotnet run --project tests/LanPod.Tests/LanPod.Tests.csproj --configuration Release --no-restore -- --realtime-rate-regression`
 
 Expected: 实时速率回归通过，明确 0、累计差分和无新证据断言均通过。
 
 ### Task 3: 恢复连续折线视觉
 
 **Files:**
-- Modify: `src/LanDeviceMonitor.App/Controls/TrafficChart.cs`
-- Modify: `tests/LanDeviceMonitor.Tests/Program.cs`
+- Modify: `src/LanPod.App/Controls/TrafficChart.cs`
+- Modify: `tests/LanPod.Tests/Program.cs`
 
 - [x] **Step 1: Write the failing chart-data assertion**
 
@@ -86,7 +86,7 @@ Expected: 实时速率回归通过，明确 0、累计差分和无新证据断�
 
 - [x] **Step 2: Run the regression and verify it fails**
 
-Run: `dotnet run --project tests/LanDeviceMonitor.Tests/LanDeviceMonitor.Tests.csproj --configuration Release --no-restore -- --realtime-rate-regression`
+Run: `dotnet run --project tests/LanPod.Tests/LanPod.Tests.csproj --configuration Release --no-restore -- --realtime-rate-regression`
 
 Expected: 当前实现会把跨 placeholder 的真实点绘制成连续线段，但不会把 placeholder 当作真实数值点。
 
@@ -96,15 +96,15 @@ Expected: 当前实现会把跨 placeholder 的真实点绘制成连续线段，
 
 - [x] **Step 4: Run tests and inspect the diff**
 
-Run: `dotnet build tests/LanDeviceMonitor.Tests/LanDeviceMonitor.Tests.csproj --configuration Release --no-restore` and `git diff --check`。
+Run: `dotnet build tests/LanPod.Tests/LanPod.Tests.csproj --configuration Release --no-restore` and `git diff --check`。
 
 Expected: 构建成功、无 diff 检查错误，测试断言通过。
 
 ### Task 4: 在线/离线列表切换动画
 
 **Files:**
-- Modify: `tests/LanDeviceMonitor.Tests/Program.cs`
-- Modify: `src/LanDeviceMonitor.App/MainWindow.xaml.cs`
+- Modify: `tests/LanPod.Tests/Program.cs`
+- Modify: `src/LanPod.App/MainWindow.xaml.cs`
 
 - [x] **Step 1: Write the failing animation-duration regression**
 
@@ -116,14 +116,14 @@ Expected: 构建成功、无 diff 检查错误，测试断言通过。
 
 - [x] **Step 3: Run the focused regression**
 
-Run: `dotnet run --project tests/LanDeviceMonitor.Tests/LanDeviceMonitor.Tests.csproj --configuration Release --no-restore -- --filter-animation-regression`
+Run: `dotnet run --project tests/LanPod.Tests/LanPod.Tests.csproj --configuration Release --no-restore -- --filter-animation-regression`
 
 Expected: 原 1040ms 动画时长回归通过。
 
 ### Task 5: 发布与实际验收
 
 **Files:**
-- Modify: `src/LanDeviceMonitor.App/LanDeviceMonitor.App.csproj`
+- Modify: `src/LanPod.App/LanPod.App.csproj`
 
 - [ ] **Step 1: Bump the existing dev version once and build**
 
@@ -131,11 +131,11 @@ Expected: 原 1040ms 动画时长回归通过。
 
 - [ ] **Step 2: Verify published files against the exact deployment directory**
 
-使用 SHA-256 对比 `dist/LanDeviceMonitor.App` 与 `C:\Path\To\LanDeviceMonitor`，要求缺失、额外、哈希不一致均为 0。
+使用 SHA-256 对比 `dist/LanPod.App` 与 `C:\Path\To\LanPod`，要求缺失、额外、哈希不一致均为 0。
 
 - [ ] **Step 3: Launch and leave the final app open**
 
-启动 `C:\Path\To\LanDeviceMonitor\局域网设备助手.exe`，短时检查窗口、版本、设置默认值、标题时间每周期变化和图表连续线，不主动关闭最终进程。
+启动 `C:\Path\To\LanPod\LanPod.exe`，短时检查窗口、版本、设置默认值、标题时间每周期变化和图表连续线，不主动关闭最终进程。
 
 - [ ] **Step 4: Commit, tag, and push**
 

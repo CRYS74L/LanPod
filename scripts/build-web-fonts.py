@@ -13,7 +13,7 @@ parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument("--icons-only", action="store_true")
 args = parser.parse_args()
 
-root = Path(__file__).resolve().parents[1] / "src" / "LanDeviceMonitor.App"
+root = Path(__file__).resolve().parents[1] / "src" / "LanPod.App"
 output = root / "Web" / "fonts"
 output.mkdir(parents=True, exist_ok=True)
 def package(font, source, filename):

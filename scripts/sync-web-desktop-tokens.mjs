@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const source = fs.readFileSync(
-  path.join(root, "src/LanDeviceMonitor.App/Services/ThemeService.cs"),
+  path.join(root, "src/LanPod.App/Services/ThemeService.cs"),
   "utf8",
 );
 const cssName = (name) =>
@@ -46,6 +46,6 @@ for (const [theme, body] of sections) {
   console.log(`${theme}: ${entries.length} desktop colors`);
 }
 fs.writeFileSync(
-  path.join(root, "src/LanDeviceMonitor.App/Web/desktop-tokens.css"),
+  path.join(root, "src/LanPod.App/Web/desktop-tokens.css"),
   output.join("\n") + "\n",
 );

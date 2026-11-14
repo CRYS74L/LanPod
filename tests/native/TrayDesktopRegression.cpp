@@ -30,7 +30,7 @@ DWORD WINAPI RunOnDesktop(void* state) {
 }
 
 void VerifyDesktop(Run run, Stop stop, Handle handle, IsAdded isAdded, const wchar_t* logPath, bool isolated) {
-    const auto name = L"LanDeviceMonitor.Tests." + std::to_wstring(GetCurrentProcessId());
+    const auto name = L"LanPod.Tests." + std::to_wstring(GetCurrentProcessId());
     HDESK desktop = isolated ? CreateDesktopW(name.c_str(), nullptr, nullptr, 0,
         DESKTOP_CREATEWINDOW | DESKTOP_READOBJECTS | DESKTOP_WRITEOBJECTS, nullptr) : nullptr;
     Require(!isolated || desktop, "Cannot create isolated desktop.");

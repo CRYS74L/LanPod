@@ -1,7 +1,7 @@
 $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent $PSScriptRoot
-$source = Join-Path $root 'src\LanDeviceMonitor.App\Assets\SourceIcon.svg'
-$destination = Join-Path $root 'src\LanDeviceMonitor.App\Web\icons'
+$source = Join-Path $root 'src\LanPod.App\Assets\SourceIcon.svg'
+$destination = Join-Path $root 'src\LanPod.App\Web\icons'
 [IO.Directory]::CreateDirectory($destination) | Out-Null
 Add-Type -AssemblyName PresentationCore
 Add-Type -AssemblyName WindowsBase

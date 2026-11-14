@@ -3,7 +3,7 @@ param()
 $ErrorActionPreference = 'Stop'
 $projectRoot = Split-Path -Parent $PSScriptRoot
 $assetsDirectory =
-    Join-Path $projectRoot 'src\LanDeviceMonitor.App\Assets'
+    Join-Path $projectRoot 'src\LanPod.App\Assets'
 [System.IO.Directory]::CreateDirectory($assetsDirectory) | Out-Null
 
 Add-Type -AssemblyName PresentationCore

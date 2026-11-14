@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { metadataLayout } from "../src/LanDeviceMonitor.App/Web/ui.js";
+import { metadataLayout } from "../src/LanPod.App/Web/ui.js";
 
 test("landscape metadata keeps all four fields on one row", () => {
   const layout = metadataLayout([48, 51, 110, 136], 500, false);

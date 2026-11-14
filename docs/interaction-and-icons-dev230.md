@@ -54,4 +54,4 @@
 
 ## 安装验证
 
-已安装至 `C:\Path\To\LanDeviceMonitor`，665 个发布文件逐一 SHA-256 校验一致。主窗口启动并响应，已检查实际安装窗口截图。旧版本备份位于 `.tools/deployment-backups/dev229-before-dev230-20261003-033528`。既有未跟踪 `tools/` 原样保留。
+已安装至 `C:\Path\To\LanPod`，665 个发布文件逐一 SHA-256 校验一致。主窗口启动并响应，已检查实际安装窗口截图。旧版本备份位于 `.tools/deployment-backups/dev229-before-dev230-20261003-033528`。既有未跟踪 `tools/` 原样保留。

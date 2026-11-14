@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import { runInNewContext } from "node:vm";
 
 const source = readFileSync(
-  new URL("../src/LanDeviceMonitor.App/Web/font-ready.js", import.meta.url),
+  new URL("../src/LanPod.App/Web/font-ready.js", import.meta.url),
   "utf8",
 );
 

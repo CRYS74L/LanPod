@@ -33,4 +33,4 @@
 
 ## 安装
 
-已部署到 `C:\Path\To\LanDeviceMonitor`，665个发布文件逐一SHA-256校验一致，主窗口已启动并响应；实际安装窗口截图已复核。旧文件备份位于 `.tools/deployment-backups/dev231-before-dev232-20261003-114522`。原有未跟踪的 `tools/` 保留。
+已部署到 `C:\Path\To\LanPod`，665个发布文件逐一SHA-256校验一致，主窗口已启动并响应；实际安装窗口截图已复核。旧文件备份位于 `.tools/deployment-backups/dev231-before-dev232-20261003-114522`。原有未跟踪的 `tools/` 保留。
