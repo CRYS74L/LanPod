@@ -1,7 +1,15 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { desktopRound } from '../src/LanDeviceMonitor.App/Web/precision.js';
-import { dateMarkup, clock, relativeDate, relativeTime, bytes } from '../src/LanDeviceMonitor.App/Web/ui.js';
+import { dateMarkup, clock, relativeDate, relativeTime, bytes, deviceIcon } from '../src/LanDeviceMonitor.App/Web/ui.js';
+import { deviceIconNames, deviceIconPaths } from '../src/LanDeviceMonitor.App/Web/device-icons.js';
+
+test('printer category renders its dedicated shared icon',()=>{
+  assert.equal(deviceIconNames['打印机'],'printer');
+  assert.ok(deviceIconPaths.printer.includes('M6 9V3'));
+  assert.ok(deviceIcon('打印机').includes(deviceIconPaths.printer));
+  assert.notEqual(deviceIcon('打印机'),deviceIcon('其他设备'));
+});
 
 test('fractional DPI uses desktop midpoint-to-even grid rounding',()=>{
   assert.equal(desktopRound(1,1.25),.8);

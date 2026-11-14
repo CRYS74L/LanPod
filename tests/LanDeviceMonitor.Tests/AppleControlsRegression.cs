@@ -101,7 +101,18 @@ var shellIcon = new BitmapImage(); shellIcon.BeginInit(); shellIcon.CacheOption=
                 window.SidebarToggleButton.Focus();Pump(20);
                 Require(((Border)window.SidebarToggleButton.Template.FindName("IconHover",window.SidebarToggleButton)).Opacity==0,"键盘焦点被误当作鼠标悬停亮层");
                 Require(window.DetailDeviceIconBackground.CornerRadius.TopLeft==window.DetailDeviceIconBackground.ActualHeight/2,"详情设备图标底色不是圆形");
-                if (popupOnly) { VerifyPopupAlignment(window); return; }
+                if (popupOnly)
+                {
+                    VerifyPopupAlignment(window);
+                    KeepTestPopupsOffDesktop(window);
+                    VerifyMenuHighlights(window.ThemeModeCombo, "theme");
+                    typeof(MainWindow).GetMethod("ShowDevicesPanel", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(window, [false, false]);
+                    window.DetailPanel.ScrollToBottom();
+                    Pump(250);
+                    profileGuard.SetValue(window, true);
+                    VerifyMenuHighlights(window.DeviceTypeCombo, "device-type");
+                    return;
+                }
                 KeepTestPopupsOffDesktop(window);
                 foreach (var option in DeviceIdentityService.AvailableTypes)
                 {
@@ -481,13 +492,14 @@ var iconLeft = window.ShellAppIcon.TranslatePoint(new Point(),window.SidebarExpa
                     VerifySegmentText(segments);
                     var startupKnob = (Border)window.StartWithWindowsCheck.Template.FindName("PART_Knob", window.StartWithWindowsCheck);
                     var startupTrack = (Border)window.StartWithWindowsCheck.Template.FindName("Track", window.StartWithWindowsCheck);
-                    Require(((SolidColorBrush)startupTrack.Background).Color == (Color)window.FindResource("SwitchOnColor"), "开启的开关必须跟随当前主题蓝色");
+                    var startupAccentTrack = (Border)window.StartWithWindowsCheck.Template.FindName("PART_AccentTrack", window.StartWithWindowsCheck);
+                    Require(startupAccentTrack.Opacity == 1 && ((SolidColorBrush)startupAccentTrack.Background).Color == (Color)window.FindResource("SwitchOnColor"), "开启的开关必须跟随当前主题蓝色");
                     window.StartWithWindowsCheck.IsChecked = false; Pump(220);
-                    Require(((SolidColorBrush)startupTrack.Background).Color.A is > 0 and < 255, "关闭的开关轨道应透出背景材质");
+                    Require(startupAccentTrack.Opacity == 0 && ((SolidColorBrush)startupTrack.Background).Color.A is > 0 and < 255, "关闭的开关轨道应透出背景材质");
                     CaptureElement(window.StartWithWindowsCheck, $"switch-off-{mode}.png");
                     Capture(window, $"settings-{mode}-{size.Item1}-switch-off.png", mode);
                     window.StartWithWindowsCheck.IsChecked = true; Pump(220);
-                    Require(((SolidColorBrush)startupTrack.Background).Color == (Color)window.FindResource("SwitchOnColor"), "重新开启开关后没有恢复主题色");
+                    Require(startupAccentTrack.Opacity == 1 && ((SolidColorBrush)startupAccentTrack.Background).Color == (Color)window.FindResource("SwitchOnColor"), "重新开启开关后没有恢复主题色");
                     Require(Math.Abs(((TranslateTransform)startupKnob.RenderTransform).X - 20) < 0.1,
                         $"启用开关位置错误: {((TranslateTransform)startupKnob.RenderTransform).X}");
                     Capture(window, $"settings-{mode}-{size.Item1}-top.png", mode);
@@ -1389,6 +1401,98 @@ var iconLeft = window.ShellAppIcon.TranslatePoint(new Point(),window.SidebarExpa
         }
         combo.IsDropDownOpen=false;Pump(250);
         Console.WriteLine("Popup alignment regression PASS: label alignment, accent selection, capsule shape after reopen/theme changes.");
+    }
+
+    private static void VerifyMenuHighlights(ComboBox combo, string name)
+    {
+        var hoverKey = (DependencyPropertyKey)typeof(UIElement)
+            .GetField("IsMouseOverPropertyKey", BindingFlags.Static | BindingFlags.NonPublic)!.GetValue(null)!;
+        var writeFlag = typeof(UIElement).GetMethod("WriteFlag", BindingFlags.Instance | BindingFlags.NonPublic)!;
+        var mouseOverFlag = Enum.Parse(writeFlag.GetParameters()[0].ParameterType, "IsMouseOverCache");
+        var highlightKey = (DependencyPropertyKey)typeof(ComboBoxItem)
+            .GetField("IsHighlightedPropertyKey", BindingFlags.Static | BindingFlags.NonPublic)!.GetValue(null)!;
+        var originalIndex = combo.SelectedIndex;
+        try
+        {
+            foreach (var mode in new[] { ThemeService.LightMode, ThemeService.DarkMode })
+            {
+                ThemeService.Apply(mode);
+                combo.SelectedIndex = 0;
+                combo.IsDropDownOpen = true;
+                Pump(650);
+                var items = Enumerable.Range(0, 3)
+                    .Select(index => (ComboBoxItem)combo.ItemContainerGenerator.ContainerFromIndex(index)).ToArray();
+                var selected = items[0];
+                var firstHover = items[1];
+                var secondHover = items[2];
+
+                void MovePointer(ComboBoxItem item, bool over)
+                {
+                    item.RaiseEvent(new MouseEventArgs(Mouse.PrimaryDevice, Environment.TickCount)
+                    { RoutedEvent = over ? Mouse.MouseEnterEvent : Mouse.MouseLeaveEvent });
+                    // WPF's CLR getter reads a cached flag separately from its dependency property.
+                    Pump(40);
+                    writeFlag.Invoke(item, [mouseOverFlag, over]);
+                    item.SetValue(hoverKey, over);
+                }
+
+                void RequireBackground(ComboBoxItem item, bool highlighted, string message)
+                {
+                    var surface = (Border)item.Template.FindName("StudioSurface", item);
+                    var actual = ((SolidColorBrush)surface.Background).Color;
+                    var expected = (Color)item.FindResource("StudioHoverColor");
+                    Require(highlighted ? actual == expected : actual.A == 0,
+                        $"{name}/{mode}: {message}, actual={actual}, selected={item.IsSelected}, pointer={item.IsMouseOver}, navigation={item.IsHighlighted}, focus={item.IsKeyboardFocusWithin}");
+                }
+
+                selected.SetValue(highlightKey, false);
+                MovePointer(firstHover, true);
+                firstHover.SetValue(highlightKey, true);
+                ThemeService.Apply(mode);
+                Require(firstHover.IsMouseOver, "未建立鼠标悬停的测试状态");
+                RequireBackground(selected, true, "鼠标移到其他项后，选中项应保留底色");
+                RequireBackground(firstHover, true, "鼠标进入项后应显示悬停底色");
+
+                MovePointer(firstHover, false);
+                firstHover.SetValue(highlightKey, false);
+                MovePointer(secondHover, true);
+                secondHover.SetValue(highlightKey, true);
+                ThemeService.Apply(mode);
+                RequireBackground(firstHover, false, "悬停移到另一项后，前一项应恢复透明");
+                RequireBackground(secondHover, true, "悬停底色应跟随鼠标");
+                RequireBackground(selected, true, "移动悬停时，选中项应保留底色");
+
+                // WPF retains IsHighlighted on the last navigated item after pointer exit.
+                MovePointer(secondHover, false);
+                ThemeService.Apply(mode);
+                Require(secondHover.IsHighlighted && !secondHover.IsMouseOver, "未覆盖导航高亮残留的原始状态");
+                RequireBackground(secondHover, false, "鼠标离开选项后应清除悬停底色");
+                RequireBackground(selected, true, "鼠标离开菜单后，选中项应保留底色");
+                Require(combo.IsDropDownOpen, "移出选项不应关闭下拉菜单");
+                CaptureElement(selected, $"{name}-selected-{mode}.png");
+                CaptureElement(secondHover, $"{name}-pointer-outside-{mode}.png");
+
+                secondHover.SetValue(highlightKey, false);
+                combo.SelectedIndex = 2;
+                Pump(650);
+                RequireBackground(selected, false, "更改选择后，旧选中项应恢复透明");
+                RequireBackground(secondHover, true, "更改选择后，新选中项应显示底色");
+                combo.IsDropDownOpen = false;
+                Pump(250);
+                combo.IsDropDownOpen = true;
+                Pump(650);
+                RequireBackground(secondHover, true, "重新打开菜单后，选中项应保留底色");
+                combo.IsDropDownOpen = false;
+                Pump(250);
+            }
+        }
+        finally
+        {
+            combo.IsDropDownOpen = false;
+            combo.SelectedIndex = originalIndex;
+            Pump(250);
+        }
+        Console.WriteLine($"Menu highlight regression PASS: {name}, selection, pointer movement/exit, selection changes and reopen in both themes.");
     }
 
     private static void ExportDeviceIconAtlas(MainWindow window)

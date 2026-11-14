@@ -10,6 +10,7 @@ public static class DeviceIdentityService
         new("平板电脑", "\uE70A", "平板电脑"),
         new("笔记本电脑", "\uE770", "笔记本电脑"),
         new("台式电脑", "\uE7F4", "台式电脑"),
+        new("打印机", "\uE749", "打印机"),
         new("路由器", "\uE8CE", "路由器"),
         new("智能音箱", "\uE7F5", "智能音箱"),
         new("灯", "\uEA80", "灯"),

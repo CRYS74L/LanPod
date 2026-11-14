@@ -68,7 +68,12 @@ public static class StudioControlMotion
             };
             control.Loaded += (_, _) => Initialize();
             control.MouseEnter += (_, _) => { _keyboardFocus = false; Update(); };
-            control.MouseLeave += (_, _) => { _pressed = false; Update(); };
+            control.MouseLeave += (_, _) =>
+            {
+                _pressed = false;
+                if (control is ComboBoxItem) _keyboardFocus = false;
+                Update();
+            };
             control.AddHandler(Mouse.PreviewMouseDownEvent, new MouseButtonEventHandler((_, _) => { _pressed = true; _keyboardFocus = false; Update(); }), true);
             control.AddHandler(Mouse.PreviewMouseUpEvent, new MouseButtonEventHandler((_, _) => { _pressed = false; Update(); }), true);
             control.LostMouseCapture += (_, _) => { _pressed = false; Update(); };
@@ -206,24 +211,24 @@ public static class StudioControlMotion
             if (_surface is null) return;
             UpdateCapsuleRadius();
             var enabled = _control.IsEnabled;
-            var hover = enabled && (_control.IsMouseOver || _control is ComboBoxItem { IsHighlighted: true } or System.Windows.Controls.MenuItem { IsHighlighted: true });
+            var hover = enabled && (_control.IsMouseOver || _control is System.Windows.Controls.MenuItem { IsHighlighted: true });
             var focus = enabled && (_owner?.IsKeyboardFocusWithin ?? _control.IsKeyboardFocusWithin);
             var selected = _control is ComboBoxItem { IsSelected: true };
             var pressed = enabled && _pressed;
             var fast = pressed && !IsInput;
             var curve = IsInput ? new KeySpline(.16, 1, .3, 1) : new KeySpline(.18, .75, .25, 1);
             var duration = fast ? 100 : IsInput ? 240 : 560;
-            var background = Color(hover && !IsSelect ? "StudioHoverColor" : IsInput ? "StudioInputSurfaceColor" : "StudioSurfaceColor");
+            var background = Color((hover || selected) && !IsSelect ? "StudioHoverColor" : IsInput ? "StudioInputSurfaceColor" : "StudioSurfaceColor");
             // Colors.Transparent is transparent WHITE. Interpolating a dark
             // hover to it raises RGB while alpha falls, producing a bright
             // flash. Preserve hover RGB and animate only its coverage away.
-            if (IsItem && !hover)
+            if (IsItem && !hover && !selected)
             {
                 var hoverColor = Color("StudioHoverColor");
                 background = System.Windows.Media.Color.FromArgb(0, hoverColor.R, hoverColor.G, hoverColor.B);
             }
             if (IsInput && focus) background = Color("StudioInputSurfaceColor");
-            if (IsItem && focus && _keyboardFocus && !hover) background = Color("StudioKeyboardColor");
+            if (IsItem && focus && _keyboardFocus && !hover && !selected) background = Color("StudioKeyboardColor");
             var border = Color(IsInput && focus ? "AccentColor" : IsInput && hover ? "StudioHoverBorderColor" : "InputBorderColor");
             AnimateColor(_background, background, duration, curve, animate);
             AnimateColor(_border, border, duration, curve, animate);

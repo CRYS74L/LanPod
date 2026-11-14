@@ -56,6 +56,35 @@ if(args.Contains("--device-category-regression"))
     if(identity.TypeName!="监测设备" || identity.SuggestedName!="空气检测仪" || data.TypeName!="监测设备" || profile.CustomType!="空气检测仪")
         throw new Exception("监测类别兼容或具体设备名称发生错误");
     if(LanDeviceMonitor.Services.WebAccess.WebDeviceSnapshot.From(data).CustomType!="监测设备") throw new Exception("网页仍显示旧类别");
+    var printer = DeviceIdentityService.AvailableTypes.Single(type => type.TypeName == "打印机");
+    var printerIcon = DeviceIconCatalog.Get(printer.TypeName);
+    if (printer.SuggestedName != "打印机" || printer.IconGlyph != "\uE749" ||
+        printerIcon.Bounds.IsEmpty || ReferenceEquals(printerIcon, DeviceIconCatalog.Get("其他设备")))
+        throw new Exception("打印机名称或专用图标缺失");
+    var printerStateDirectory = Path.Combine(Environment.CurrentDirectory, ".tools", "test-data", $"printer-{Guid.NewGuid():N}");
+    var printerStatePath = Path.Combine(printerStateDirectory, "state.json");
+    try
+    {
+        var printerRepository = new DeviceRepository(printerStatePath);
+        const string printerMac = "02:00:00:00:44:02";
+        await printerRepository.ApplyPollAsync(
+            [new DeviceSnapshot(printerMac, "测试设备", "test-device", true, "192.0.2.24", 1, 60, 0, 0, 0, 0)],
+            DateTimeOffset.UtcNow);
+        await printerRepository.UpdateDeviceProfileAsync(printerMac, "测试打印机", printer.TypeName, printer.IconGlyph, false);
+        var reloadedPrinterRepository = new DeviceRepository(printerStatePath);
+        await reloadedPrinterRepository.LoadAsync();
+        var savedPrinter = (await reloadedPrinterRepository.GetDevicesAsync()).Single();
+        var webPrinter = LanDeviceMonitor.Services.WebAccess.WebDeviceSnapshot.From(savedPrinter);
+        if (savedPrinter.DisplayName != "测试打印机" || savedPrinter.TypeName != "打印机" ||
+            savedPrinter.IconGlyph != printer.IconGlyph || webPrinter.Type != "打印机" ||
+            webPrinter.CustomType != "打印机" || webPrinter.IconType != "打印机")
+            throw new Exception("打印机类型、图标保存重载或网页映射错误");
+    }
+    finally
+    {
+        if (Directory.Exists(printerStateDirectory)) Directory.Delete(printerStateDirectory, recursive: true);
+    }
+    Console.WriteLine("Printer category PASS: dedicated name/icon, saved profile reload and desktop/web mapping.");
     Console.WriteLine("Device category PASS: monitoring category, legacy alias preserved without data overwrite, web display normalized.");return 0;
 }
 
