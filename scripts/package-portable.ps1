@@ -9,23 +9,10 @@ if (-not (Test-Path -LiteralPath (Join-Path $publishDirectory 'LanPod.exe'))) {
     throw 'Run scripts\publish.ps1 before packaging.'
 }
 
-$entries = @(Get-ChildItem -LiteralPath $publishDirectory -Recurse -Force)
-$unsafeEntries = @($entries | Where-Object {
-    ($_.Attributes -band [IO.FileAttributes]::ReparsePoint) -or
-    ($_.Attributes -band [IO.FileAttributes]::Hidden) -or
-    $_.Name -eq 'Data' -or $_.Name -like '.LanPod-data-*' -or
-    $_.Name -in @('state.json','window-placement.json','router-credentials.json','credential-key.bin') -or
-    $_.Extension -in @('.pdb','.log','.db','.sqlite','.dmp','.bak','.env','.tmp')
-})
-if ($unsafeEntries.Count -gt 0) {
-    throw 'Publish output contains user data, links or debug artifacts. Create a clean publish before packaging.'
-}
-
-$requiredFiles = @('coreclr.dll','hostfxr.dll','Microsoft.WindowsAppRuntime.dll','LanPod.TrayRuntime.dll','Assets\SystemIcon.png')
-foreach ($relativePath in $requiredFiles) {
-    if (-not (Test-Path -LiteralPath (Join-Path $publishDirectory $relativePath))) {
-        throw "Portable runtime file missing: $relativePath"
-    }
+$entries = @(Get-ChildItem -LiteralPath $publishDirectory -Force)
+if ($entries.Count -ne 1 -or $entries[0].Name -ne 'LanPod.exe' -or $entries[0].PSIsContainer -or
+    ($entries[0].Attributes -band ([IO.FileAttributes]::ReparsePoint -bor [IO.FileAttributes]::Hidden))) {
+    throw 'Publish output must contain only LanPod.exe. Do not package a running copy or user Data.'
 }
 
 if (-not $OutputPath) {

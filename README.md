@@ -31,7 +31,7 @@
 
 ## 使用
 
-1. 将 Windows x64 便携包解压到可写文件夹，打开其中的 `LanPod.exe`。运行所需的 .NET 与 Windows App SDK 已随程序提供。
+1. 将 Windows x64 便携包解压到可写文件夹，打开其中的 `LanPod.exe`。首次启动会将随 EXE 提供的运行依赖展开到 `Data\Runtime`，后续启动直接复用，无需另外安装 .NET 或 Windows App SDK。
 2. 首次运行时在“设置”中输入路由器地址与管理员密码。
 3. 在左侧选择设备，即可查看实时网速、累计用量、连接信息和上下线历史。
 4. 在“设备设置”中修改显示名称、类型和图标，并为指定设备开启上线或离线通知；修改后立即生效。
@@ -42,9 +42,9 @@
 
 从“局域网设备助手”升级后，Windows 中的新通知使用 LanPod 名称与图标，并自动沿用旧通知的开关偏好。通知中心保留的旧通知仍归属原来的发送方。
 
-设置、设备历史、窗口位置、路由器密码和日志保存在程序旁的 `Data` 文件夹。移动或备份时复制整个 LanPod 文件夹。升级时先退出程序，用新版程序文件覆盖旧版，并保留 `Data`。首次从旧版升级时，程序自动导入当前 Windows 用户的旧设置、设备历史和已保存密码。
+启动后，软件目录中只有 `LanPod.exe` 和 `Data` 文件夹。设置、设备历史、窗口位置、路由器密码、日志及展开的运行依赖均位于 `Data`。移动或备份时将这两项一起复制。升级时先退出程序，替换 `LanPod.exe` 并保留 `Data`。首次从旧版升级时，程序自动导入当前 Windows 用户的旧设置、设备历史和已保存密码。
 
-程序自动创建当前用户的开始菜单快捷方式及 Windows 通知登记。移动目录后启动一次，程序会更新通知点击路径和已启用的自启动任务。首次使用局域网访问或移动目录后，Windows 可能要求重新授权应用的防火墙规则。
+程序自动创建当前用户的开始菜单快捷方式及 Windows 通知登记。移动目录后启动一次，程序会更新通知点击路径和已启用的自启动任务。首次使用局域网访问、升级或移动目录后，Windows 可能要求重新授权应用的防火墙规则。
 
 软件持续读取路由器，只在获得新的有效统计时更新网速和更新时间，无需手动设置刷新频率。图表按自动识别的采样周期等间隔排列数据，缓冲约一个采样周期以连续滚动；网速值保留路由器观测结果。横坐标使用估算的采样时间，原始接收时间独立保留；缺失批次不会补造数值。
 
@@ -73,9 +73,9 @@
 
 ## 本地构建
 
-运行 `scripts\build.ps1` 构建，运行 `scripts\publish.ps1` 生成完整运行依赖的 Release 产物，再运行 `scripts\package-portable.ps1` 生成便携 ZIP。脚本优先使用项目内 `.tools\dotnet` SDK，发布目录为 `dist\LanPod`。打包脚本要求该目录保持干净，检测到用户 `Data`、凭据或调试产物时停止打包。
+运行 `scripts\build.ps1` 构建，运行 `scripts\publish.ps1` 将完整运行依赖封装为单个 Release EXE，再运行 `scripts\package-portable.ps1` 生成便携 ZIP。脚本优先使用项目内 `.tools\dotnet` SDK，发布目录为 `dist\LanPod`。该目录应只包含 `LanPod.exe`；打包时不包含运行生成的 `Data`。
 
-托盘原生模块使用 LLVM-MinGW 的 `clang++`（x86-64、C++20）构建。可将编译器加入 `PATH`，或用环境变量 `LAN_TRAY_CXX` 指定完整路径。MSBuild 自动调用 `scripts\build-native-tray.ps1`，运行软件不需要安装编译器。
+托盘原生模块和便携启动器使用 LLVM-MinGW 的 `clang++`（x86-64、C++20）构建。可将编译器加入 `PATH`，或用环境变量 `LAN_TRAY_CXX` 指定完整路径；资源编译器 `llvm-rc.exe` 应位于同一目录。MSBuild 自动调用 `scripts\build-native-tray.ps1`。发布脚本使用 Windows 自带的 `makecab.exe` 封装运行依赖，启动器通过 Windows Cabinet API 展开至程序目录内。运行软件不需要安装编译器。
 
 应用图标由 `scripts\GenerateIcon.ps1` 生成，源文件输出到 `src\LanPod.App\Assets\AppIcon.ico`。
 

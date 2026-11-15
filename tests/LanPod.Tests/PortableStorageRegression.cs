@@ -69,6 +69,46 @@ internal static class PortableStorageRegression
         Require(File.ReadAllText(Path.Combine(migration.DataDirectory, "state.json")) == "portable-current",
             "A subsequent launch overwrote portable data with an older installation.");
 
+        var bundled = new AppStoragePaths(Path.Combine(root, "bundled-upgrade"), legacyRoot);
+        var runtime = Path.Combine(bundled.DataDirectory, "Runtime", "test-runtime");
+        Directory.CreateDirectory(runtime);
+        File.WriteAllText(Path.Combine(runtime, "runtime-fixture"), "keep");
+        bundled.Initialize();
+        Require(File.ReadAllText(Path.Combine(bundled.DataDirectory, "state.json")) == state &&
+            File.ReadAllText(Path.Combine(runtime, "runtime-fixture")) == "keep",
+            "Pre-extracted runtime prevented legacy migration or was overwritten.");
+
+        var laterLegacyRoot = Path.Combine(root, "initially-empty-profile");
+        var cleanBundled = new AppStoragePaths(Path.Combine(root, "bundled-clean"), laterLegacyRoot);
+        Directory.CreateDirectory(Path.Combine(cleanBundled.DataDirectory, "Runtime"));
+        cleanBundled.Initialize();
+        Directory.CreateDirectory(Path.Combine(laterLegacyRoot, "LanPod"));
+        File.WriteAllText(Path.Combine(laterLegacyRoot, "LanPod", "state.json"), state);
+        cleanBundled.Initialize();
+        Require(File.Exists(Path.Combine(cleanBundled.DataDirectory, ".initialized")) &&
+            !File.Exists(Path.Combine(cleanBundled.DataDirectory, "state.json")),
+            "A clean bundled launch did not retain its initialization marker.");
+
+        var interrupted = new AppStoragePaths(Path.Combine(root, "interrupted-import"), legacyRoot);
+        var pending = Path.Combine(interrupted.DataDirectory, ".initial-import");
+        Directory.CreateDirectory(pending);
+        File.WriteAllText(Path.Combine(interrupted.DataDirectory, "state.json"), "already-moved");
+        File.WriteAllText(Path.Combine(pending, "window-placement.json"), "pending-window");
+        interrupted.Initialize();
+        Require(File.ReadAllText(Path.Combine(interrupted.DataDirectory, "state.json")) == "already-moved" &&
+            File.ReadAllText(Path.Combine(interrupted.DataDirectory, "window-placement.json")) == "pending-window" &&
+            !Directory.Exists(pending), "An interrupted import could not resume without overwriting moved files.");
+
+        var previousLauncher = Environment.GetEnvironmentVariable("LANPOD_LAUNCHER_PATH");
+        try
+        {
+            var launcher = Path.Combine(root, "便携程序 带空格", "LanPod.exe");
+            Environment.SetEnvironmentVariable("LANPOD_LAUNCHER_PATH", launcher);
+            Require(AppStoragePaths.ExecutablePath == launcher,
+                "Shortcuts or startup tasks would target the extracted executable.");
+        }
+        finally { Environment.SetEnvironmentVariable("LANPOD_LAUNCHER_PATH", previousLauncher); }
+
         var blocked = new AppStoragePaths(Path.Combine(root, "blocked"), legacyRoot);
         Directory.CreateDirectory(blocked.ApplicationDirectory);
         File.WriteAllText(blocked.DataDirectory, "occupied");
@@ -77,7 +117,7 @@ internal static class PortableStorageRegression
         catch (IOException) { rejected = true; }
         Require(rejected && !Directory.GetDirectories(blocked.ApplicationDirectory, ".LanPod-data-*").Any(),
             "A failed migration leaked staging data or fell back outside the application folder.");
-        Console.WriteLine("Portable storage PASS: local Data only, encrypted credentials, relocation/profile independence, mask length, damage detection, legacy import, repeat launch and failed migration cleanup.");
+        Console.WriteLine("Portable storage PASS: local Data, encrypted credentials, relocation, legacy/runtime import, interrupted import, stable launcher path, repeat launch and failed migration cleanup.");
         return 0;
     }
 

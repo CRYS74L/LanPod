@@ -1,3 +1,4 @@
+param([string]$OutputDirectory)
 $ErrorActionPreference = 'Stop'
 $projectRoot = Split-Path -Parent $PSScriptRoot
 $localDotnet = Join-Path $projectRoot '.tools\dotnet\dotnet.exe'
@@ -6,8 +7,8 @@ $projectXml = [xml](Get-Content -Raw -Encoding UTF8 -LiteralPath $projectPath)
 $applicationName = [string]$projectXml.Project.PropertyGroup.AssemblyName
 $distDirectory = [System.IO.Path]::GetFullPath(
     (Join-Path $projectRoot 'dist'))
-$outputDirectory = [System.IO.Path]::GetFullPath(
-    (Join-Path $distDirectory $applicationName))
+if (-not $OutputDirectory) { $OutputDirectory = Join-Path $distDirectory $applicationName }
+$outputDirectory = [System.IO.Path]::GetFullPath($OutputDirectory)
 
 $expectedPrefix = $distDirectory.TrimEnd(
     [System.IO.Path]::DirectorySeparatorChar) +
@@ -15,17 +16,21 @@ $expectedPrefix = $distDirectory.TrimEnd(
 if (-not $outputDirectory.StartsWith(
         $expectedPrefix,
         [System.StringComparison]::OrdinalIgnoreCase)) {
-    throw "Refusing to clean publish output outside dist: $outputDirectory"
+    throw "Publish output must be inside dist: $outputDirectory"
 }
 
 if (Test-Path -LiteralPath $outputDirectory) {
     if (Test-Path -LiteralPath (Join-Path $outputDirectory 'Data')) {
         throw "Publish output contains portable user data. Preserve Data before replacing the program: $outputDirectory"
     }
-    Remove-Item -LiteralPath $outputDirectory -Recurse -Force
+    if (Get-ChildItem -LiteralPath $outputDirectory -Force | Where-Object { $_.Name -ne 'LanPod.exe' -or $_.PSIsContainer }) {
+        throw "Publish output must contain only LanPod.exe. Preserve or clean previous output first: $outputDirectory"
+    }
 }
 
 New-Item -ItemType Directory -Path $outputDirectory -Force | Out-Null
+$buildDirectory = Join-Path $projectRoot ".tools\portable-builds\$([guid]::NewGuid().ToString('N'))"
+$runtimeDirectory = Join-Path $buildDirectory 'runtime'
 
 $env:DOTNET_CLI_HOME = Join-Path $projectRoot '.tools\dotnet-home'
 $env:NUGET_PACKAGES = Join-Path $projectRoot '.tools\nuget-packages'
@@ -53,7 +58,7 @@ dotnet publish $projectPath `
     --runtime win-x64 `
     --self-contained true `
     --no-restore `
-    --output $outputDirectory `
+    --output $runtimeDirectory `
     -p:PublishSingleFile=false `
     -p:WindowsAppSDKSelfContained=true `
     -p:DebugSymbols=false `
@@ -64,4 +69,6 @@ if ($LASTEXITCODE -ne 0) {
     throw "dotnet publish failed with exit code $LASTEXITCODE"
 }
 
-Write-Output "Published to: $outputDirectory"
+& (Join-Path $PSScriptRoot 'build-portable-exe.ps1') -RuntimeDirectory $runtimeDirectory `
+    -OutputDirectory $outputDirectory -BuildDirectory (Join-Path $buildDirectory 'bundle')
+Write-Output "Published single executable to: $outputDirectory"

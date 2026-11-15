@@ -23,8 +23,7 @@ internal static class WindowsNotificationRegistration
         using var registration = Registry.CurrentUser.OpenSubKey($@"Software\Classes\AppUserModelId\{AppUserModelId}");
         var activator = Guid.Parse(registration?.GetValue("CustomActivator") as string
             ?? throw new InvalidOperationException("Windows 通知激活器注册缺失。"));
-        var executablePath = Environment.ProcessPath
-            ?? throw new InvalidOperationException("无法确定应用程序路径。");
+        var executablePath = AppStoragePaths.ExecutablePath;
         var shortcutPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Programs), $"{displayName}.lnk");
         NotificationShortcut.Ensure(shortcutPath, executablePath, AppUserModelId, activator);
 

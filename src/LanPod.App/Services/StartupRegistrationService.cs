@@ -62,7 +62,7 @@ public sealed class StartupRegistrationService
         : this(
             new TaskSchedulerStartupStore(),
             new RegistryLegacyStartupEntryStore(),
-            Environment.ProcessPath ?? throw new InvalidOperationException("无法确定应用程序路径。"),
+            AppStoragePaths.ExecutablePath,
             GetCurrentUserSid())
     {
     }
