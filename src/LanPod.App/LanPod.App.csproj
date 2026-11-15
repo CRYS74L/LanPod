@@ -7,14 +7,15 @@
     <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
     <WindowsPackageType>None</WindowsPackageType>
+    <WindowsAppSDKSelfContained Condition="'$(RuntimeIdentifier)' != ''">true</WindowsAppSDKSelfContained>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <AssemblyName>LanPod</AssemblyName>
     <RootNamespace>LanPod</RootNamespace>
     <Product>LanPod</Product>
     <AssemblyTitle>LanPod</AssemblyTitle>
     <Description>小米路由器局域网设备状态、流量、历史与上下线提醒工具</Description>
-    <Version>0.1.25</Version>
-    <InformationalVersion>0.1.25</InformationalVersion>
+    <Version>0.2.0</Version>
+    <InformationalVersion>0.2.0</InformationalVersion>
     <NeutralLanguage>zh-Hans</NeutralLanguage>
     <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
     <ApplicationIcon>Assets\AppIcon.ico</ApplicationIcon>
@@ -22,7 +23,7 @@
 
   <Target Name="BuildNativeTray" BeforeTargets="PrepareForBuild"
           Condition="'$(DesignTimeBuild)' != 'true'"
-          Inputs="$(MSBuildProjectDirectory)\Native\TrayRuntime.cpp;$(MSBuildProjectDirectory)\..\..\scripts\build-native-tray.ps1"
+          Inputs="$(MSBuildProjectDirectory)\Native\TrayRuntime.cpp;$(MSBuildProjectDirectory)\Native\NotificationRegistration.cpp;$(MSBuildProjectDirectory)\..\..\scripts\build-native-tray.ps1"
           Outputs="$(MSBuildProjectDirectory)\..\..\.tools\native-tray\LanPod.TrayRuntime.dll">
     <Exec Command="pwsh -NoProfile -File &quot;$(MSBuildProjectDirectory)\..\..\scripts\build-native-tray.ps1&quot;" />
   </Target>
@@ -80,5 +81,6 @@
     <Content Include="ThirdParty\retray\*" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
     <Content Include="ThirdParty\echarts\*" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
     <Content Include="..\..\LICENSE" Link="LICENSE" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="..\..\README.md" Link="README.md" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

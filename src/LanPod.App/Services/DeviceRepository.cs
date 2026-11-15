@@ -102,10 +102,7 @@ public sealed class DeviceRepository
 
     public DeviceRepository()
     {
-        var dataDirectory = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            "LanPod");
-        _statePath = Path.Combine(dataDirectory, "state.json");
+        _statePath = Path.Combine(AppStoragePaths.Current.DataDirectory, "state.json");
     }
 
     internal DeviceRepository(string statePath)

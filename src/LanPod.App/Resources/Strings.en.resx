@@ -242,11 +242,13 @@
   <data name="无法向路由器发送操作请求。" xml:space="preserve"><value>Could not send operation request to router.</value></data>
   <data name="路由器返回了无法识别的操作结果。" xml:space="preserve"><value>Router returned an unrecognized operation result.</value></data>
   <data name="路由器操作失败（代码 {0}）。" xml:space="preserve"><value>Router operation failed (code {0}).</value></data>
-  <data name="无法保存路由器密码到 Windows 凭据管理器。" xml:space="preserve"><value>Could not save router password in Windows Credential Manager.</value></data>
-  <data name="无法读取 Windows 凭据管理器。" xml:space="preserve"><value>Could not read Windows Credential Manager.</value></data>
-  <data name="无法读取已保存凭据状态。" xml:space="preserve"><value>Could not read saved credential status.</value></data>
   <data name="设备列表滚动条" xml:space="preserve"><value>Device list scrollbar</value></data>
   <data name="设备详情滚动条" xml:space="preserve"><value>Device details scrollbar</value></data>
   <data name="路由器信息滚动条" xml:space="preserve"><value>Router information scrollbar</value></data>
   <data name="等待新的流量采样" xml:space="preserve"><value>Waiting for new traffic samples</value></data>
+  <data name="便携密码密钥文件缺失。请恢复完整的 Data 文件夹。" xml:space="preserve"><value>The portable password key is missing. Restore the complete Data folder.</value></data>
+  <data name="便携密码文件格式无效。" xml:space="preserve"><value>The portable password file is invalid.</value></data>
+  <data name="无法准备应用数据目录：{0}&#10;{1}" xml:space="preserve"><value>Could not prepare the application data folder: {0}
+{1}</value></data>
+  <data name="Windows 中的 LanPod 通知已关闭。" xml:space="preserve"><value>LanPod notifications are turned off in Windows.</value></data>
 </root>

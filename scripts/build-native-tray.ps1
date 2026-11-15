@@ -8,9 +8,10 @@ if(!$Compiler){
     else {$Compiler=(Get-Command clang++.exe -ErrorAction Stop).Source}
 }
 $source=Join-Path $root 'src\LanPod.App\Native\TrayRuntime.cpp'
+$notificationSource=Join-Path $root 'src\LanPod.App\Native\NotificationRegistration.cpp'
 $output=Join-Path $root '.tools\native-tray'
 New-Item -ItemType Directory -Path $output -Force | Out-Null
-& $Compiler '-std=c++20' '-O2' '-shared' '-static' '-DUNICODE' '-D_UNICODE' '-D_WIN32_WINNT=0x0A00' $source '-o' (Join-Path $output 'LanPod.TrayRuntime.dll') '-luser32' '-lshell32'
+& $Compiler '-std=c++20' '-O2' '-shared' '-static' '-DUNICODE' '-D_UNICODE' '-D_WIN32_WINNT=0x0A00' $source $notificationSource '-o' (Join-Path $output 'LanPod.TrayRuntime.dll') '-luser32' '-lshell32' '-lshlwapi' '-lole32' '-lpropsys' '-luuid'
 if($LASTEXITCODE -ne 0){throw "Native tray build failed ($LASTEXITCODE)"}
 
 if ($RunRegression) {

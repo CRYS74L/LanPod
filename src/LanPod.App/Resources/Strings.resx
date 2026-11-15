@@ -242,11 +242,13 @@
   <data name="无法向路由器发送操作请求。" xml:space="preserve"><value>无法向路由器发送操作请求。</value></data>
   <data name="路由器返回了无法识别的操作结果。" xml:space="preserve"><value>路由器返回了无法识别的操作结果。</value></data>
   <data name="路由器操作失败（代码 {0}）。" xml:space="preserve"><value>路由器操作失败（代码 {0}）。</value></data>
-  <data name="无法保存路由器密码到 Windows 凭据管理器。" xml:space="preserve"><value>无法保存路由器密码到 Windows 凭据管理器。</value></data>
-  <data name="无法读取 Windows 凭据管理器。" xml:space="preserve"><value>无法读取 Windows 凭据管理器。</value></data>
-  <data name="无法读取已保存凭据状态。" xml:space="preserve"><value>无法读取已保存凭据状态。</value></data>
   <data name="设备列表滚动条" xml:space="preserve"><value>设备列表滚动条</value></data>
   <data name="设备详情滚动条" xml:space="preserve"><value>设备详情滚动条</value></data>
   <data name="路由器信息滚动条" xml:space="preserve"><value>路由器信息滚动条</value></data>
   <data name="等待新的流量采样" xml:space="preserve"><value>等待新的流量采样</value></data>
+  <data name="便携密码密钥文件缺失。请恢复完整的 Data 文件夹。" xml:space="preserve"><value>便携密码密钥文件缺失。请恢复完整的 Data 文件夹。</value></data>
+  <data name="便携密码文件格式无效。" xml:space="preserve"><value>便携密码文件格式无效。</value></data>
+  <data name="无法准备应用数据目录：{0}&#10;{1}" xml:space="preserve"><value>无法准备应用数据目录：{0}
+{1}</value></data>
+  <data name="Windows 中的 LanPod 通知已关闭。" xml:space="preserve"><value>Windows 中的 LanPod 通知已关闭。</value></data>
 </root>

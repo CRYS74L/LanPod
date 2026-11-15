@@ -1,110 +1,97 @@
-using System.ComponentModel;
-using System.Runtime.InteropServices;
+using System.IO;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.Json;
 
 namespace LanPod.Services;
 
 public sealed class RouterCredentialService
 {
-    private const int CredentialTypeGeneric = 1;
-    private const int CredentialPersistLocalMachine = 2;
+    private static readonly object SyncRoot = new();
+    private readonly string _directory;
+    private string KeyPath => Path.Combine(_directory, "credential-key.bin");
+    private string CredentialsPath => Path.Combine(_directory, "router-credentials.json");
+
+    public RouterCredentialService() : this(AppStoragePaths.Current.DataDirectory) { }
+
+    internal RouterCredentialService(string directory) => _directory = directory;
 
     public void SavePassword(string routerAddress, string password)
     {
-        var target = GetTarget(routerAddress);
-        var passwordBytes = System.Text.Encoding.Unicode.GetBytes(password);
-        var blob = Marshal.AllocCoTaskMem(passwordBytes.Length);
-
-        try
+        lock (SyncRoot)
         {
-            Marshal.Copy(passwordBytes, 0, blob, passwordBytes.Length);
-            var credential = new NativeCredential
+            Directory.CreateDirectory(_directory);
+            if (!File.Exists(KeyPath))
             {
-                Type = CredentialTypeGeneric,
-                TargetName = target,
-                CredentialBlobSize = passwordBytes.Length,
-                CredentialBlob = blob,
-                Persist = CredentialPersistLocalMachine,
-                UserName = "admin"
-            };
-
-            if (!CredWrite(ref credential, 0))
-            {
-                throw new Win32Exception(Marshal.GetLastWin32Error(), LocalizationService.Text("无法保存路由器密码到 Windows 凭据管理器。"));
-            }
-        }
-        finally
-        {
-            if (passwordBytes.Length > 0)
-            {
-                Marshal.Copy(new byte[passwordBytes.Length], 0, blob, passwordBytes.Length);
+                if (File.Exists(CredentialsPath)) throw new InvalidDataException(LocalizationService.Text("便携密码密钥文件缺失。请恢复完整的 Data 文件夹。"));
+                var newKey = RandomNumberGenerator.GetBytes(32);
+                try { WriteAtomically(KeyPath, newKey); }
+                finally { CryptographicOperations.ZeroMemory(newKey); }
             }
 
-            Marshal.FreeCoTaskMem(blob);
-            Array.Clear(passwordBytes);
+            var key = File.ReadAllBytes(KeyPath);
+            var plaintext = Encoding.UTF8.GetBytes(password);
+            try
+            {
+                var credentials = ReadCredentials();
+                var encrypted = new EncryptedCredential(
+                    RandomNumberGenerator.GetBytes(12), new byte[plaintext.Length], new byte[16]);
+                using var cipher = new AesGcm(key, 16);
+                cipher.Encrypt(encrypted.Nonce, plaintext, encrypted.Ciphertext, encrypted.Tag);
+                credentials[NormalizeAddress(routerAddress)] = encrypted;
+                WriteAtomically(CredentialsPath, JsonSerializer.SerializeToUtf8Bytes(credentials));
+            }
+            finally
+            {
+                CryptographicOperations.ZeroMemory(key);
+                CryptographicOperations.ZeroMemory(plaintext);
+            }
         }
     }
 
     public string? ReadPassword(string routerAddress)
     {
-        if (!CredRead(GetTarget(routerAddress), CredentialTypeGeneric, 0, out var credentialPointer))
+        lock (SyncRoot)
         {
-            var error = Marshal.GetLastWin32Error();
-            return error == 1168 ? null : throw new Win32Exception(error, LocalizationService.Text("无法读取 Windows 凭据管理器。"));
-        }
-
-        try
-        {
-            var credential = Marshal.PtrToStructure<NativeCredential>(credentialPointer);
-            return credential.CredentialBlob == IntPtr.Zero || credential.CredentialBlobSize == 0
-                ? string.Empty
-                : Marshal.PtrToStringUni(credential.CredentialBlob, credential.CredentialBlobSize / 2);
-        }
-        finally
-        {
-            CredFree(credentialPointer);
+            if (!ReadCredentials().TryGetValue(NormalizeAddress(routerAddress), out var encrypted)) return null;
+            var key = File.ReadAllBytes(KeyPath);
+            var plaintext = new byte[encrypted.Ciphertext.Length];
+            try
+            {
+                using var cipher = new AesGcm(key, 16);
+                cipher.Decrypt(encrypted.Nonce, encrypted.Ciphertext, encrypted.Tag, plaintext);
+                return Encoding.UTF8.GetString(plaintext);
+            }
+            finally
+            {
+                CryptographicOperations.ZeroMemory(key);
+                CryptographicOperations.ZeroMemory(plaintext);
+            }
         }
     }
 
     public bool HasPassword(string routerAddress) => GetPasswordLength(routerAddress) > 0;
 
-    public int GetPasswordLength(string routerAddress)
+    public int GetPasswordLength(string routerAddress) => ReadPassword(routerAddress)?.Length ?? 0;
+
+    private Dictionary<string, EncryptedCredential> ReadCredentials() =>
+        File.Exists(CredentialsPath)
+            ? JsonSerializer.Deserialize<Dictionary<string, EncryptedCredential>>(File.ReadAllBytes(CredentialsPath))
+                ?? throw new InvalidDataException(LocalizationService.Text("便携密码文件格式无效。"))
+            : new(StringComparer.Ordinal);
+
+    private static string NormalizeAddress(string address) => address.Trim().ToLowerInvariant();
+
+    private static void WriteAtomically(string path, byte[] content)
     {
-        if (!CredRead(GetTarget(routerAddress), CredentialTypeGeneric, 0, out var pointer))
+        var temporaryPath = $"{path}.{Guid.NewGuid():N}.tmp";
+        try
         {
-            var error = Marshal.GetLastWin32Error();
-            return error == 1168 ? 0 : throw new Win32Exception(error, LocalizationService.Text("无法读取已保存凭据状态。"));
+            File.WriteAllBytes(temporaryPath, content);
+            File.Move(temporaryPath, path, overwrite: true);
         }
-        // SavePassword stores UTF-16 code units, matching PasswordBox's mask count.
-        try { return Marshal.PtrToStructure<NativeCredential>(pointer).CredentialBlobSize / sizeof(char); }
-        finally { CredFree(pointer); }
+        finally { File.Delete(temporaryPath); }
     }
 
-    private static string GetTarget(string routerAddress) =>
-        $"LanPod.Router.{routerAddress.Trim().ToLowerInvariant()}";
-
-    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-    private struct NativeCredential
-    {
-        public int Flags;
-        public int Type;
-        public string TargetName;
-        public string? Comment;
-        public System.Runtime.InteropServices.ComTypes.FILETIME LastWritten;
-        public int CredentialBlobSize;
-        public IntPtr CredentialBlob;
-        public int Persist;
-        public int AttributeCount;
-        public IntPtr Attributes;
-        public string? TargetAlias;
-        public string UserName;
-    }
-
-    [DllImport("advapi32.dll", EntryPoint = "CredWriteW", CharSet = CharSet.Unicode, SetLastError = true)]
-    private static extern bool CredWrite(ref NativeCredential userCredential, uint flags);
-
-    [DllImport("advapi32.dll", EntryPoint = "CredReadW", CharSet = CharSet.Unicode, SetLastError = true)]
-    private static extern bool CredRead(string target, int type, int reservedFlag, out IntPtr credentialPtr);
-
-    [DllImport("advapi32.dll", SetLastError = true)]
-    private static extern void CredFree(IntPtr buffer);
+    private sealed record EncryptedCredential(byte[] Nonce, byte[] Ciphertext, byte[] Tag);
 }

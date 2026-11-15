@@ -19,6 +19,9 @@ if (-not $outputDirectory.StartsWith(
 }
 
 if (Test-Path -LiteralPath $outputDirectory) {
+    if (Test-Path -LiteralPath (Join-Path $outputDirectory 'Data')) {
+        throw "Publish output contains portable user data. Preserve Data before replacing the program: $outputDirectory"
+    }
     Remove-Item -LiteralPath $outputDirectory -Recurse -Force
 }
 
@@ -38,6 +41,7 @@ dotnet restore $projectPath `
     --runtime win-x64 `
     --ignore-failed-sources `
     --disable-parallel `
+    -p:WindowsAppSDKSelfContained=true `
     -p:NuGetAudit=false
 
 if ($LASTEXITCODE -ne 0) {
@@ -51,6 +55,9 @@ dotnet publish $projectPath `
     --no-restore `
     --output $outputDirectory `
     -p:PublishSingleFile=false `
+    -p:WindowsAppSDKSelfContained=true `
+    -p:DebugSymbols=false `
+    -p:DebugType=None `
     -p:UseSharedCompilation=false
 
 if ($LASTEXITCODE -ne 0) {

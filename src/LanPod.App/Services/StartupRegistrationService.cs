@@ -151,6 +151,12 @@ public sealed class StartupRegistrationService
         }
     }
 
+    internal void RefreshEnabledRegistration()
+    {
+        if (GetOwnedTask()?.Enabled == true)
+            _taskScheduler.RegisterTask(CreateValidatedTaskDefinition(), update: true);
+    }
+
     internal static string BuildCommand(string executablePath) =>
         $"\"{Path.GetFullPath(executablePath)}\" {BackgroundArgument}";
 

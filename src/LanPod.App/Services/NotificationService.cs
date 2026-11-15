@@ -1,5 +1,6 @@
 using Microsoft.Windows.AppNotifications;
 using Microsoft.Windows.AppNotifications.Builder;
+using Microsoft.Win32;
 using System.IO;
 using System.Runtime.InteropServices;
 
@@ -29,6 +30,8 @@ internal interface IAppNotificationPlatform
 {
     bool IsSupported();
 
+    bool IsEnabled();
+
     void ConfigureStableIdentity(string appUserModelId);
 
     void Register(string displayName, Uri iconUri);
@@ -45,14 +48,38 @@ internal sealed class WindowsAppNotificationPlatform : IAppNotificationPlatform
 {
     public bool IsSupported() => AppNotificationManager.IsSupported();
 
+    public bool IsEnabled() =>
+        WindowsNotificationRegistration.IsEnabled(Registry.CurrentUser, WindowsNotificationRegistration.AppUserModelId) &&
+        AppNotificationManager.Default.Setting == AppNotificationSetting.Enabled;
+
     public void ConfigureStableIdentity(string appUserModelId)
     {
         var result = SetCurrentProcessExplicitAppUserModelID(appUserModelId);
         Marshal.ThrowExceptionForHR(result);
     }
 
-    public void Register(string displayName, Uri iconUri) =>
-        AppNotificationManager.Default.Register(displayName, iconUri);
+    public void Register(string displayName, Uri iconUri)
+    {
+        var registeredIcon = WindowsNotificationRegistration.PrepareIcon(
+            iconUri.LocalPath,
+            AppStoragePaths.Current.DataDirectory);
+        WindowsNotificationRegistration.MigrateLegacySettings(Registry.CurrentUser);
+        var manager = AppNotificationManager.Default;
+        manager.Register(displayName, registeredIcon);
+        try
+        {
+            WindowsNotificationRegistration.RegisterShortcut(displayName);
+        }
+        catch (Exception registrationError)
+        {
+            try { manager.Unregister(); }
+            catch (Exception cleanupError)
+            {
+                throw new AggregateException(registrationError, cleanupError);
+            }
+            throw;
+        }
+    }
 
     public void Show(
         string title,
@@ -80,9 +107,7 @@ internal sealed class WindowsAppNotificationPlatform : IAppNotificationPlatform
 
 public sealed class NotificationService : IDisposable
 {
-    // This is the application's established unpackaged notification identity.
-    // Changing it makes Windows treat the same executable as a new notification sender.
-    internal const string StableAppUserModelId = "{95AFFE3D-014F-4F5F-AD8B-FD52B4E62CE3}";
+    internal const string StableAppUserModelId = WindowsNotificationRegistration.AppUserModelId;
 
     private const string DisplayName = "LanPod";
     private const string IconRelativePath = "Assets\\SystemIcon.png";
@@ -215,6 +240,8 @@ public sealed class NotificationService : IDisposable
 
             try
             {
+                if (!_platform.IsEnabled())
+                    return Publish(NotificationDeliveryChannel.Unavailable, LocalizationService.Text("Windows 中的 LanPod 通知已关闭。"));
                 _platform.Show(
                     title,
                     message,

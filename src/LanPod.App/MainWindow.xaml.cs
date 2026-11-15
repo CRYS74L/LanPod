@@ -231,6 +231,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         {
             await PrepareInitialContentAsync();
             var settings = _repository.Settings;
+            if (settings.StartWithWindows)
+                _startupRegistrationService.RefreshEnabledRegistration();
             await Dispatcher.InvokeAsync(() => { }, System.Windows.Threading.DispatcherPriority.ContextIdle);
             var webInitialization = InitializeWebAccessAsync();
 

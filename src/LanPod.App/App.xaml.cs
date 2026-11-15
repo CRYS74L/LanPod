@@ -73,7 +73,15 @@ public partial class App : System.Windows.Application
         _singleInstanceService.StartListening(() =>
             Dispatcher.BeginInvoke(ShowMainWindow));
 
-
+        try { AppStoragePaths.Current.Initialize(); }
+        catch (Exception exception)
+        {
+            System.Windows.MessageBox.Show(
+                LocalizationService.Format("无法准备应用数据目录：{0}\n{1}", AppStoragePaths.Current.DataDirectory, exception.Message),
+                "LanPod", MessageBoxButton.OK, MessageBoxImage.Error);
+            Shutdown(1);
+            return;
+        }
         _notificationService = new NotificationService();
 
         _mainWindow = new MainWindow(

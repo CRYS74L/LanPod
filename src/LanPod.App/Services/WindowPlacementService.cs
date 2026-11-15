@@ -25,8 +25,7 @@ internal sealed class WindowPlacementService : IDisposable
 
     public WindowPlacementService(Window window)
         : this(window, Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            "LanPod",
+            AppStoragePaths.Current.DataDirectory,
             "window-placement.json"))
     {
     }

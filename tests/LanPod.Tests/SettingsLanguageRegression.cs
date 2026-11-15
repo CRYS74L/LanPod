@@ -159,7 +159,6 @@ internal static class SettingsLanguageRegression
                 window?.PrepareForExit();
                 window?.Close();
                 if (server is not null) Wait(server.DisposeAsync().AsTask());
-                CredDelete("LanPod.Router." + address, 1, 0);
                 app?.Shutdown();
             }
         }) { IsBackground = true };
@@ -242,6 +241,4 @@ internal static class SettingsLanguageRegression
         Dispatcher.PushFrame(frame);
     }
 
-    [DllImport("advapi32.dll", EntryPoint = "CredDeleteW", CharSet = CharSet.Unicode, SetLastError = true)]
-    private static extern bool CredDelete(string target, int type, int flags);
 }

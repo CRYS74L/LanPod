@@ -76,7 +76,7 @@ internal sealed class NativeTrayIcon : IDisposable
 
     private static string GetDiagnosticPath()
     {
-        var directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "LanPod");
+        var directory = AppStoragePaths.Current.DataDirectory;
         try { Directory.CreateDirectory(directory); }
         catch (Exception error) when (error is IOException or UnauthorizedAccessException) {
             System.Diagnostics.Trace.WriteLine($"Could not prepare tray diagnostic directory: {error}");

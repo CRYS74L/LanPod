@@ -242,11 +242,13 @@
   <data name="无法向路由器发送操作请求。" xml:space="preserve"><value>ルーターに操作リクエストを送信できません。</value></data>
   <data name="路由器返回了无法识别的操作结果。" xml:space="preserve"><value>ルーターから認識できない操作結果が返されました。</value></data>
   <data name="路由器操作失败（代码 {0}）。" xml:space="preserve"><value>ルーターの操作に失敗しました（コード {0}）。</value></data>
-  <data name="无法保存路由器密码到 Windows 凭据管理器。" xml:space="preserve"><value>ルーターのパスワードを Windows 資格情報マネージャーに保存できません。</value></data>
-  <data name="无法读取 Windows 凭据管理器。" xml:space="preserve"><value>Windows 資格情報マネージャーを読み込めません。</value></data>
-  <data name="无法读取已保存凭据状态。" xml:space="preserve"><value>保存済みの資格情報の状態を読み込めません。</value></data>
   <data name="设备列表滚动条" xml:space="preserve"><value>デバイス一覧のスクロールバー</value></data>
   <data name="设备详情滚动条" xml:space="preserve"><value>デバイス詳細のスクロールバー</value></data>
   <data name="路由器信息滚动条" xml:space="preserve"><value>ルーター情報のスクロールバー</value></data>
   <data name="等待新的流量采样" xml:space="preserve"><value>新しいトラフィックサンプルを待機中</value></data>
+  <data name="便携密码密钥文件缺失。请恢复完整的 Data 文件夹。" xml:space="preserve"><value>パスワードの鍵ファイルがありません。Data フォルダー全体を復元してください。</value></data>
+  <data name="便携密码文件格式无效。" xml:space="preserve"><value>ポータブルパスワードファイルの形式が無効です。</value></data>
+  <data name="无法准备应用数据目录：{0}&#10;{1}" xml:space="preserve"><value>アプリのデータフォルダーを準備できません：{0}
+{1}</value></data>
+  <data name="Windows 中的 LanPod 通知已关闭。" xml:space="preserve"><value>Windows で LanPod の通知がオフになっています。</value></data>
 </root>

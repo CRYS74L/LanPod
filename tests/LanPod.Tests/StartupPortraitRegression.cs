@@ -160,9 +160,6 @@ internal static class StartupPortraitRegression
             fixture.AllowLogin.TrySetResult();
             window.PrepareForExit(); window.Close();
             fixture.Dispose();
-            if (!CredDelete("LanPod.Router."+address.ToLowerInvariant(), 1, 0) && Marshal.GetLastWin32Error() != 1168)
-                throw new InvalidOperationException("Synthetic credential cleanup failed.");
-            if (credential.HasPassword(address)) throw new InvalidOperationException("Synthetic startup credential remains.");
             foreach (var path in new[] { statePath, statePath+".tmp" }) if (System.IO.File.Exists(path)) System.IO.File.Delete(path);
         }
     }
@@ -212,6 +209,4 @@ internal static class StartupPortraitRegression
     }
     [DllImport("user32.dll")] private static extern uint GetDpiForWindow(IntPtr hwnd);
     [DllImport("user32.dll", SetLastError = true)] private static extern bool SetWindowPos(IntPtr hwnd, IntPtr after, int x, int y, int width, int height, uint flags);
-    [DllImport("advapi32.dll", EntryPoint = "CredDeleteW", CharSet = CharSet.Unicode, SetLastError = true)]
-    private static extern bool CredDelete(string target, int type, int flags);
 }

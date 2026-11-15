@@ -20,6 +20,8 @@ TestResults/
 *.local.json
 credentials/
 runtime-data/
+Data/
+.LanPod-data-*/
 
 # Windows / 临时文件
 Thumbs.db

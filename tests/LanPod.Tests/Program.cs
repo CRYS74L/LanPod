@@ -5,6 +5,17 @@ using LanPod.Services;
 using LanPod.ViewModels;
 using System.Diagnostics;
 using System.Reflection;
+var testStorageRoot = Path.Combine(Environment.CurrentDirectory, ".tools", "test-data", $"session-{Guid.NewGuid():N}");
+AppStoragePaths.Current = new AppStoragePaths(testStorageRoot, Path.Combine(testStorageRoot, "legacy"));
+AppStoragePaths.Current.Initialize();
+AppDomain.CurrentDomain.ProcessExit += (_, _) =>
+{
+    try { if (Directory.Exists(testStorageRoot)) Directory.Delete(testStorageRoot, recursive: true); }
+    catch (IOException exception) { Console.Error.WriteLine($"Test data cleanup failed: {exception.Message}"); }
+};
+if (args.Contains("--portable-storage-regression")) return await PortableStorageRegression.RunAsync();
+if (args.Contains("--router-restart-regression")) return await RouterRestartRegression.RunAsync();
+if (args.Contains("--notification-branding-regression")) return NotificationBrandingRegression.Run();
 if(args.Contains("--settings-language-regression")) return SettingsLanguageRegression.Run();
 if(args.Contains("--settings-language-preview")) return SettingsLanguageRegression.Run(preview: true);
 if (args.Contains("--viewport-fade-regression")) return ViewportFadeRegression.Run();
@@ -2339,7 +2350,7 @@ int RunNotificationOnceRegression()
 
     if (platform.ConfigureIdentityCalls != 1 ||
         platform.RegisterCalls != 1 ||
-        NotificationService.StableAppUserModelId != "{95AFFE3D-014F-4F5F-AD8B-FD52B4E62CE3}" ||
+        NotificationService.StableAppUserModelId != WindowsNotificationRegistration.AppUserModelId ||
         platform.StableAppUserModelId != NotificationService.StableAppUserModelId ||
         platform.DisplayName != "LanPod" ||
         !platform.Calls.SequenceEqual(
@@ -2358,10 +2369,11 @@ int RunNotificationOnceRegression()
     else if (platform.Delivered[0].Title != "Windows 系统通知测试" ||
              platform.Delivered[1].Title != "离线测试设备 已离线" ||
              platform.Delivered[2].Title != "上线测试设备 已上线" ||
-             !platform.Delivered[1].Message.Contains("2026年08月28日 20:41:13", StringComparison.Ordinal) ||
-             !platform.Delivered[2].Message.Contains("2026年08月28日 20:42:13", StringComparison.Ordinal))
+             !platform.Delivered[1].Message.Contains("2026\u2009年\u200908\u2009月\u200928\u2009日 20:41:13", StringComparison.Ordinal) ||
+             !platform.Delivered[2].Message.Contains("2026\u2009年\u200908\u2009月\u200928\u2009日 20:42:13", StringComparison.Ordinal))
     {
-        failures.Add("单通道投递必须保留设置测试、离线、上线的正确标题和发生时间");
+        failures.Add("单通道投递必须保留设置测试、离线、上线的正确标题和发生时间；实际投递：" +
+            string.Join(" | ", platform.Delivered.Select(item => $"{item.Title} / {item.Message}")));
     }
 
     var failingPlatform = new TestAppNotificationPlatform
@@ -2394,6 +2406,14 @@ int RunNotificationOnceRegression()
         {
             failures.Add("稳定身份配置、支持性检查或 App SDK 注册失败时必须停止，不得调用 Show");
         }
+    }
+
+    var disabledPlatform = new TestAppNotificationPlatform { Enabled = false };
+    using (var disabledService = new NotificationService(disabledPlatform))
+    {
+        var result = disabledService.ShowTestNotification();
+        if (disabledPlatform.Delivered.Count != 0 || result.Channel != NotificationDeliveryChannel.Unavailable)
+            failures.Add("Windows 已关闭通知时仍向系统提交了通知。");
     }
 
     if (failures.Count > 0)
@@ -4459,6 +4479,8 @@ internal static class NativeWindowVisibilityProbe
 
 internal sealed class TestAppNotificationPlatform : IAppNotificationPlatform
 {
+    internal bool Enabled { get; init; } = true;
+    public bool IsEnabled() => Enabled;
     internal int ConfigureIdentityCalls { get; private set; }
     internal int RegisterCalls { get; private set; }
     internal string? StableAppUserModelId { get; private set; }

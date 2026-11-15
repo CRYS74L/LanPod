@@ -16,6 +16,7 @@ internal static class StartupRegistrationRegression
     {
         EnablingMigratesTheExactLegacyEntryAndPreservesOtherStartupItems();
         EnablingRefreshesOnlyAnOwnedTask();
+        PortableMovesRefreshOnlyAnEnabledOwnedTask();
         AForeignScheduledTaskCollisionIsNeverOverwritten();
         ATaskOwnedByAnotherUserIsNeverChanged();
         DisablingOnlyDisablesAnOwnedTaskAndKeepsUnmatchedEntries();
@@ -91,6 +92,22 @@ internal static class StartupRegistrationRegression
             "An existing owned task was not refreshed in place.");
         Require(scheduler.Tasks[ExpectedTaskName] == new StartupTaskRegistration(ExpectedSource, UserSid, true),
             "Refreshing the owned task did not enable it.");
+    }
+
+    private static void PortableMovesRefreshOnlyAnEnabledOwnedTask()
+    {
+        var scheduler = new FakeTaskScheduler();
+        var service = CreateService(scheduler, new FakeLegacyStartupStore());
+        service.RefreshEnabledRegistration();
+        Require(scheduler.RegisterCount == 0, "A portable launch enabled a new startup task.");
+        scheduler.Tasks[ExpectedTaskName] = new(ExpectedSource, UserSid, false);
+        service.RefreshEnabledRegistration();
+        Require(scheduler.RegisterCount == 0, "A portable launch enabled a disabled startup task.");
+        scheduler.Tasks[ExpectedTaskName] = new(ExpectedSource, UserSid, true);
+        service.RefreshEnabledRegistration();
+        Require(scheduler.RegisterCount == 1 && scheduler.LastUpdate &&
+            scheduler.LastDefinition?.ExecutablePath == ExecutablePath,
+            "Moving an enabled portable app failed to refresh its startup executable.");
     }
 
     private static void ATaskOwnedByAnotherUserIsNeverChanged()
