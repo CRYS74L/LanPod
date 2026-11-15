@@ -61,15 +61,18 @@ internal static class PortableStorageRegression
         var migration = new AppStoragePaths(Path.Combine(root, "upgrade"), legacyRoot);
         migration.Initialize();
         Require(File.ReadAllText(Path.Combine(migration.DataDirectory, "state.json")) == state &&
-            File.ReadAllText(Path.Combine(legacy, "state.json")) == state &&
+            !Directory.Exists(legacy) &&
             File.Exists(Path.Combine(migration.DataDirectory, "window-placement.json")),
-            "The upgrade lost legacy state or modified its source.");
+            "The upgrade lost legacy state or retained the verified old source.");
         File.WriteAllText(Path.Combine(migration.DataDirectory, "state.json"), "portable-current");
         migration.Initialize();
         Require(File.ReadAllText(Path.Combine(migration.DataDirectory, "state.json")) == "portable-current",
             "A subsequent launch overwrote portable data with an older installation.");
 
         var bundled = new AppStoragePaths(Path.Combine(root, "bundled-upgrade"), legacyRoot);
+        Directory.CreateDirectory(legacy);
+        File.WriteAllText(Path.Combine(legacy, "state.json"), state);
+        File.WriteAllText(Path.Combine(legacy, "window-placement.json"), "{}");
         var runtime = Path.Combine(bundled.DataDirectory, "Runtime", "test-runtime");
         Directory.CreateDirectory(runtime);
         File.WriteAllText(Path.Combine(runtime, "runtime-fixture"), "keep");

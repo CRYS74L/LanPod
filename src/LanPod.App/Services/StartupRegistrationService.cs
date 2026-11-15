@@ -153,7 +153,12 @@ public sealed class StartupRegistrationService
 
     internal void RefreshEnabledRegistration()
     {
-        if (GetOwnedTask()?.Enabled == true)
+        var task = GetOwnedTask();
+        // This is called only for a saved, enabled preference. A portable copy
+        // on another Windows profile needs its first task; an explicitly disabled
+        // task on this profile retains the Windows setting.
+        if (task is null) SetEnabled(true);
+        else if (task.Enabled)
             _taskScheduler.RegisterTask(CreateValidatedTaskDefinition(), update: true);
     }
 

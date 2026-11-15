@@ -18,14 +18,14 @@ internal static class WindowsNotificationRegistration
         return settings?.GetValue("Enabled") is not int enabled || enabled != 0;
     }
 
-    internal static void RegisterShortcut(string displayName)
+    internal static void RefreshActivationPath(string displayName)
     {
         using var registration = Registry.CurrentUser.OpenSubKey($@"Software\Classes\AppUserModelId\{AppUserModelId}");
         var activator = Guid.Parse(registration?.GetValue("CustomActivator") as string
             ?? throw new InvalidOperationException("Windows 通知激活器注册缺失。"));
         var executablePath = AppStoragePaths.ExecutablePath;
         var shortcutPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Programs), $"{displayName}.lnk");
-        NotificationShortcut.Ensure(shortcutPath, executablePath, AppUserModelId, activator);
+        NotificationShortcut.RemoveLegacy(shortcutPath, AppUserModelId);
 
         // The SDK reuses an activator registered by an earlier app location.
         // Portable moves must also update the executable used by toast clicks.

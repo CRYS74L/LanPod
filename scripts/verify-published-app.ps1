@@ -8,12 +8,17 @@ $projectRoot = Split-Path -Parent $PSScriptRoot
 if (-not $ExecutablePath) { $ExecutablePath = Join-Path $projectRoot 'dist\LanPod\LanPod.exe' }
 $ExecutablePath = (Resolve-Path -LiteralPath $ExecutablePath).Path
 if (Get-Process -Name LanPod -ErrorAction SilentlyContinue) { throw 'Exit LanPod before verifying a primary launch.' }
+foreach ($name in @('LanPod','LanDeviceMonitor')) {
+    if (Test-Path -LiteralPath (Join-Path ([Environment]::GetFolderPath('LocalApplicationData')) "$name\state.json")) {
+        throw 'Migrate the existing legacy installation before verifying a new-user launch.'
+    }
+}
 $testDirectory = Join-Path $projectRoot ".tools\portable-verification\$([guid]::NewGuid().ToString('N'))"
 $applicationDirectory = Join-Path $testDirectory '初始位置 带空格'
-New-Item -ItemType Directory -Path (Join-Path $applicationDirectory 'Data') -Force | Out-Null
+New-Item -ItemType Directory -Path $applicationDirectory -Force | Out-Null
 Copy-Item -LiteralPath $ExecutablePath -Destination (Join-Path $applicationDirectory 'LanPod.exe')
-# A clean test copy must not import this computer's personal settings.
-[IO.File]::WriteAllText((Join-Path $applicationDirectory 'Data\.initialized'), '1')
+$shortcutPath = Join-Path ([Environment]::GetFolderPath('Programs')) 'LanPod.lnk'
+$shortcutExisted = Test-Path -LiteralPath $shortcutPath
 $launcher = $null
 $application = $null
 
@@ -45,6 +50,18 @@ function Stop-Portable {
 
 try {
     Start-Portable $false
+    $deadline = (Get-Date).AddSeconds($TimeoutSeconds)
+    do {
+        $registration = Get-ItemProperty -LiteralPath 'HKCU:\Software\Classes\AppUserModelId\CRYS74L.LanPod' -ErrorAction SilentlyContinue
+        $server = if ($registration.CustomActivator) { Get-ItemProperty -LiteralPath "HKCU:\Software\Classes\CLSID\$($registration.CustomActivator)\LocalServer32" -ErrorAction SilentlyContinue }
+        if ($registration.DisplayName -eq 'LanPod' -and $server.'(default)' -eq ('"' + (Join-Path $applicationDirectory 'LanPod.exe') + '" ----AppNotificationActivated:')) { break }
+        Start-Sleep -Milliseconds 200
+    } while ((Get-Date) -lt $deadline)
+    if ($registration.DisplayName -ne 'LanPod' -or $server.'(default)' -ne ('"' + (Join-Path $applicationDirectory 'LanPod.exe') + '" ----AppNotificationActivated:') -or
+        -not $registration.IconUri.StartsWith((Join-Path $applicationDirectory 'Data\'), [StringComparison]::OrdinalIgnoreCase) -or
+        -not (Test-Path -LiteralPath $registration.IconUri)) { throw 'First launch did not automatically register notifications with its local icon and root executable.' }
+    if (-not $shortcutExisted -and (Test-Path -LiteralPath $shortcutPath)) { throw 'First launch created an unsolicited Start menu shortcut.' }
+    if (-not (Test-Path -LiteralPath (Join-Path $applicationDirectory 'Data\.initialized'))) { throw 'First launch did not initialize its Data directory.' }
     $window = $application.MainWindowHandle
     $runtime = Split-Path -Parent $application.Path
     $marker = (Get-Item -LiteralPath (Join-Path $runtime '.complete')).LastWriteTimeUtc
@@ -70,7 +87,7 @@ try {
     $entries = @(Get-ChildItem -LiteralPath $applicationDirectory -Force)
     if ($entries.Count -ne 2 -or (@($entries.Name | Sort-Object) -join ',') -ne 'Data,LanPod.exe') { throw 'Portable root does not contain exactly EXE and Data.' }
     if (Get-ChildItem -LiteralPath (Join-Path $applicationDirectory 'Data') -Filter Data -Directory -Recurse) { throw 'Application data was nested inside the runtime.' }
-    [pscustomobject]@{ Version=(Get-Item -LiteralPath $ExecutablePath).VersionInfo.ProductVersion; FirstLaunch=$true; LocalRuntimes=$true; SingleInstance=$true; Relocation=$true; BackgroundStartup=$true; CacheReused=$true; RootEntries=2 }
+    [pscustomobject]@{ Version=(Get-Item -LiteralPath $ExecutablePath).VersionInfo.ProductVersion; FromExeOnly=$true; FirstLaunch=$true; AutomaticNotificationRegistration=$true; NoNewStartMenuEntry=$true; LocalRuntimes=$true; SingleInstance=$true; Relocation=$true; BackgroundStartup=$true; CacheReused=$true; RootEntries=2 }
 }
 finally {
     Stop-Portable

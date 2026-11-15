@@ -31,4 +31,10 @@ if ($RunRegression) {
     if ($LASTEXITCODE -ne 0) { throw "Desktop tray regression build failed ($LASTEXITCODE)" }
     & $desktopExecutable (Join-Path $output 'LanPod.TrayRuntime.dll') (Join-Path $testDirectory 'desktop-runtime.log')
     if ($LASTEXITCODE -ne 0) { throw "Desktop tray regression failed ($LASTEXITCODE)" }
+    $shortcutSource = Join-Path $root 'tests\native\NotificationShortcutRegression.cpp'
+    $shortcutExecutable = Join-Path $testDirectory 'NotificationShortcutRegression.exe'
+    & $Compiler '-std=c++20' '-O2' '-static' '-municode' '-DUNICODE' '-D_UNICODE' $shortcutSource '-o' $shortcutExecutable '-lole32' '-lpropsys' '-lshlwapi' '-luuid'
+    if ($LASTEXITCODE -ne 0) { throw "Notification shortcut regression build failed ($LASTEXITCODE)" }
+    & $shortcutExecutable (Join-Path $output 'LanPod.TrayRuntime.dll') $testDirectory
+    if ($LASTEXITCODE -ne 0) { throw "Notification shortcut regression failed ($LASTEXITCODE)" }
 }

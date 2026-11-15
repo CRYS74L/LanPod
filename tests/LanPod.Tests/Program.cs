@@ -14,6 +14,9 @@ AppDomain.CurrentDomain.ProcessExit += (_, _) =>
     catch (IOException exception) { Console.Error.WriteLine($"Test data cleanup failed: {exception.Message}"); }
 };
 if (args.Contains("--portable-storage-regression")) return await PortableStorageRegression.RunAsync();
+if (args.Contains("--legacy-migration-regression")) return LegacyMigrationRegression.Run();
+if (args.FirstOrDefault(a => a.StartsWith("--legacy-migration-audit=")) is { } migrationAudit)
+    return LegacyMigrationRegression.Audit(migrationAudit["--legacy-migration-audit=".Length..]);
 if (args.Contains("--router-restart-regression")) return await RouterRestartRegression.RunAsync();
 if (args.Contains("--notification-branding-regression")) return NotificationBrandingRegression.Run();
 if(args.Contains("--settings-language-regression")) return SettingsLanguageRegression.Run();

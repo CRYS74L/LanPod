@@ -16,7 +16,7 @@ internal static class StartupRegistrationRegression
     {
         EnablingMigratesTheExactLegacyEntryAndPreservesOtherStartupItems();
         EnablingRefreshesOnlyAnOwnedTask();
-        PortableMovesRefreshOnlyAnEnabledOwnedTask();
+        PortableMovesCreateMissingAndRefreshEnabledOwnedTasks();
         AForeignScheduledTaskCollisionIsNeverOverwritten();
         ATaskOwnedByAnotherUserIsNeverChanged();
         DisablingOnlyDisablesAnOwnedTaskAndKeepsUnmatchedEntries();
@@ -94,18 +94,19 @@ internal static class StartupRegistrationRegression
             "Refreshing the owned task did not enable it.");
     }
 
-    private static void PortableMovesRefreshOnlyAnEnabledOwnedTask()
+    private static void PortableMovesCreateMissingAndRefreshEnabledOwnedTasks()
     {
         var scheduler = new FakeTaskScheduler();
         var service = CreateService(scheduler, new FakeLegacyStartupStore());
         service.RefreshEnabledRegistration();
-        Require(scheduler.RegisterCount == 0, "A portable launch enabled a new startup task.");
+        Require(scheduler.RegisterCount == 1 && !scheduler.LastUpdate,
+            "A saved enabled preference was not registered on a new Windows profile.");
         scheduler.Tasks[ExpectedTaskName] = new(ExpectedSource, UserSid, false);
         service.RefreshEnabledRegistration();
-        Require(scheduler.RegisterCount == 0, "A portable launch enabled a disabled startup task.");
+        Require(scheduler.RegisterCount == 1, "A portable launch enabled a disabled startup task.");
         scheduler.Tasks[ExpectedTaskName] = new(ExpectedSource, UserSid, true);
         service.RefreshEnabledRegistration();
-        Require(scheduler.RegisterCount == 1 && scheduler.LastUpdate &&
+        Require(scheduler.RegisterCount == 2 && scheduler.LastUpdate &&
             scheduler.LastDefinition?.ExecutablePath == ExecutablePath,
             "Moving an enabled portable app failed to refresh its startup executable.");
     }

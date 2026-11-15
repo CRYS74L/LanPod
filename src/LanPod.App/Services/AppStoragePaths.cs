@@ -16,12 +16,14 @@ internal sealed class AppStoragePaths
             ? Path.GetFullPath(launcher)
             : Environment.ProcessPath ?? throw new InvalidOperationException("无法确定应用程序路径。");
     private readonly string _legacyRoot;
+    private readonly ILegacyRouterCredentialStore _legacyCredentials;
 
-    internal AppStoragePaths(string applicationDirectory, string legacyRoot)
+    internal AppStoragePaths(string applicationDirectory, string legacyRoot, ILegacyRouterCredentialStore? legacyCredentials = null)
     {
         ApplicationDirectory = Path.GetFullPath(applicationDirectory);
         DataDirectory = Path.Combine(ApplicationDirectory, "Data");
         _legacyRoot = legacyRoot;
+        _legacyCredentials = legacyCredentials ?? new LegacyRouterCredentialStore();
     }
 
     internal void Initialize()
@@ -30,12 +32,17 @@ internal sealed class AppStoragePaths
         if (Directory.Exists(pendingImport))
         {
             CompleteImport(pendingImport);
+            CleanupLegacyData();
             return;
         }
         // The native launcher creates Data/Runtime before managed startup.
         // Existing user data belongs to this portable copy and takes priority.
         if (Directory.Exists(DataDirectory) && Directory.EnumerateFileSystemEntries(DataDirectory)
-            .Any(path => !string.Equals(Path.GetFileName(path), "Runtime", StringComparison.OrdinalIgnoreCase))) return;
+            .Any(path => !string.Equals(Path.GetFileName(path), "Runtime", StringComparison.OrdinalIgnoreCase)))
+        {
+            CleanupLegacyData();
+            return;
+        }
 
         var staging = Path.Combine(ApplicationDirectory, $".LanPod-data-{Guid.NewGuid():N}");
         try
@@ -57,7 +64,7 @@ internal sealed class AppStoragePaths
                     settings.TryGetProperty("routerAddress", out var address) &&
                     address.GetString() is { Length: > 0 } routerAddress)
                 {
-                    var password = LegacyRouterCredentialReader.ReadPassword(routerAddress);
+                    var password = _legacyCredentials.ReadPassword(routerAddress);
                     if (!string.IsNullOrEmpty(password))
                         new RouterCredentialService(staging).SavePassword(routerAddress, password);
                 }
@@ -73,12 +80,15 @@ internal sealed class AppStoragePaths
                 Directory.Move(staging, DataDirectory);
                 File.WriteAllText(Path.Combine(DataDirectory, ".initialized"), "1");
             }
+            CleanupLegacyData();
         }
         finally
         {
             if (Directory.Exists(staging)) Directory.Delete(staging, recursive: true);
         }
     }
+
+    private void CleanupLegacyData() => LegacyDataCleanup.Run(DataDirectory, _legacyRoot, _legacyCredentials);
 
     private void CompleteImport(string pendingImport)
     {

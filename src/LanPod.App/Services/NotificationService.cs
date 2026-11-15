@@ -68,7 +68,7 @@ internal sealed class WindowsAppNotificationPlatform : IAppNotificationPlatform
         manager.Register(displayName, registeredIcon);
         try
         {
-            WindowsNotificationRegistration.RegisterShortcut(displayName);
+            WindowsNotificationRegistration.RefreshActivationPath(displayName);
         }
         catch (Exception registrationError)
         {

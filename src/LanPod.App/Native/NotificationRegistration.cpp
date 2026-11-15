@@ -1,15 +1,16 @@
 #include <windows.h>
 #include <shlobj.h>
 #include <propkey.h>
-#include <propvarutil.h>
 
-extern "C" __declspec(dllexport) HRESULT __cdecl LanEnsureNotificationShortcut(
-    PCWSTR shortcutPath,
-    PCWSTR executablePath,
-    PCWSTR workingDirectory,
-    PCWSTR appUserModelId,
-    const GUID* activatorClsid)
+extern "C" __declspec(dllexport) HRESULT __cdecl LanRemoveLegacyNotificationShortcut(
+    PCWSTR shortcutPath, PCWSTR appUserModelId)
 {
+    auto attributes = GetFileAttributesW(shortcutPath);
+    if (attributes == INVALID_FILE_ATTRIBUTES) {
+        auto error = GetLastError();
+        return error == ERROR_FILE_NOT_FOUND || error == ERROR_PATH_NOT_FOUND ? S_FALSE : HRESULT_FROM_WIN32(error);
+    }
+    if (attributes & FILE_ATTRIBUTE_REPARSE_POINT) return S_FALSE;
     IShellLinkW* link = nullptr;
     IPropertyStore* properties = nullptr;
     IPersistFile* file = nullptr;
@@ -20,31 +21,20 @@ extern "C" __declspec(dllexport) HRESULT __cdecl LanEnsureNotificationShortcut(
     if (SUCCEEDED(result)) result = link->QueryInterface(IID_PPV_ARGS(&properties));
     if (SUCCEEDED(result)) result = link->QueryInterface(IID_PPV_ARGS(&file));
 
-    // Load an existing shortcut so unrelated user properties remain intact.
-    const bool existed = GetFileAttributesW(shortcutPath) != INVALID_FILE_ATTRIBUTES;
-    if (SUCCEEDED(result) && existed)
-        result = file->Load(shortcutPath, STGM_READWRITE);
-
-    if (SUCCEEDED(result)) result = link->SetPath(executablePath);
-    if (SUCCEEDED(result)) result = link->SetWorkingDirectory(workingDirectory);
-    if (SUCCEEDED(result)) result = link->SetIconLocation(executablePath, 0);
-    if (SUCCEEDED(result)) result = InitPropVariantFromString(appUserModelId, &value);
-    if (SUCCEEDED(result)) result = properties->SetValue(PKEY_AppUserModel_ID, value);
+    if (SUCCEEDED(result)) result = file->Load(shortcutPath, STGM_READ);
+    if (SUCCEEDED(result)) result = properties->GetValue(PKEY_AppUserModel_ID, &value);
+    const bool owned = SUCCEEDED(result) && value.vt == VT_LPWSTR &&
+        value.pwszVal && wcscmp(value.pwszVal, appUserModelId) == 0;
     PropVariantClear(&value);
-
-    if (SUCCEEDED(result)) result = InitPropVariantFromCLSID(*activatorClsid, &value);
-    if (SUCCEEDED(result)) result = properties->SetValue(PKEY_AppUserModel_ToastActivatorCLSID, value);
-    PropVariantClear(&value);
-
-    if (SUCCEEDED(result)) result = properties->Commit();
-    if (SUCCEEDED(result)) result = file->Save(shortcutPath, TRUE);
 
     if (file) file->Release();
     if (properties) properties->Release();
     if (link) link->Release();
 
-    if (SUCCEEDED(result))
-        SHChangeNotify(existed ? SHCNE_UPDATEITEM : SHCNE_CREATE,
-            SHCNF_PATHW | SHCNF_FLUSH, shortcutPath, nullptr);
+    if (SUCCEEDED(result) && !owned) return S_FALSE;
+    if (SUCCEEDED(result)) {
+        if (!DeleteFileW(shortcutPath)) return HRESULT_FROM_WIN32(GetLastError());
+        SHChangeNotify(SHCNE_DELETE, SHCNF_PATHW | SHCNF_FLUSH, shortcutPath, nullptr);
+    }
     return result;
 }
